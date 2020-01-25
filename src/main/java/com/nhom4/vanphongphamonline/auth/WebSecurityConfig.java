@@ -27,7 +27,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
             .authorizeRequests()
                 .antMatchers("/nhacungcap/data").hasRole("MEMBER")
-                .antMatchers("/dangky").permitAll().anyRequest().authenticated();
+                .antMatchers("/dangky").permitAll()
+                .antMatchers("/dangnhap").permitAll()
+                .anyRequest().authenticated();
     }
 
     @Bean
