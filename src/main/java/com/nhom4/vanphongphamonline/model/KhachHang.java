@@ -3,6 +3,7 @@ package com.nhom4.vanphongphamonline.model;
 import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 @Document
@@ -20,11 +21,16 @@ public class KhachHang {
 	@Field
 	private String email;
 	@Field
-	private String taiKhoan;
-	@Field
-	private String matKhau;
-	@Field
 	private LocalDate ngaySinh;
+	@DBRef
+	private TaiKhoan taiKhoan; 
+	
+	public TaiKhoan getTaiKhoan() {
+		return taiKhoan;
+	}
+	public void setTaiKhoan(TaiKhoan taiKhoan) {
+		this.taiKhoan = taiKhoan;
+	}
 	public String getMaKhachHang() {
 		return maKhachHang;
 	}
@@ -61,26 +67,18 @@ public class KhachHang {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getTaiKhoan() {
-		return taiKhoan;
-	}
-	public void setTaiKhoan(String taiKhoan) {
-		this.taiKhoan = taiKhoan;
-	}
-	public String getMatKhau() {
-		return matKhau;
-	}
-	public void setMatKhau(String matKhau) {
-		this.matKhau = matKhau;
-	}
 	public LocalDate getNgaySinh() {
 		return ngaySinh;
 	}
 	public void setNgaySinh(LocalDate ngaySinh) {
 		this.ngaySinh = ngaySinh;
 	}
+	public KhachHang() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	public KhachHang(String maKhachHang, String tenKhachHang, String diaChi, String dienThoai, String cmnd,
-			String email, String taiKhoan, String matKhau, LocalDate ngaySinh) {
+			String email, LocalDate ngaySinh, TaiKhoan taiKhoan) {
 		super();
 		this.maKhachHang = maKhachHang;
 		this.tenKhachHang = tenKhachHang;
@@ -88,19 +86,15 @@ public class KhachHang {
 		this.dienThoai = dienThoai;
 		this.cmnd = cmnd;
 		this.email = email;
-		this.taiKhoan = taiKhoan;
-		this.matKhau = matKhau;
 		this.ngaySinh = ngaySinh;
-	}
-	public KhachHang() {
-		super();
-		// TODO Auto-generated constructor stub
+		this.taiKhoan = taiKhoan;
 	}
 	@Override
 	public String toString() {
 		return "KhachHang [maKhachHang=" + maKhachHang + ", tenKhachHang=" + tenKhachHang + ", diaChi=" + diaChi
-				+ ", dienThoai=" + dienThoai + ", cmnd=" + cmnd + ", email=" + email + ", taiKhoan=" + taiKhoan
-				+ ", matKhau=" + matKhau + ", ngaySinh=" + ngaySinh + "]";
+				+ ", dienThoai=" + dienThoai + ", cmnd=" + cmnd + ", email=" + email + ", ngaySinh=" + ngaySinh
+				+ ", taiKhoan=" + taiKhoan + "]";
 	}
+	
 	
 }

@@ -14,8 +14,12 @@ import com.nhom4.vanphongphamonline.repository.NhaCungCapRepository;
 
 @Controller
 public class NhaCungCapController {
-	@Autowired
 	private NhaCungCapRepository nhaCungCapRepository;
+	@Autowired
+	public NhaCungCapController(NhaCungCapRepository nhaCungCapRepository) {
+		this.nhaCungCapRepository= nhaCungCapRepository;
+		// TODO Auto-generated constructor stub
+	}
 	@ResponseBody
 	@RequestMapping(value = "/nhacungcap/add", method = RequestMethod.POST)
 	public String addNhaCungCap(@RequestParam("moTa")String moTa, @RequestParam("id") String id, @RequestParam("tenNhaCungCap") String tenNhaCC) {
