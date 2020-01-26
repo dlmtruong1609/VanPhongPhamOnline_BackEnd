@@ -1,6 +1,8 @@
 package com.nhom4.vanphongphamonline.validator;
 
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.executable.ExecutableValidator;
@@ -33,6 +35,23 @@ public class TaiKhoanValidator implements Validator{
 	public void validateFormRegister(Object target, Errors errors) {
 		// TODO Auto-generated method stub
 		TaiKhoan taiKhoan = (TaiKhoan) target;
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "NotEmpty");
+		String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+		Matcher matcher = null;
+		Pattern pattern;
+		if(taiKhoan.getEmail() != null) {
+			pattern = Pattern.compile(regex);
+			matcher = pattern.matcher(taiKhoan.getEmail());
+			if(matcher.matches()!=true) {
+				errors.rejectValue("email", "Email không đúng định dạng", "5");
+			}
+			if(taiKhoanRepository.findByEmail(taiKhoan.getEmail()) != null) {
+				errors.rejectValue("email", "Email này đã được đăng ký", "7");
+			}
+		} else {
+			errors.rejectValue("email", "Email không được bỏ trống", "6");
+		}
+		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "taiKhoan", "NotEmpty");
 		if (taiKhoan.getTaiKhoan().length() < 6 || taiKhoan.getTaiKhoan().length() > 32) {
             errors.rejectValue("taiKhoan", "Tên tài khoản phải lớn hơn 6 hoặc bé hơn 32 kí tự", "1");
