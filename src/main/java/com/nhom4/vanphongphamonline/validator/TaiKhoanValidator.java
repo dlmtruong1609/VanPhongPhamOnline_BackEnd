@@ -82,14 +82,20 @@ public class TaiKhoanValidator implements Validator{
 		// TODO Auto-generated method stub
 		try {
 			TaiKhoan taiKhoan = (TaiKhoan) target;
-			TaiKhoan taiKhoanExistWithEmail = taiKhoanRepository.findByEmail(taiKhoan.getEmail());
-			TaiKhoan taiKhoanExistWithUsername = taiKhoanRepository.findByUsername(taiKhoan.getTaiKhoan());
+			if(taiKhoan.getEmail()==null && taiKhoan.getTaiKhoan()==null) {
+				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "Email hoặc tài khoản không được bỏ trống", "6");
+				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "taiKhoan", "Email hoặc tài khoản không được bỏ trống", "6");
+			}
+			TaiKhoan taiKhoanExistWithEmail = null;
+			TaiKhoan taiKhoanExistWithUsername = null;
 	        if(taiKhoan.getTaiKhoan()!=null && taiKhoan.getEmail()==null) {
+	        	taiKhoanExistWithUsername = taiKhoanRepository.findByUsername(taiKhoan.getTaiKhoan());
 	            if (taiKhoanExistWithUsername == null) {
 	                errors.rejectValue("taiKhoan", "Sai tên tài khoản hoặc mật khẩu", "1");
 	            }
 	        }
 	        if(taiKhoan.getEmail()!=null && taiKhoan.getTaiKhoan()==null) {
+	        	taiKhoanExistWithEmail = taiKhoanRepository.findByEmail(taiKhoan.getEmail());
 	            if (taiKhoanExistWithEmail == null) {
 	                errors.rejectValue("email", "Sai email hoặc mật khẩu", "1");
 	            }
