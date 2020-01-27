@@ -34,60 +34,84 @@ public class TaiKhoanValidator implements Validator{
 
 	public void validateFormRegister(Object target, Errors errors) {
 		// TODO Auto-generated method stub
-		TaiKhoan taiKhoan = (TaiKhoan) target;
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "NotEmpty");
-		String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
-		Matcher matcher = null;
-		Pattern pattern;
-		if(taiKhoan.getEmail() != null) {
-			pattern = Pattern.compile(regex);
-			matcher = pattern.matcher(taiKhoan.getEmail());
-			if(matcher.matches()!=true) {
-				errors.rejectValue("email", "Email không đúng định dạng", "5");
+		try {
+			TaiKhoan taiKhoan = (TaiKhoan) target;
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "Email không được bỏ trống", "6");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "taiKhoan", "Tài khoản không được bỏ trống", "8");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "matKhau", "Mật khẩu không được để trống", "9");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "matKhauXacNhan", "Mật khẩu xác nhận không được để trống", "10");
+			
+			String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+			Matcher matcher = null;
+			Pattern pattern;
+			if(taiKhoan.getEmail() != null) {
+				pattern = Pattern.compile(regex);
+				matcher = pattern.matcher(taiKhoan.getEmail());
+				if(matcher.matches()!=true) {
+					errors.rejectValue("email", "Email không đúng định dạng", "5");
+				}
+				if(taiKhoanRepository.findByEmail(taiKhoan.getEmail()) != null) {
+					errors.rejectValue("email", "Email này đã được đăng ký", "7");
+				}
 			}
-			if(taiKhoanRepository.findByEmail(taiKhoan.getEmail()) != null) {
-				errors.rejectValue("email", "Email này đã được đăng ký", "7");
+			
+			if(taiKhoan.getTaiKhoan() != null) {
+				if (taiKhoan.getTaiKhoan().length() < 6 || taiKhoan.getTaiKhoan().length() > 32) {
+		            errors.rejectValue("taiKhoan", "Tên tài khoản phải lớn hơn 6 hoặc bé hơn 32 kí tự", "1");
+		        }
+		        if (taiKhoanRepository.findByUsername(taiKhoan.getTaiKhoan()) != null) {
+		            errors.rejectValue("taiKhoan", "Tên tài khoản đã tồn tại", "2");
+		        }
 			}
-		} else {
-			errors.rejectValue("email", "Email không được bỏ trống", "6");
+
+	        if(taiKhoan.getMatKhau()!=null && taiKhoan.getMatKhauXacNhan()!=null) {
+	            if (taiKhoan.getMatKhau().length() < 8 || taiKhoan.getMatKhau().length() > 32) {
+	                errors.rejectValue("matKhau", "Mật khẩu phải lớn hơn 8 hoặc bé hơn 32 kí tự", "3");
+	            }
+
+	            if (!taiKhoan.getMatKhauXacNhan().equals(taiKhoan.getMatKhauXacNhan())) {
+	                errors.rejectValue("matKhauXacNhan", "Xác nhận mật khẩu không trùng khớp", "4");
+	            }
+	        }
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
-		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "taiKhoan", "NotEmpty");
-		if (taiKhoan.getTaiKhoan().length() < 6 || taiKhoan.getTaiKhoan().length() > 32) {
-            errors.rejectValue("taiKhoan", "Tên tài khoản phải lớn hơn 6 hoặc bé hơn 32 kí tự", "1");
-        }
-        if (taiKhoanRepository.findByUsername(taiKhoan.getTaiKhoan()) != null) {
-            errors.rejectValue("taiKhoan", "Tên tài khoản đã tồn tại", "2");
-        }
-
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "matKhau", "NotEmpty");
-        if (taiKhoan.getMatKhau().length() < 8 || taiKhoan.getMatKhau().length() > 32) {
-            errors.rejectValue("matKhau", "Mật khẩu phải lớn hơn 8 hoặc bé hơn 32 kí tự", "3");
-        }
-
-        if (!taiKhoan.getMatKhauXacNhan().equals(taiKhoan.getMatKhauXacNhan())) {
-            errors.rejectValue("matKhauXacNhan", "Xác nhận mật khẩu không trùng khớp", "4");
-        }
 	}
 	public void validateFormLogin(Object target, Errors errors) {
 		// TODO Auto-generated method stub
-		TaiKhoan taiKhoan = (TaiKhoan) target;
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "taiKhoan", "NotEmpty");
-		if (taiKhoan.getTaiKhoan().length() < 6 || taiKhoan.getTaiKhoan().length() > 32) {
-            errors.rejectValue("taiKhoan", "Tên tài khoản phải lớn hơn 6 hoặc bé hơn 32 kí tự", "1");
-        }
-        if (taiKhoanRepository.findByUsername(taiKhoan.getTaiKhoan()) == null) {
-            errors.rejectValue("taiKhoan", "Sai tên tài khoản hoặc mật khẩu", "2");
-        }
-
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "matKhau", "NotEmpty");
-        if (taiKhoan.getMatKhau().length() < 8 || taiKhoan.getMatKhau().length() > 32) {
-            errors.rejectValue("matKhau", "Mật khẩu phải lớn hơn 8 hoặc bé hơn 32 kí tự", "3");
-        }
-
-        if (!bCryptPasswordEncoder.matches(taiKhoan.getMatKhau(), taiKhoanRepository.findByUsername(taiKhoan.getTaiKhoan()).getMatKhau())) {
-            errors.rejectValue("matKhau", "Sai tên tài khoản hoặc mật khẩu", "4");
-        }
+		try {
+			TaiKhoan taiKhoan = (TaiKhoan) target;
+			TaiKhoan taiKhoanExistWithEmail = taiKhoanRepository.findByEmail(taiKhoan.getEmail());
+			TaiKhoan taiKhoanExistWithUsername = taiKhoanRepository.findByUsername(taiKhoan.getTaiKhoan());
+	        if(taiKhoan.getTaiKhoan()!=null && taiKhoan.getEmail()==null) {
+	            if (taiKhoanExistWithUsername == null) {
+	                errors.rejectValue("taiKhoan", "Sai tên tài khoản hoặc mật khẩu", "1");
+	            }
+	        }
+	        if(taiKhoan.getEmail()!=null && taiKhoan.getTaiKhoan()==null) {
+	            if (taiKhoanExistWithEmail == null) {
+	                errors.rejectValue("email", "Sai email hoặc mật khẩu", "1");
+	            }
+	        }
+	        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "matKhau", "Mật khẩu không được để trống", "2");
+	        if(taiKhoanExistWithUsername!=null) {
+		        if(taiKhoan.getMatKhau()!=null) {
+		            if (!bCryptPasswordEncoder.matches(taiKhoan.getMatKhau(),taiKhoanExistWithUsername.getMatKhau())) {
+		                errors.rejectValue("matKhau", "Sai tên tài khoản hoặc mật khẩu", "1");
+		            }
+		        }
+	        } else if (taiKhoanExistWithEmail!=null) {
+		        if(taiKhoan.getMatKhau()!=null) {
+		            if (!bCryptPasswordEncoder.matches(taiKhoan.getMatKhau(),taiKhoanExistWithEmail.getMatKhau())) {
+		                errors.rejectValue("matKhau", "Sai email hoặc mật khẩu", "1");
+		            }
+		        }
+	        }
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 
 	@Override

@@ -61,7 +61,7 @@ public class TaiKhoanController {
 				        fieldError = (FieldError) object;
 				    }
 				}
-				   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
+			   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
 			   
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.NOT_ACCEPTABLE);
         }

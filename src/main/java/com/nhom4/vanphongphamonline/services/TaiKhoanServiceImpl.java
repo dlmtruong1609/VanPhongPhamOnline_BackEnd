@@ -23,6 +23,7 @@ public class TaiKhoanServiceImpl implements TaiKhoanService {
 	public void save(TaiKhoan taiKhoan) {
 		// TODO Auto-generated method stub
 		taiKhoan.setMatKhau(bCryptPasswordEncoder.encode(taiKhoan.getMatKhau()));
+		taiKhoan.setMatKhauXacNhan(bCryptPasswordEncoder.encode(taiKhoan.getMatKhauXacNhan()));
 		taiKhoan.setRoles(new HashSet<>(roleRepository.findAll()));
 		taiKhoanRepository.insert(taiKhoan);
 	}
