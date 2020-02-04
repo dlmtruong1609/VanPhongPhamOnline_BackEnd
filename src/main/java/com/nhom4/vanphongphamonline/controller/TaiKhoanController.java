@@ -2,12 +2,14 @@ package com.nhom4.vanphongphamonline.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +35,7 @@ public class TaiKhoanController {
 		// TODO Auto-generated constructor stub
 	}
 	@ResponseBody
-	@PostMapping("/dangky")
+	@PostMapping(value = "/dangky", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ServiceStatus> createUser(@RequestBody TaiKhoan taiKhoan, BindingResult bindingResult) {
 		taiKhoanValidator.validateFormRegister(taiKhoan, bindingResult);
 	   if (bindingResult.hasErrors()) {
@@ -45,13 +47,13 @@ public class TaiKhoanController {
 			}
 			   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
 		   
-		   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.NOT_ACCEPTABLE);
+		   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
         }
 		taiKhoanServiceImpl.save(taiKhoan);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng ký thành công"), HttpStatus.OK);
 	}
 	@ResponseBody
-	@PostMapping("/dangnhap")
+	@PostMapping(value = "/dangnhap", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ServiceStatus> login(@RequestBody TaiKhoan taiKhoan, BindingResult bindingResult) {
 		taiKhoanValidator.validateFormLogin(taiKhoan, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -63,7 +65,7 @@ public class TaiKhoanController {
 				}
 			   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
 			   
-			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.NOT_ACCEPTABLE);
+			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
         }
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng nhập thành công"), HttpStatus.OK);
 	}

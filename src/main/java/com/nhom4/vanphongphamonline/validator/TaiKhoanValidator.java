@@ -69,7 +69,7 @@ public class TaiKhoanValidator implements Validator{
 	                errors.rejectValue("matKhau", "Mật khẩu phải lớn hơn 8 hoặc bé hơn 32 kí tự", "3");
 	            }
 
-	            if (!taiKhoan.getMatKhauXacNhan().equals(taiKhoan.getMatKhauXacNhan())) {
+	            if (!taiKhoan.getMatKhau().equals(taiKhoan.getMatKhauXacNhan())) {
 	                errors.rejectValue("matKhauXacNhan", "Xác nhận mật khẩu không trùng khớp", "4");
 	            }
 	        }
