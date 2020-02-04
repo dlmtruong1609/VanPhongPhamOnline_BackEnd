@@ -31,6 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/nhacungcap/data").permitAll()
                 .antMatchers("/dangky").permitAll()
                 .antMatchers("/dangnhap").permitAll()
+                .antMatchers("/guiemail").permitAll()
                 .anyRequest().authenticated();
     }
 

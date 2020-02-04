@@ -27,6 +27,8 @@ import com.nhom4.vanphongphamonline.validator.TaiKhoanValidator;
 public class TaiKhoanController {
 	@Autowired
 	TaiKhoanServiceImpl taiKhoanServiceImpl;
+	@Autowired
+	EmailController emailController;
     @Autowired
     private TaiKhoanValidator taiKhoanValidator;
 	@Autowired
@@ -50,6 +52,7 @@ public class TaiKhoanController {
 		   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
         }
 		taiKhoanServiceImpl.save(taiKhoan);
+		emailController.sendEmail(taiKhoan.getEmail(), "ANANAS Đăng ký", "Chào mừng đến với kênh mua sắm trực tiếp của văn phòng phẩm ANANAS");
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng ký thành công"), HttpStatus.OK);
 	}
 	@ResponseBody
