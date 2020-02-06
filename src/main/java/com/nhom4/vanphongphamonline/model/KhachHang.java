@@ -2,12 +2,15 @@ package com.nhom4.vanphongphamonline.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.GeneratedValue;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 @Document
 public class KhachHang {
+	@GeneratedValue
 	@Id
 	private String maKhachHang;
 	@Field

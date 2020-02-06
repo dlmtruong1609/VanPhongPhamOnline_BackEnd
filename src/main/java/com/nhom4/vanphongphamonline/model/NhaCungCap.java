@@ -1,11 +1,14 @@
 package com.nhom4.vanphongphamonline.model;
 
+import javax.persistence.GeneratedValue;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document
 public class NhaCungCap {
+	@GeneratedValue
 	@Id
 	private String maNhaCC;
 	@Field
