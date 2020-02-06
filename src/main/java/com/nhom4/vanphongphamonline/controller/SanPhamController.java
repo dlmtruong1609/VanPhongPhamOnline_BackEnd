@@ -44,7 +44,7 @@ public class SanPhamController {
 				   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
 			   
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
-	        }
+	        } 
 		sanPhamRepository.insert(sanPham);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm sản phẩm thành công"), HttpStatus.OK);
 		
@@ -60,6 +60,43 @@ public class SanPhamController {
 	@GetMapping(value = "quanly/sanpham/chitiet")
 	public Optional<SanPham> getProductById(@RequestParam String id) {
 		return sanPhamRepository.findById(id);
+	}
+	@ResponseBody
+	@PostMapping(value = "quanly/sanpham/xoa")
+	public ResponseEntity<ServiceStatus> deleteProductById(@RequestParam String id) {
+		if(sanPhamRepository.findById(id).isPresent()!=false) {
+			sanPhamRepository.deleteById(id);
+		} else {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Sản phẩm không tồn tại"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Xoá sản phẩm thành công"), HttpStatus.OK);
+	}
+	@ResponseBody
+	@PostMapping(value = "quanly/sanpham/capnhat")
+	public ResponseEntity<ServiceStatus> updateProductById(@RequestParam String id, @RequestBody SanPham sanPham, BindingResult bindingResult) {
+		if(sanPhamRepository.findById(id).isPresent()!=false) {
+			sanPhamValidator.productValidation(sanPham, bindingResult);
+			if (bindingResult.hasErrors()) {
+			   FieldError fieldError = null;
+			   for (Object object : bindingResult.getAllErrors()) {
+				    if(object instanceof FieldError) {
+				        fieldError = (FieldError) object;
+				    }
+				}
+				   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
+			   
+			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
+	        } 
+			SanPham sp = sanPhamRepository.findById(id).get();
+			sp.setTenSanPham(sanPham.getTenSanPham());
+			sp.setGiaSanPham(sanPham.getGiaSanPham());
+			sp.setMoTa(sanPham.getMoTa());
+			sp.setSoLuongTon(sanPham.getSoLuongTon());
+			sanPhamRepository.save(sp);
+		} else {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Sản phẩm không tồn tại"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật sản phẩm thành công sản phẩm thành công"), HttpStatus.OK);
 	}
 	
 }
