@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -54,6 +55,14 @@ public class SanPhamController {
 	public ResponseEntity<List<SanPham>> getAllProduct() {
 		List<SanPham> list = null;
 		list = sanPhamRepository.findAll();
+		return new ResponseEntity<List<SanPham>>(list, HttpStatus.OK);
+	}
+//	Tim kiem text search
+	@ResponseBody
+	@GetMapping(value = "quanly/sanpham/timkiem")
+	public ResponseEntity<List<SanPham>> getAllProductByName(@RequestParam String name) {
+		List<SanPham> list = null;
+		list = sanPhamRepository.findByProductName(name);
 		return new ResponseEntity<List<SanPham>>(list, HttpStatus.OK);
 	}
 	@ResponseBody

@@ -3,16 +3,18 @@ package com.nhom4.vanphongphamonline.model;
 import javax.persistence.GeneratedValue;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
 
 @Document(collection = "SanPham")
 public class SanPham {
 	@GeneratedValue
 	@Id
 	private String maSanPham;
+	
 	@Field
 	private String tenSanPham;
 	@Field

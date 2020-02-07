@@ -34,6 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/guiemail").permitAll()
                 .antMatchers("/quanly/sanpham/danhsach").permitAll()
                 .antMatchers("/quanly/sanpham/chitiet").permitAll()
+                .antMatchers("/quanly/sanpham/timkiem").permitAll()
                 .antMatchers("/quanly/sanpham/them").permitAll()
                 .antMatchers("/quanly/sanpham/xoa").permitAll()
                 .antMatchers("/quanly/sanpham/capnhat").permitAll()
