@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -32,7 +33,7 @@ public class SanPhamController {
 		this.sanPhamRepository = sanPhamRepository;
 	}
 	@ResponseBody
-	@PostMapping(value = "/quanly/sanpham/them")
+	@PostMapping(value = "/api/quanly/sanpham/them")
 	public ResponseEntity<ServiceStatus> addProduct(@RequestBody SanPham sanPham, BindingResult bindingResult) {
 		sanPhamValidator.productValidation(sanPham, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -51,7 +52,7 @@ public class SanPhamController {
 		
 	}
 	@ResponseBody
-	@GetMapping(value = "quanly/sanpham/danhsach")
+	@GetMapping(value = "/api/quanly/sanpham/danhsach")
 	public ResponseEntity<List<SanPham>> getAllProduct() {
 		List<SanPham> list = null;
 		list = sanPhamRepository.findAll();
@@ -59,19 +60,19 @@ public class SanPhamController {
 	}
 //	Tim kiem text search
 	@ResponseBody
-	@GetMapping(value = "quanly/sanpham/timkiem")
+	@GetMapping(value = "/api/quanly/sanpham/timkiem")
 	public ResponseEntity<List<SanPham>> getAllProductByName(@RequestParam String name) {
 		List<SanPham> list = null;
 		list = sanPhamRepository.findByProductName(name);
 		return new ResponseEntity<List<SanPham>>(list, HttpStatus.OK);
 	}
 	@ResponseBody
-	@GetMapping(value = "quanly/sanpham/chitiet")
+	@GetMapping(value = "/api/quanly/sanpham/chitiet")
 	public Optional<SanPham> getProductById(@RequestParam String id) {
 		return sanPhamRepository.findById(id);
 	}
 	@ResponseBody
-	@PostMapping(value = "quanly/sanpham/xoa")
+	@PostMapping(value = "/api/quanly/sanpham/xoa")
 	public ResponseEntity<ServiceStatus> deleteProductById(@RequestParam String id) {
 		if(sanPhamRepository.findById(id).isPresent()!=false) {
 			sanPhamRepository.deleteById(id);
@@ -81,7 +82,7 @@ public class SanPhamController {
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Xoá sản phẩm thành công"), HttpStatus.OK);
 	}
 	@ResponseBody
-	@PostMapping(value = "quanly/sanpham/capnhat")
+	@PostMapping(value = "/api/quanly/sanpham/capnhat")
 	public ResponseEntity<ServiceStatus> updateProductById(@RequestParam String id, @RequestBody SanPham sanPham, BindingResult bindingResult) {
 		if(sanPhamRepository.findById(id).isPresent()!=false) {
 			sanPhamValidator.productValidation(sanPham, bindingResult);

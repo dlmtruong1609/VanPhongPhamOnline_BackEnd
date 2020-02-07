@@ -9,11 +9,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import com.nhom4.vanphongphamonline.model.Role;
 import com.nhom4.vanphongphamonline.model.TaiKhoan;
 import com.nhom4.vanphongphamonline.repository.TaiKhoanRepository;
-
+@Service
 public class TaiKhoanDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	private TaiKhoanRepository taiKhoanRepository;
@@ -22,13 +23,8 @@ public class TaiKhoanDetailsServiceImpl implements UserDetailsService {
 	    TaiKhoan taiKhoan = taiKhoanRepository.findByUsername(tenTaiKhoan);
         if (taiKhoan == null) throw new UsernameNotFoundException(tenTaiKhoan);
 
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        
-        for (Role role : taiKhoan.getRoles()){
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getTenRole()));
-        }
 
-        return new org.springframework.security.core.userdetails.User(taiKhoan.getTaiKhoan(), taiKhoan.getMatKhau(), grantedAuthorities);
+        return new CustomTaiKhoanDetails(taiKhoan);
 	}
 	
 }

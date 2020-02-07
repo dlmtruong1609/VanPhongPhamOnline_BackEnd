@@ -10,9 +10,13 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+
+import com.nhom4.vanphongphamonline.jwt.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,35 +27,40 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         return super.userDetailsService();
     }
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-    	http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
-        http.csrf().disable()
-            .authorizeRequests()
-                .antMatchers("/nhacungcap/data").permitAll()
-                .antMatchers("/dangky").permitAll()
-                .antMatchers("/dangnhap").permitAll()
-                .antMatchers("/guiemail").permitAll()
-                .antMatchers("/quanly/sanpham/danhsach").permitAll()
-                .antMatchers("/quanly/sanpham/chitiet").permitAll()
-                .antMatchers("/quanly/sanpham/timkiem").permitAll()
-                .antMatchers("/quanly/sanpham/them").permitAll()
-                .antMatchers("/quanly/sanpham/xoa").permitAll()
-                .antMatchers("/quanly/sanpham/capnhat").permitAll()
-                .anyRequest().authenticated();
-    }
-
     @Bean
-    public AuthenticationManager customAuthenticationManager() throws Exception {
-        return authenticationManager();
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
-    	BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
+        return new BCryptPasswordEncoder();
     }
 	@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+    }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+        .cors().and().csrf().disable()
+            .authorizeRequests()
+                .antMatchers("/api/nhacungcap/data").permitAll()
+                .antMatchers("/api/dangky").permitAll()
+                .antMatchers("/api/dangnhap").permitAll()
+                .antMatchers("/api/guiemail").permitAll()
+                .antMatchers("/api/quanly/sanpham/danhsach").hasRole("MEMBER")
+                .antMatchers("/api/quanly/sanpham/chitiet").permitAll()
+                .antMatchers("/api/quanly/sanpham/timkiem").permitAll()
+                .antMatchers("/api/quanly/sanpham/them").hasRole("ADMIN")
+                .antMatchers("/api/quanly/sanpham/xoa").hasRole("ADMIN")
+                .antMatchers("/api/quanly/sanpham/capnhat").hasRole("ADMIN")
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

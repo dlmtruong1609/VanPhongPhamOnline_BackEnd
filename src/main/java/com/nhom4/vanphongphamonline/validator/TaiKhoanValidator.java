@@ -82,22 +82,12 @@ public class TaiKhoanValidator implements Validator{
 		// TODO Auto-generated method stub
 		try {
 			TaiKhoan taiKhoan = (TaiKhoan) target;
-			if(taiKhoan.getEmail()==null && taiKhoan.getTaiKhoan()==null) {
-				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "Email hoặc tài khoản không được bỏ trống", "6");
-				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "taiKhoan", "Email hoặc tài khoản không được bỏ trống", "6");
-			}
-			TaiKhoan taiKhoanExistWithEmail = null;
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "taiKhoan", "Tên tài khoản không được bỏ trống", "3");
 			TaiKhoan taiKhoanExistWithUsername = null;
-	        if(taiKhoan.getTaiKhoan()!=null && taiKhoan.getEmail()==null) {
+	        if(taiKhoan.getTaiKhoan()!=null) {
 	        	taiKhoanExistWithUsername = taiKhoanRepository.findByUsername(taiKhoan.getTaiKhoan());
 	            if (taiKhoanExistWithUsername == null) {
 	                errors.rejectValue("taiKhoan", "Sai tên tài khoản hoặc mật khẩu", "1");
-	            }
-	        }
-	        if(taiKhoan.getEmail()!=null && taiKhoan.getTaiKhoan()==null) {
-	        	taiKhoanExistWithEmail = taiKhoanRepository.findByEmail(taiKhoan.getEmail());
-	            if (taiKhoanExistWithEmail == null) {
-	                errors.rejectValue("email", "Sai email hoặc mật khẩu", "1");
 	            }
 	        }
 	        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "matKhau", "Mật khẩu không được để trống", "2");
@@ -105,12 +95,6 @@ public class TaiKhoanValidator implements Validator{
 		        if(taiKhoan.getMatKhau()!=null) {
 		            if (!bCryptPasswordEncoder.matches(taiKhoan.getMatKhau(),taiKhoanExistWithUsername.getMatKhau())) {
 		                errors.rejectValue("matKhau", "Sai tên tài khoản hoặc mật khẩu", "1");
-		            }
-		        }
-	        } else if (taiKhoanExistWithEmail!=null) {
-		        if(taiKhoan.getMatKhau()!=null) {
-		            if (!bCryptPasswordEncoder.matches(taiKhoan.getMatKhau(),taiKhoanExistWithEmail.getMatKhau())) {
-		                errors.rejectValue("matKhau", "Sai email hoặc mật khẩu", "1");
 		            }
 		        }
 	        }
