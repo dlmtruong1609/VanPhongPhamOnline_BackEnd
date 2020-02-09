@@ -19,15 +19,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.model.SanPham;
+import com.nhom4.vanphongphamonline.repository.ChiTietHoaDonRepository;
 import com.nhom4.vanphongphamonline.repository.SanPhamRepository;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
 import com.nhom4.vanphongphamonline.validator.SanPhamValidator;
 @Controller
 public class SanPhamController {
 	@Autowired
-	SanPhamRepository sanPhamRepository;
+	private SanPhamRepository sanPhamRepository;
 	@Autowired 
-	SanPhamValidator sanPhamValidator;
+	private SanPhamValidator sanPhamValidator;
 	@Autowired
 	public SanPhamController(SanPhamRepository sanPhamRepository) {
 		this.sanPhamRepository = sanPhamRepository;
@@ -46,7 +47,7 @@ public class SanPhamController {
 				   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
 			   
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
-	        } 
+	        }
 		sanPhamRepository.insert(sanPham);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm sản phẩm thành công"), HttpStatus.OK);
 		

@@ -3,6 +3,8 @@ package com.nhom4.vanphongphamonline.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.GeneratedValue;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document
 public class HoaDon {
+	@GeneratedValue
 	@Id
 	private String maHoaDon;
 	@Field
