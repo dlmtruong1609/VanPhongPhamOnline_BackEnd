@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,7 +75,7 @@ public class KhachHangController {
         }
 		taiKhoan.setMatKhau(bCryptPasswordEncoder.encode(taiKhoan.getMatKhau()));
 		taiKhoan.setMatKhauXacNhan(bCryptPasswordEncoder.encode(taiKhoan.getMatKhauXacNhan()));
-		taiKhoan.setRoles(new HashSet<>(roleRepository.findAll()));
+		taiKhoan.setRoles(new HashSet<>(roleRepository.findByName("MEMBER")));
 		KhachHang khachHang = new KhachHang();
 		khachHang.setTaiKhoan(taiKhoan);
 		khachHangRepository.insert(khachHang);
@@ -138,5 +139,14 @@ public class KhachHangController {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(2, "Lỗi truy cập"), HttpStatus.OK);
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật thông tin khách hàng thành công"), HttpStatus.OK);
+	}
+	@ResponseBody
+	@GetMapping(value = "/api/khachhang/chitiet")
+	public ResponseEntity<KhachHang> getCustomerByUsername(@RequestParam String username) {
+		KhachHang khachHang = null;
+		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
+			khachHang = khachHangRepository.findByUsername(username);
+		}
+		return new ResponseEntity<KhachHang>(khachHang, HttpStatus.OK);
 	}
 }

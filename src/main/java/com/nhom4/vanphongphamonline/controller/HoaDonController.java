@@ -1,16 +1,22 @@
 package com.nhom4.vanphongphamonline.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.model.HoaDon;
+import com.nhom4.vanphongphamonline.model.KhachHang;
 import com.nhom4.vanphongphamonline.repository.ChiTietHoaDonRepository;
 import com.nhom4.vanphongphamonline.repository.HoaDonRepository;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
@@ -49,5 +55,13 @@ public class HoaDonController {
 		hoaDonRepository.insert(hoaDon);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thanh toán thành công"), HttpStatus.OK);
 	}
-	
+	@ResponseBody
+	@GetMapping(value = "/api/hoadon/chitiet")
+	public ResponseEntity<Optional<HoaDon>> getOrderById(@RequestParam String id, @RequestParam String username) {
+		Optional<HoaDon> hoaDon = null;
+		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
+			hoaDon = hoaDonRepository.findById(id);
+		}
+		return new ResponseEntity<Optional<HoaDon>>(hoaDon, HttpStatus.OK);
+	}
 }
