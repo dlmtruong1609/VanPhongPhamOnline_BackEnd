@@ -17,24 +17,15 @@ public class KhachHang {
 	@Field
 	private String tenKhachHang;
 	@Field
-	private String diaChi;
+	private DiaChi diaChi;
 	@Field
 	private String dienThoai;
 	@Field
 	private String cmnd;
 	@Field
-	private String email;
-	@Field
 	private LocalDate ngaySinh;
 	@Field
-	private TaiKhoan taiKhoan; 
-	
-	public TaiKhoan getTaiKhoan() {
-		return taiKhoan;
-	}
-	public void setTaiKhoan(TaiKhoan taiKhoan) {
-		this.taiKhoan = taiKhoan;
-	}
+	private TaiKhoan taiKhoan;
 	public String getMaKhachHang() {
 		return maKhachHang;
 	}
@@ -47,10 +38,10 @@ public class KhachHang {
 	public void setTenKhachHang(String tenKhachHang) {
 		this.tenKhachHang = tenKhachHang;
 	}
-	public String getDiaChi() {
+	public DiaChi getDiaChi() {
 		return diaChi;
 	}
-	public void setDiaChi(String diaChi) {
+	public void setDiaChi(DiaChi diaChi) {
 		this.diaChi = diaChi;
 	}
 	public String getDienThoai() {
@@ -65,40 +56,61 @@ public class KhachHang {
 	public void setCmnd(String cmnd) {
 		this.cmnd = cmnd;
 	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
 	public LocalDate getNgaySinh() {
 		return ngaySinh;
 	}
 	public void setNgaySinh(LocalDate ngaySinh) {
 		this.ngaySinh = ngaySinh;
 	}
-	public KhachHang() {
-		super();
-		// TODO Auto-generated constructor stub
+	public TaiKhoan getTaiKhoan() {
+		return taiKhoan;
 	}
-	public KhachHang(String maKhachHang, String tenKhachHang, String diaChi, String dienThoai, String cmnd,
-			String email, LocalDate ngaySinh, TaiKhoan taiKhoan) {
+	public void setTaiKhoan(TaiKhoan taiKhoan) {
+		this.taiKhoan = taiKhoan;
+	}
+	public KhachHang(String maKhachHang, String tenKhachHang, DiaChi diaChi, String dienThoai, String cmnd,
+			LocalDate ngaySinh, TaiKhoan taiKhoan) {
 		super();
 		this.maKhachHang = maKhachHang;
 		this.tenKhachHang = tenKhachHang;
 		this.diaChi = diaChi;
 		this.dienThoai = dienThoai;
 		this.cmnd = cmnd;
-		this.email = email;
 		this.ngaySinh = ngaySinh;
 		this.taiKhoan = taiKhoan;
+	}
+	public KhachHang() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public String toString() {
 		return "KhachHang [maKhachHang=" + maKhachHang + ", tenKhachHang=" + tenKhachHang + ", diaChi=" + diaChi
-				+ ", dienThoai=" + dienThoai + ", cmnd=" + cmnd + ", email=" + email + ", ngaySinh=" + ngaySinh
-				+ ", taiKhoan=" + taiKhoan + "]";
+				+ ", dienThoai=" + dienThoai + ", cmnd=" + cmnd + ", ngaySinh=" + ngaySinh + ", taiKhoan=" + taiKhoan
+				+ "]";
 	}
-	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((maKhachHang == null) ? 0 : maKhachHang.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KhachHang other = (KhachHang) obj;
+		if (maKhachHang == null) {
+			if (other.maKhachHang != null)
+				return false;
+		} else if (!maKhachHang.equals(other.maKhachHang))
+			return false;
+		return true;
+	} 
 	
 }

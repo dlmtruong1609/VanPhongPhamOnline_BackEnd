@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.nhom4.vanphongphamonline.jwt.JwtAuthenticationFilter;
 
@@ -56,6 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/guiemail").permitAll()
                 .antMatchers("/api/quanly/sanpham/danhsach").permitAll()
                 .antMatchers("/api/hoadon/thanhtoan").hasRole("MEMBER")
+                .antMatchers("/api/khachhang/capnhat").hasRole("MEMBER")
                 .antMatchers("/api/quanly/sanpham/chitiet").permitAll()
                 .antMatchers("/api/quanly/sanpham/timkiem").permitAll()
                 .antMatchers("/api/quanly/sanpham/them").hasRole("ADMIN")
@@ -64,5 +67,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+
+        return source;
     }
 }

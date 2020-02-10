@@ -71,5 +71,29 @@ public class HoaDon {
 		return "HoaDon [maHoaDon=" + maHoaDon + ", ngayLapHoaDon=" + ngayLapHoaDon + ", tongTien=" + tongTien
 				+ ", danhsachCTHD=" + danhsachCTHD + ", khachHang=" + khachHang + "]";
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((maHoaDon == null) ? 0 : maHoaDon.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		HoaDon other = (HoaDon) obj;
+		if (maHoaDon == null) {
+			if (other.maHoaDon != null)
+				return false;
+		} else if (!maHoaDon.equals(other.maHoaDon))
+			return false;
+		return true;
+	}
+	
 	
 }

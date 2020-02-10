@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.jwt.JwtTokenProvider;
@@ -30,19 +32,22 @@ import com.nhom4.vanphongphamonline.services.CustomTaiKhoanDetails;
 import com.nhom4.vanphongphamonline.services.SecurityService;
 import com.nhom4.vanphongphamonline.services.SecurityServiceImpl;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
+import com.nhom4.vanphongphamonline.validator.KhachHangValidator;
 import com.nhom4.vanphongphamonline.validator.TaiKhoanValidator;
 @Controller
 public class KhachHangController {
 	@Autowired
-	KhachHangRepository khachHangRepository;
+	private KhachHangRepository khachHangRepository;
 	@Autowired
-	EmailController emailController;
+	private EmailController emailController;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private TaiKhoanValidator taiKhoanValidator;
+    @Autowired
+    private KhachHangValidator khachHangValidator;
     @Autowired
     private JwtTokenProvider tokenProvider;
     @Autowired
@@ -101,5 +106,37 @@ public class KhachHangController {
         String jwt = tokenProvider.generateToken((CustomTaiKhoanDetails) authentication.getPrincipal());
         
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, jwt), HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@PostMapping(value = "/api/khachhang/capnhat")
+	public ResponseEntity<ServiceStatus> updateCustomerByUsername(@RequestBody KhachHang khachHang, @RequestParam String username, BindingResult bindingResult) {
+		khachHangValidator.validate(khachHang, bindingResult);
+		if (bindingResult.hasErrors()) {
+			   FieldError fieldError = null;
+			   for (Object object : bindingResult.getAllErrors()) {
+				    if(object instanceof FieldError) {
+				        fieldError = (FieldError) object;
+				    }
+				}
+			   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
+			   
+			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
+		}
+		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
+			try {
+				KhachHang khachhangUpdated = khachHangRepository.findByUsername(username);
+				khachhangUpdated.setTenKhachHang(khachHang.getTenKhachHang());
+				khachhangUpdated.setDienThoai(khachHang.getDienThoai());
+				khachhangUpdated.setCmnd(khachHang.getCmnd());
+				khachHangRepository.save(khachhangUpdated);
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		} else {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(2, "Lỗi truy cập"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật thông tin khách hàng thành công"), HttpStatus.OK);
 	}
 }

@@ -92,6 +92,29 @@ public class SanPham {
 				+ giaSanPham + ", soLuongTon=" + soLuongTon + ", nhaCungCap=" + nhaCungCap + ", loaiSanPham="
 				+ loaiSanPham + "]";
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((maSanPham == null) ? 0 : maSanPham.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SanPham other = (SanPham) obj;
+		if (maSanPham == null) {
+			if (other.maSanPham != null)
+				return false;
+		} else if (!maSanPham.equals(other.maSanPham))
+			return false;
+		return true;
+	}
 	
 	
 }

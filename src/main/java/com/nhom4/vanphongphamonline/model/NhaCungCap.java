@@ -47,5 +47,29 @@ public class NhaCungCap {
 	public String toString() {
 		return "NhaCungCap [maNhaCC=" + maNhaCC + ", tenNhaCC=" + tenNhaCC + ", moTa=" + moTa + "]";
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((maNhaCC == null) ? 0 : maNhaCC.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NhaCungCap other = (NhaCungCap) obj;
+		if (maNhaCC == null) {
+			if (other.maNhaCC != null)
+				return false;
+		} else if (!maNhaCC.equals(other.maNhaCC))
+			return false;
+		return true;
+	}
+	
 	
 }
