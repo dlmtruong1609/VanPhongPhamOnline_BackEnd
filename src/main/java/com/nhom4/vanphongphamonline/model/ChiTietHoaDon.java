@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 
 public class ChiTietHoaDon {
-	@DBRef
+	@Field
 	private SanPham sanPham;
 	@Field
 	private double donGia;

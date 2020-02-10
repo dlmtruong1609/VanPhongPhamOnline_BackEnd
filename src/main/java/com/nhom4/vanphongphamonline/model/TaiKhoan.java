@@ -2,11 +2,17 @@ package com.nhom4.vanphongphamonline.model;
 
 import java.util.Set;
 
+import javax.persistence.GeneratedValue;
+
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 @Document
 public class TaiKhoan {
+	@GeneratedValue
+	@Id
+	private String id;
 	@Field
 	private String taiKhoan;
 	@Field

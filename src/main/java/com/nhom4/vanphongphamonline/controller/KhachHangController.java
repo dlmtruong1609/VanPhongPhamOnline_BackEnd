@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
+//import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,18 +22,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.jwt.JwtTokenProvider;
+import com.nhom4.vanphongphamonline.model.KhachHang;
 import com.nhom4.vanphongphamonline.model.TaiKhoan;
+import com.nhom4.vanphongphamonline.repository.KhachHangRepository;
 import com.nhom4.vanphongphamonline.repository.RoleRepository;
-import com.nhom4.vanphongphamonline.repository.TaiKhoanRepository;
 import com.nhom4.vanphongphamonline.services.CustomTaiKhoanDetails;
 import com.nhom4.vanphongphamonline.services.SecurityService;
 import com.nhom4.vanphongphamonline.services.SecurityServiceImpl;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
 import com.nhom4.vanphongphamonline.validator.TaiKhoanValidator;
 @Controller
-public class TaiKhoanController {
+public class KhachHangController {
 	@Autowired
-	TaiKhoanRepository taiKhoanRepository;
+	KhachHangRepository khachHangRepository;
 	@Autowired
 	EmailController emailController;
     @Autowired
@@ -47,8 +48,8 @@ public class TaiKhoanController {
     @Autowired
     AuthenticationManager authenticationManager;
 	@Autowired
-	public TaiKhoanController(TaiKhoanRepository taiKhoanRepository) {
-		this.taiKhoanRepository = taiKhoanRepository;
+	public KhachHangController(KhachHangRepository khachHangRepository) {
+		this.khachHangRepository = khachHangRepository;
 		// TODO Auto-generated constructor stub
 	}
 	@ResponseBody
@@ -69,7 +70,9 @@ public class TaiKhoanController {
 		taiKhoan.setMatKhau(bCryptPasswordEncoder.encode(taiKhoan.getMatKhau()));
 		taiKhoan.setMatKhauXacNhan(bCryptPasswordEncoder.encode(taiKhoan.getMatKhauXacNhan()));
 		taiKhoan.setRoles(new HashSet<>(roleRepository.findAll()));
-		taiKhoanRepository.insert(taiKhoan);
+		KhachHang khachHang = new KhachHang();
+		khachHang.setTaiKhoan(taiKhoan);
+		khachHangRepository.insert(khachHang);
 		emailController.sendEmail(taiKhoan.getEmail(), "ANANAS Đăng ký", "Chào mừng đến với kênh mua sắm trực tiếp của văn phòng phẩm ANANAS");
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng ký thành công"), HttpStatus.OK);
 	}
@@ -96,6 +99,7 @@ public class TaiKhoanController {
 	               )
 	       );
         String jwt = tokenProvider.generateToken((CustomTaiKhoanDetails) authentication.getPrincipal());
+        
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, jwt), HttpStatus.OK);
 	}
 }

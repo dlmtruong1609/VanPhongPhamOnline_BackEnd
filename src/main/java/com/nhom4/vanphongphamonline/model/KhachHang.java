@@ -26,7 +26,7 @@ public class KhachHang {
 	private String email;
 	@Field
 	private LocalDate ngaySinh;
-	@DBRef
+	@Field
 	private TaiKhoan taiKhoan; 
 	
 	public TaiKhoan getTaiKhoan() {

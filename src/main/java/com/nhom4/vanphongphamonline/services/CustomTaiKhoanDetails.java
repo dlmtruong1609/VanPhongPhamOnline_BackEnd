@@ -11,19 +11,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.nhom4.vanphongphamonline.model.KhachHang;
 import com.nhom4.vanphongphamonline.model.Role;
 import com.nhom4.vanphongphamonline.model.TaiKhoan;
 public class CustomTaiKhoanDetails implements UserDetails {
-	private TaiKhoan taiKhoan;
+	private KhachHang khachHang;
 	
-	public CustomTaiKhoanDetails(TaiKhoan taiKhoan) {
+	public CustomTaiKhoanDetails(KhachHang khachHang) {
 		// TODO Auto-generated constructor stub
-		this.taiKhoan = taiKhoan;
+		this.khachHang = khachHang;
 	}
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-        for (Role role : taiKhoan.getRoles()){
+        for (Role role : khachHang.getTaiKhoan().getRoles()){
         	return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.getTenRole()));
         }
 		return null;
@@ -32,16 +33,16 @@ public class CustomTaiKhoanDetails implements UserDetails {
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return taiKhoan.getMatKhau();
+		return khachHang.getTaiKhoan().getMatKhau();
 	}
 
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return taiKhoan.getTaiKhoan();
+		return khachHang.getTaiKhoan().getTaiKhoan();
 	}
 	public String getEmail() {
-		return taiKhoan.getEmail();
+		return khachHang.getTaiKhoan().getEmail();
 	}
 	@Override
 	public boolean isAccountNonExpired() {

@@ -21,7 +21,7 @@ public class HoaDon {
 	private double tongTien;
 	@DBRef
 	private List<ChiTietHoaDon> danhsachCTHD;
-	@DBRef
+	@Field
 	private KhachHang khachHang;
 	public String getMaHoaDon() {
 		return maHoaDon;

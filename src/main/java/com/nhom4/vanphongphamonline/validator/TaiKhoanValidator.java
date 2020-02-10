@@ -1,12 +1,7 @@
 package com.nhom4.vanphongphamonline.validator;
 
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.executable.ExecutableValidator;
-import javax.validation.metadata.BeanDescriptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,13 +10,14 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import com.nhom4.vanphongphamonline.model.KhachHang;
 import com.nhom4.vanphongphamonline.model.TaiKhoan;
-import com.nhom4.vanphongphamonline.repository.TaiKhoanRepository;
+import com.nhom4.vanphongphamonline.repository.KhachHangRepository;
 import com.nhom4.vanphongphamonline.services.SecurityServiceImpl;
 @Component
 public class TaiKhoanValidator implements Validator{ 
 	@Autowired
-	private TaiKhoanRepository taiKhoanRepository;
+	private KhachHangRepository khachHangRepository;
 	@Autowired
 	SecurityServiceImpl securityServiceImpl;
 	@Autowired
@@ -50,7 +46,7 @@ public class TaiKhoanValidator implements Validator{
 				if(matcher.matches()!=true) {
 					errors.rejectValue("email", "Email không đúng định dạng", "5");
 				}
-				if(taiKhoanRepository.findByEmail(taiKhoan.getEmail()) != null) {
+				if(khachHangRepository.findByEmail(taiKhoan.getEmail()) != null) {
 					errors.rejectValue("email", "Email này đã được đăng ký", "7");
 				}
 			}
@@ -59,7 +55,7 @@ public class TaiKhoanValidator implements Validator{
 				if (taiKhoan.getTaiKhoan().length() < 6 || taiKhoan.getTaiKhoan().length() > 32) {
 		            errors.rejectValue("taiKhoan", "Tên tài khoản phải lớn hơn 6 hoặc bé hơn 32 kí tự", "1");
 		        }
-		        if (taiKhoanRepository.findByUsername(taiKhoan.getTaiKhoan()) != null) {
+		        if (khachHangRepository.findByUsername(taiKhoan.getTaiKhoan()) != null) {
 		            errors.rejectValue("taiKhoan", "Tên tài khoản đã tồn tại", "2");
 		        }
 			}
@@ -83,17 +79,17 @@ public class TaiKhoanValidator implements Validator{
 		try {
 			TaiKhoan taiKhoan = (TaiKhoan) target;
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "taiKhoan", "Tên tài khoản không được bỏ trống", "3");
-			TaiKhoan taiKhoanExistWithUsername = null;
+			KhachHang khachHangExistWithUsername = new KhachHang();
 	        if(taiKhoan.getTaiKhoan()!=null) {
-	        	taiKhoanExistWithUsername = taiKhoanRepository.findByUsername(taiKhoan.getTaiKhoan());
-	            if (taiKhoanExistWithUsername == null) {
+	        	khachHangExistWithUsername = khachHangRepository.findByUsername(taiKhoan.getTaiKhoan());
+	            if (khachHangExistWithUsername == null) {
 	                errors.rejectValue("taiKhoan", "Sai tên tài khoản hoặc mật khẩu", "1");
 	            }
 	        }
 	        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "matKhau", "Mật khẩu không được để trống", "2");
-	        if(taiKhoanExistWithUsername!=null) {
+	        if(khachHangExistWithUsername!=null) {
 		        if(taiKhoan.getMatKhau()!=null) {
-		            if (!bCryptPasswordEncoder.matches(taiKhoan.getMatKhau(),taiKhoanExistWithUsername.getMatKhau())) {
+		            if (!bCryptPasswordEncoder.matches(taiKhoan.getMatKhau(), khachHangExistWithUsername.getTaiKhoan().getMatKhau())) {
 		                errors.rejectValue("matKhau", "Sai tên tài khoản hoặc mật khẩu", "1");
 		            }
 		        }

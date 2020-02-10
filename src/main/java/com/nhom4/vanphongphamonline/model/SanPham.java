@@ -23,7 +23,7 @@ public class SanPham {
 	private double giaSanPham;
 	@Field
 	private int soLuongTon;
-	@DBRef
+	@Field
 	private NhaCungCap nhaCungCap;
 	@DBRef
 	private LoaiSanPham loaiSanPham;
