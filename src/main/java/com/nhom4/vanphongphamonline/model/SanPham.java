@@ -9,12 +9,11 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = "SanPham")
+@Document
 public class SanPham {
 	@GeneratedValue
 	@Id
 	private String maSanPham;
-	
 	@Field
 	private String tenSanPham;
 	@Field
@@ -26,8 +25,16 @@ public class SanPham {
 	@Field
 	private NhaCungCap nhaCungCap;
 	@DBRef
+	private HinhAnh hinhAnh;
+	@DBRef
 	private LoaiSanPham loaiSanPham;
 	
+	public HinhAnh getHinhAnh() {
+		return hinhAnh;
+	}
+	public void setHinhAnh(HinhAnh hinhAnh) {
+		this.hinhAnh = hinhAnh;
+	}
 	public LoaiSanPham getLoaiSanPham() {
 		return loaiSanPham;
 	}

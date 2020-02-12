@@ -57,6 +57,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/dangnhap").permitAll()
                 .antMatchers("/api/guiemail").permitAll()
                 .antMatchers("/api/quanly/sanpham/danhsach").permitAll()
+                .antMatchers("/api/img/them").permitAll()
+                .antMatchers("/api/img/hinhanh").permitAll()
                 .antMatchers("/api/hoadon/thanhtoan").hasRole("MEMBER")
                 .antMatchers("/api/hoadon/chitiet").hasRole("MEMBER")
                 .antMatchers("/api/khachhang/capnhat").hasRole("MEMBER")
