@@ -70,6 +70,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/quanly/sanpham/them").hasRole("ADMIN")
                 .antMatchers("/api/quanly/sanpham/xoa").hasRole("ADMIN")
                 .antMatchers("/api/quanly/sanpham/capnhat").hasRole("ADMIN")
+                .antMatchers("/api/giohang/them").permitAll()
+                .antMatchers("/api/giohang/dulieu").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

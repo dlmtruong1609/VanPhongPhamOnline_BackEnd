@@ -1,4 +1,4 @@
-package com.nhom4.vanphongphamonline.mail;
+package com.nhom4.vanphongphamonline.config;
 
 import java.util.Properties;
 

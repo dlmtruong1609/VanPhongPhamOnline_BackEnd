@@ -3,6 +3,14 @@ package com.nhom4.vanphongphamonline.services;
 public class ServiceStatus {
 	private int code;
 	private String message;
+	private String resutl;
+	
+	public String getResutl() {
+		return resutl;
+	}
+	public void setResutl(String resutl) {
+		this.resutl = resutl;
+	}
 	public int getCode() {
 		return code;
 	}
@@ -19,6 +27,13 @@ public class ServiceStatus {
 		super();
 		this.code = code;
 		this.message = message;
+	}
+	
+	public ServiceStatus(int code, String message, String resutl) {
+		super();
+		this.code = code;
+		this.message = message;
+		this.resutl = resutl;
 	}
 	public ServiceStatus() {
 		super();
