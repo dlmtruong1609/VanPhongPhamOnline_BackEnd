@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -108,6 +110,13 @@ public class SanPhamController {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Sản phẩm không tồn tại"), HttpStatus.OK);
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật sản phẩm thành công sản phẩm thành công"), HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/api/sanpham/trang")
+	public ResponseEntity<Page<SanPham>> getProductPageByIndex(@RequestParam int index) {
+		Page<SanPham> page = sanPhamRepository.findAll(PageRequest.of(index, 12));
+		return new ResponseEntity<Page<SanPham>>(page, HttpStatus.OK);
 	}
 	
 }

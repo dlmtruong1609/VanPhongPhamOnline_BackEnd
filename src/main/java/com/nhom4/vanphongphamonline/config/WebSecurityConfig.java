@@ -1,4 +1,4 @@
-package com.nhom4.vanphongphamonline.auth;
+package com.nhom4.vanphongphamonline.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,6 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
+//    	http.authorizeRequests().antMatchers("/resources/**").permitAll();
         http
         .cors().and().csrf().disable()
             .authorizeRequests()
@@ -57,6 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/dangnhap").permitAll()
                 .antMatchers("/api/guiemail").permitAll()
                 .antMatchers("/api/quanly/sanpham/danhsach").permitAll()
+                .antMatchers("/api/sanpham/trang").permitAll()
                 .antMatchers("/api/img/them").permitAll()
                 .antMatchers("/api/img/hinhanh").permitAll()
                 .antMatchers("/api/hoadon/thanhtoan").hasRole("MEMBER")
@@ -79,4 +81,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         return source;
     }
+    
 }
