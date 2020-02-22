@@ -48,7 +48,28 @@ public class GioHangController {
 			hdSS.setDanhsachCTHD(list);;
 		}
 		session.setAttribute("hoaDon", hdSS);
+		System.out.println(session.getId());
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm thành con vào giỏ hàng"), HttpStatus.OK);
+	}
+	@GetMapping(value = "/api/giohang/test")
+	public ResponseEntity<ServiceStatus> test(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		HoaDon hdSS = (HoaDon) session.getAttribute("hoaDon");
+		SanPham sanPham = new SanPham("123", "bánh", "KO có mô tả", 5000.0, 100, null, null);
+		ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(sanPham, 1000, 2);
+//		chiTietHoaDon.getSanPham().setMaSanPham(String.valueOf(ID_GENERATOR.getAndIncrement()));
+		List<ChiTietHoaDon> list = new ArrayList<ChiTietHoaDon>();
+		list.add(chiTietHoaDon);
+		if(hdSS != null) {
+			hdSS.getDanhsachCTHD().addAll(list);
+			hdSS.setDanhsachCTHD(hdSS.getDanhsachCTHD());
+		} else {
+			hdSS = new HoaDon();
+			hdSS.setDanhsachCTHD(list);;
+		}
+		session.setAttribute("hoaDon", hdSS);
+		System.out.println(session.getId());
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm thành công vào giỏ hàng"), HttpStatus.OK);
 	}
 	@ResponseBody
 	@PostMapping(value = "/api/giohang/capnhat") // id cua sanpham, action la tang hoac giam
@@ -79,6 +100,8 @@ public class GioHangController {
 	@GetMapping(value = "/api/giohang/dulieu")
 	public ResponseEntity<ServiceStatus> getOrderInfo(HttpServletRequest request) {
 		HttpSession session = request.getSession();
+		System.out.println(session.getId());
+		request.getHeader("cookie");
 		if(session.getAttribute("hoaDon") == null) {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm trong giỏ hàng", ""), HttpStatus.OK);
 		}
