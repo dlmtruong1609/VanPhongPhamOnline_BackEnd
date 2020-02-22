@@ -1,14 +1,18 @@
 package com.nhom4.vanphongphamonline.services;
 
+import java.util.List;
+
+import com.nhom4.vanphongphamonline.model.HoaDon;
+
 public class ServiceStatus {
 	private int code;
 	private String message;
-	private String resutl;
+	private Object resutl;
 	
-	public String getResutl() {
+	public Object getResutl() {
 		return resutl;
 	}
-	public void setResutl(String resutl) {
+	public void setResutl(Object resutl) {
 		this.resutl = resutl;
 	}
 	public int getCode() {
@@ -29,7 +33,8 @@ public class ServiceStatus {
 		this.message = message;
 	}
 	
-	public ServiceStatus(int code, String message, String resutl) {
+
+	public ServiceStatus(int code, String message, Object resutl) {
 		super();
 		this.code = code;
 		this.message = message;

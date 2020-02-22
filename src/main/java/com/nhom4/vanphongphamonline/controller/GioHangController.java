@@ -105,7 +105,7 @@ public class GioHangController {
 		if(session.getAttribute("hoaDon") == null) {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm trong giỏ hàng", ""), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", session.getAttribute("hoaDon").toString()), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", session.getAttribute("hoaDon")), HttpStatus.OK);
 	}
 	int i = 0;
 	@ResponseBody
