@@ -67,7 +67,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/quanly/sanpham/chitiet").permitAll()
                 .antMatchers("/api/sanpham/trang").permitAll()
                 .antMatchers("/api/img/them").permitAll()
-                .antMatchers("/api/giohang/test").permitAll()
                 .antMatchers("/api/img/hinhanh").permitAll()
                 .antMatchers("/api/hoadon/thanhtoan").hasRole("MEMBER")
                 .antMatchers("/api/hoadon/chitiet").hasRole("MEMBER")
@@ -79,6 +78,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/quanly/sanpham/capnhat").hasRole("ADMIN")
                 .antMatchers("/api/giohang/them").permitAll()
                 .antMatchers("/api/giohang/dulieu").permitAll()
+                .antMatchers("/api/giohang/capnhat").permitAll()
+                .antMatchers("/api/giohang/xoa").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
