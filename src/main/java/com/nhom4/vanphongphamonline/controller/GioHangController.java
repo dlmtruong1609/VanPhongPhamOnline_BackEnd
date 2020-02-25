@@ -59,13 +59,17 @@ public class GioHangController {
 		list = new ArrayList<ChiTietHoaDon>();
 		list.add(chiTietHoaDon);
 		if(hdSS != null) {
-			hdSS.getDanhsachCTHD().forEach(item -> {
-				if(item.getSanPham().getMaSanPham().equals(chiTietHoaDon.getSanPham().getMaSanPham())) {
-					item.setSoLuong(item.getSoLuong() + chiTietHoaDon.getSoLuong());
-					item.setDonGia(item.getDonGia() + chiTietHoaDon.getDonGia());
+			for (int i = 0; i < hdSS.getDanhsachCTHD().size(); i++) {
+				ChiTietHoaDon cthd = hdSS.getDanhsachCTHD().get(i);
+				if(cthd.getSanPham().getMaSanPham().equals(chiTietHoaDon.getSanPham().getMaSanPham())) {
+					if((cthd.getSoLuong() + chiTietHoaDon.getSoLuong()) > cthd.getSanPham().getSoLuongTon()) {
+						return new ResponseEntity<ServiceStatus>(new ServiceStatus(5, "Số lượng đặt vượt quá số lượng trong kho, vui lòng xem lại giỏ hàng"), HttpStatus.OK);
+					}
+					cthd.setSoLuong(cthd.getSoLuong() + chiTietHoaDon.getSoLuong());
+					cthd.setDonGia(cthd.getDonGia() + chiTietHoaDon.getDonGia());
 					list.remove(chiTietHoaDon);
 				}
-			});
+			}
 			hdSS.getDanhsachCTHD().addAll(list);
 			hdSS.setDanhsachCTHD(hdSS.getDanhsachCTHD());
 		} else {
@@ -109,24 +113,21 @@ public class GioHangController {
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", session.getAttribute("hoaDon")), HttpStatus.OK);
 	}
-	int i = 0;
 	@ResponseBody
 	@PostMapping(value = "/api/giohang/xoa") // id la ma san pham
 	public ResponseEntity<ServiceStatus> removeOrder(@RequestParam String id, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		HoaDon hd = (HoaDon) session.getAttribute("hoaDon");
-		if(hd != null) {
-			hd.getDanhsachCTHD().forEach((item) -> {
-				if(item.getSanPham().getMaSanPham().equals(id)) {
+		if(hd.getDanhsachCTHD() != null) {
+			for (int i = 0; i < hd.getDanhsachCTHD().size(); i++) {
+				if(hd.getDanhsachCTHD().get(i).getSanPham().getMaSanPham().equals(id)) {
 					hd.getDanhsachCTHD().remove(i);
 				}
-				i++;
-			});;
-			i = 0;
+			}
 		} else {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm trong giỏ hàng", ""), HttpStatus.OK);
 		}
 		session.setAttribute("hoaDon", hd);
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", ""), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", session.getAttribute("hoaDon")), HttpStatus.OK);
 	}
 }
