@@ -38,6 +38,7 @@ public class GioHangController {
 	List<ChiTietHoaDon> list;
 	@Autowired
 	HoaDonValidator hoaDonValidator;
+	double total = 0;
 	@ResponseBody
 	@PostMapping(value = "/api/giohang/them")
 	public ResponseEntity<ServiceStatus> saveOrder(HttpServletRequest request, @RequestBody ChiTietHoaDon chiTietHoaDon, BindingResult bindingResult) {
@@ -68,13 +69,22 @@ public class GioHangController {
 					cthd.setSoLuong(cthd.getSoLuong() + chiTietHoaDon.getSoLuong());
 					cthd.setDonGia(cthd.getDonGia() + chiTietHoaDon.getDonGia());
 					list.remove(chiTietHoaDon);
+				} 
+				if(!hdSS.getDanhsachCTHD().contains(chiTietHoaDon)){
+					if(chiTietHoaDon.getSanPham().getMaSanPham() != cthd.getSanPham().getMaSanPham()) {
+						total += chiTietHoaDon.getDonGia();
+					}
 				}
+				total += cthd.getDonGia(); 
 			}
+			hdSS.setTongTien(total);
+			total = 0;
 			hdSS.getDanhsachCTHD().addAll(list);
 			hdSS.setDanhsachCTHD(hdSS.getDanhsachCTHD());
 		} else {
 			hdSS = new HoaDon();
-			hdSS.setDanhsachCTHD(list);;
+			hdSS.setTongTien(chiTietHoaDon.getDonGia());
+			hdSS.setDanhsachCTHD(list);
 		}
 		session.setAttribute("hoaDon", hdSS);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm thành con vào giỏ hàng"), HttpStatus.OK);
@@ -87,6 +97,7 @@ public class GioHangController {
 		for (int i = 0; i < hoaDon.getDanhsachCTHD().size(); i++) {
 			ChiTietHoaDon chiTietHoaDon = hoaDon.getDanhsachCTHD().get(i);
 			hoaDonValidator.validate(chiTietHoaDon, bindingResult);
+			total += chiTietHoaDon.getDonGia(); 
 			if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
 			   for (Object object : bindingResult.getAllErrors()) {
@@ -99,6 +110,8 @@ public class GioHangController {
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
 	        }
 		}
+		hoaDon.setTongTien(total);
+		total = 0;
 		session.setAttribute("hoaDon", hoaDon);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật thành công", session.getAttribute("hoaDon")), HttpStatus.OK);
 	}

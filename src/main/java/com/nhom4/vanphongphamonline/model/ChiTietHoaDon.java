@@ -45,5 +45,28 @@ public class ChiTietHoaDon {
 	public String toString() {
 		return "ChiTietHoaDon [sanPham=" + sanPham + ", donGia=" + donGia + ", soLuong=" + soLuong + "]";
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((sanPham == null) ? 0 : sanPham.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ChiTietHoaDon other = (ChiTietHoaDon) obj;
+		if (sanPham == null) {
+			if (other.sanPham != null)
+				return false;
+		} else if (!sanPham.equals(other.sanPham))
+			return false;
+		return true;
+	}
 	
 }
