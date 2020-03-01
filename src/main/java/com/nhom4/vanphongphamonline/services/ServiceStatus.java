@@ -3,7 +3,7 @@ package com.nhom4.vanphongphamonline.services;
 import java.util.List;
 
 import com.nhom4.vanphongphamonline.model.HoaDon;
-
+// cấu hình chung khi trả về response
 public class ServiceStatus {
 	private int code;
 	private String message;

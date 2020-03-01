@@ -24,9 +24,9 @@ public class SanPham {
 	private int soLuongTon;
 	@Field
 	private NhaCungCap nhaCungCap;
-	@DBRef
+	@DBRef // vì danh sách hiển thị nhiều nên dùng dbref để hạn chế hiển thị thông tin quá dài khi show ra
 	private HinhAnh hinhAnh;
-	@DBRef
+	@DBRef // vì danh sách hiển thị nhiều nên dùng dbref để hạn chế hiển thị thông tin quá dài khi show ra
 	private LoaiSanPham loaiSanPham;
 	
 	public HinhAnh getHinhAnh() {

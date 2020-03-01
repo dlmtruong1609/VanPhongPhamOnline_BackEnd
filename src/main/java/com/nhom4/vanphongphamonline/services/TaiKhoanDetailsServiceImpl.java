@@ -19,7 +19,7 @@ import com.nhom4.vanphongphamonline.repository.KhachHangRepository;
 public class TaiKhoanDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	private KhachHangRepository khachHangRepository;
-	@Override
+	@Override // load user khi truy cập link website
 	public UserDetails loadUserByUsername(String tenTaiKhoan) throws UsernameNotFoundException {
 	    KhachHang khachHang = khachHangRepository.findByUsername(tenTaiKhoan);
         if (khachHang.getTaiKhoan() == null) throw new UsernameNotFoundException(tenTaiKhoan);

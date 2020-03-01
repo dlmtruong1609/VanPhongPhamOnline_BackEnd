@@ -33,18 +33,19 @@ import com.nhom4.vanphongphamonline.validator.HoaDonValidator;
 
 @Controller
 public class GioHangController {
+//	Tự động tạo ID bắt dầu từ 0
+//	@Autowired
+//	private static AtomicInteger ID_GENERATOR = new AtomicInteger(0);
+	List<ChiTietHoaDon> list; //list để add chi tiet hoa đơn khi thêm
 	@Autowired
-	private static AtomicInteger ID_GENERATOR = new AtomicInteger(0);
-	List<ChiTietHoaDon> list;
-	@Autowired
-	HoaDonValidator hoaDonValidator;
-	double total = 0;
+	HoaDonValidator hoaDonValidator; // valid hoá đơn
+	double total = 0; // tính tổng tiền của hoá đơn
 	@ResponseBody
 	@PostMapping(value = "/api/giohang/them")
 	public ResponseEntity<ServiceStatus> saveOrder(HttpServletRequest request, @RequestBody ChiTietHoaDon chiTietHoaDon, BindingResult bindingResult) {
-		HttpSession session = request.getSession();
-		HoaDon hdSS = (HoaDon) session.getAttribute("hoaDon");
-		// check		
+		HttpSession session = request.getSession(); // lấy current session
+		HoaDon hdSS = (HoaDon) session.getAttribute("hoaDon"); // lấy thuộc tính mang tên hoaDon
+		// check ------------------------------
 		hoaDonValidator.validate(chiTietHoaDon, bindingResult);
 		if (bindingResult.hasErrors()) {
 		   FieldError fieldError = null;
@@ -57,20 +58,24 @@ public class GioHangController {
 		   
 		   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
         }
+//		-------------------------------------
 		list = new ArrayList<ChiTietHoaDon>();
 		list.add(chiTietHoaDon);
-		if(hdSS != null) {
+		if(hdSS != null) { 
 			for (int i = 0; i < hdSS.getDanhsachCTHD().size(); i++) {
 				ChiTietHoaDon cthd = hdSS.getDanhsachCTHD().get(i);
 				if(cthd.getSanPham().getMaSanPham().equals(chiTietHoaDon.getSanPham().getMaSanPham())) {
 					if((cthd.getSoLuong() + chiTietHoaDon.getSoLuong()) > cthd.getSanPham().getSoLuongTon()) {
 						return new ResponseEntity<ServiceStatus>(new ServiceStatus(5, "Số lượng đặt vượt quá số lượng trong kho, vui lòng xem lại giỏ hàng"), HttpStatus.OK);
 					}
-					cthd.setSoLuong(cthd.getSoLuong() + chiTietHoaDon.getSoLuong());
-					cthd.setDonGia(cthd.getDonGia() + chiTietHoaDon.getDonGia());
-					list.remove(chiTietHoaDon);
+					cthd.setSoLuong(cthd.getSoLuong() + chiTietHoaDon.getSoLuong()); // tính số lượng
+					cthd.setDonGia(cthd.getDonGia() + chiTietHoaDon.getDonGia()); // tính đơn giá
+					// remove chi tiet hoá đơn là vì khi nếu cùng sản phẩm được thêm vào giỏ hàng thì chỉ cần
+					// tăng số lượng lên thôi, ko cần phải add thêm 1 sản phẩm nữa sẽ gây trùng lặp lại
+					list.remove(chiTietHoaDon); 
 				} 
 				if(!hdSS.getDanhsachCTHD().contains(chiTietHoaDon)){
+					// xử lý khi thêm 1 sản phẩm mới ko có trong giỏ hàng
 					if(chiTietHoaDon.getSanPham().getMaSanPham() != cthd.getSanPham().getMaSanPham()) {
 						total += chiTietHoaDon.getDonGia();
 					}
@@ -81,7 +86,7 @@ public class GioHangController {
 			total = 0;
 			hdSS.getDanhsachCTHD().addAll(list);
 			hdSS.setDanhsachCTHD(hdSS.getDanhsachCTHD());
-		} else {
+		} else { // hdss là null
 			hdSS = new HoaDon();
 			hdSS.setTongTien(chiTietHoaDon.getDonGia());
 			hdSS.setDanhsachCTHD(list);
@@ -96,6 +101,7 @@ public class GioHangController {
 		HttpSession session = request.getSession();
 		for (int i = 0; i < hoaDon.getDanhsachCTHD().size(); i++) {
 			ChiTietHoaDon chiTietHoaDon = hoaDon.getDanhsachCTHD().get(i);
+			// check ----------------------
 			hoaDonValidator.validate(chiTietHoaDon, bindingResult);
 			total += chiTietHoaDon.getDonGia(); 
 			if (bindingResult.hasErrors()) {
@@ -109,6 +115,7 @@ public class GioHangController {
 			   
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
 	        }
+			//-------------------------------
 		}
 		hoaDon.setTongTien(total);
 		total = 0;
@@ -120,7 +127,6 @@ public class GioHangController {
 	@GetMapping(value = "/api/giohang/dulieu")
 	public ResponseEntity<ServiceStatus> getOrderInfo(HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		request.getHeader("cookie");
 		if(session.getAttribute("hoaDon") == null) {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm trong giỏ hàng", ""), HttpStatus.OK);
 		}

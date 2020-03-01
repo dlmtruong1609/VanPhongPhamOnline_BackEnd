@@ -24,6 +24,7 @@ public class CustomTaiKhoanDetails implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
+		// kiểm tra role để truy cập đến các đường link cho phép
         for (Role role : khachHang.getTaiKhoan().getRoles()){
         	return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.getTenRole()));
         }

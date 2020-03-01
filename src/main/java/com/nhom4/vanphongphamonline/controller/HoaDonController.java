@@ -35,8 +35,9 @@ public class HoaDonController {
 		this.hoaDonRepository = hoaDonRepository;
 	}
 	@ResponseBody
-	@PostMapping(value = "/api/hoadon/thanhtoan")
+	@PostMapping(value = "/api/hoadon/thanhtoan") // sử dụng khi thanh toán ko dùng để add vào giỏ hàng
 	public ResponseEntity<ServiceStatus> createOrder(@RequestBody HoaDon hoaDon, BindingResult bindingResult) {
+		// check ---------------------------------------
 		hoaDonValidator.validate(hoaDon, bindingResult);
 		if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
@@ -52,6 +53,7 @@ public class HoaDonController {
 		hoaDon.getDanhsachCTHD().forEach(item -> {
 			chiTietHoaDonRepository.insert(item);
 		});
+		//--------------------------------------------------
 		hoaDonRepository.insert(hoaDon);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thanh toán thành công"), HttpStatus.OK);
 	}

@@ -29,12 +29,12 @@ public class KhachHangValidator implements Validator{
 		}
 		
 		if(khachHang.getDienThoai() != null) {
-			String regex = "^0[0-9]{9}$";
+			String regex = "^0[0-9]{9}$"; // 10 số và bắt đầu là 0
 			if(khachHang.getDienThoai().matches(regex)!=true) {
 				errors.rejectValue("dienThoai", "Sai định dạng số điện thoại", "4");
 			}
 		}
-		String regex = "^[0-9]{9}$|^[0-9]{11}$";
+		String regex = "^[0-9]{9}$|^[0-9]{11}$"; // cmnd có 9 hoặc 11 kí tự (9 cmnd, 11 là căn cước)
 		if(khachHang.getCmnd().matches(regex)!=true) {
 			errors.rejectValue("cmnd", "Sai định dạng CMND", "5");
 		}

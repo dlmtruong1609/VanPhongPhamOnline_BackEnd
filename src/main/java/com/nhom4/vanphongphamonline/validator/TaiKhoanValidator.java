@@ -32,11 +32,12 @@ public class TaiKhoanValidator implements Validator{
 		// TODO Auto-generated method stub
 		try {
 			TaiKhoan taiKhoan = (TaiKhoan) target;
+			// ko đc để trống các nội dung sau:
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "Email không được bỏ trống", "6");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "taiKhoan", "Tài khoản không được bỏ trống", "8");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "matKhau", "Mật khẩu không được để trống", "9");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "matKhauXacNhan", "Mật khẩu xác nhận không được để trống", "10");
-			
+			// regex email
 			String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 			Matcher matcher = null;
 			Pattern pattern;

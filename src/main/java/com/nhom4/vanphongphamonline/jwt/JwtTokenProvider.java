@@ -19,13 +19,13 @@ public class JwtTokenProvider {
     private final String JWT_SECRET = "truongdeptrai";
 
     //Thời gian có hiệu lực của chuỗi jwt
-    private final long JWT_EXPIRATION = 36000000;
+    private final long JWT_EXPIRATION = 36000000; // set thời gian token sống
 
     // Tạo ra jwt từ thông tin user
     public String generateToken(CustomTaiKhoanDetails customTaiKhoanDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
-        // Tạo chuỗi json web token từ id của user.
+        // Tạo chuỗi json web token từ username của user.
         return Jwts.builder()
                    .setSubject(customTaiKhoanDetails.getUsername())
                    .setIssuedAt(now)
@@ -51,6 +51,7 @@ public class JwtTokenProvider {
 
         return claims.getSubject();
     }
+    //valid token
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);

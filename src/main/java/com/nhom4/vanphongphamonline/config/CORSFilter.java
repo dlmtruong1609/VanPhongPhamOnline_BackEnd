@@ -15,14 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class CORSFilter implements Filter {
 
-    // This is to be replaced with a list of domains allowed to access the server
-  //You can include more than one origin here
+    // Danh sách domain cho phép truy cập server, có thể ghi thêm
     private final List<String> allowedOrigins = Arrays.asList("http://localhost:3000"); 
 
     public void destroy() {
 
     }
-
+//  Cấu hình yêu cầu khi request
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         // Lets make sure that we are working with HTTP (that is, against HttpServletRequest and HttpServletResponse objects)
         if (req instanceof HttpServletRequest && res instanceof HttpServletResponse) {

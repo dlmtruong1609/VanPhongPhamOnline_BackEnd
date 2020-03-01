@@ -19,7 +19,7 @@ public class HoaDon {
 	private LocalDate ngayLapHoaDon;
 	@Field
 	private double tongTien;
-	@DBRef
+	@DBRef // vì danh sách hiển thị nhiều nên dùng dbref để hạn chế hiển thị thông tin quá dài khi show ra
 	private List<ChiTietHoaDon> danhsachCTHD;
 	@Field
 	private KhachHang khachHang;

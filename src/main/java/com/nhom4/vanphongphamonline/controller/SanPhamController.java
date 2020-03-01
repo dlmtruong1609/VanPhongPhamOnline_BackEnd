@@ -38,6 +38,7 @@ public class SanPhamController {
 	@ResponseBody
 	@PostMapping(value = "/api/quanly/sanpham/them")
 	public ResponseEntity<ServiceStatus> addProduct(@RequestBody SanPham sanPham, BindingResult bindingResult) {
+		// check --------------------------------------
 		sanPhamValidator.productValidation(sanPham, bindingResult);
 		if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
@@ -50,6 +51,7 @@ public class SanPhamController {
 			   
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
 	        }
+		//--------------------------------------------------------
 		sanPhamRepository.insert(sanPham);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm sản phẩm thành công"), HttpStatus.OK);
 		
@@ -88,6 +90,7 @@ public class SanPhamController {
 	@PostMapping(value = "/api/quanly/sanpham/capnhat")
 	public ResponseEntity<ServiceStatus> updateProductById(@RequestParam String id, @RequestBody SanPham sanPham, BindingResult bindingResult) {
 		if(sanPhamRepository.findById(id).isPresent()!=false) {
+			// check ---------------------------------
 			sanPhamValidator.productValidation(sanPham, bindingResult);
 			if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
@@ -100,6 +103,7 @@ public class SanPhamController {
 			   
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
 	        } 
+			// ----------------------------------------------
 			SanPham sp = sanPhamRepository.findById(id).get();
 			sp.setTenSanPham(sanPham.getTenSanPham());
 			sp.setGiaSanPham(sanPham.getGiaSanPham());
@@ -113,9 +117,9 @@ public class SanPhamController {
 	}
 	
 	@ResponseBody
-	@GetMapping(value = "/api/sanpham/trang")
+	@GetMapping(value = "/api/sanpham/trang") // phân trang
 	public ResponseEntity<Page<SanPham>> getProductPageByIndex(@RequestParam int index) {
-		Page<SanPham> page = sanPhamRepository.findAll(PageRequest.of(index, 12));
+		Page<SanPham> page = sanPhamRepository.findAll(PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
 		return new ResponseEntity<Page<SanPham>>(page, HttpStatus.OK);
 	}
 	

@@ -59,8 +59,9 @@ public class KhachHangController {
 		// TODO Auto-generated constructor stub
 	}
 	@ResponseBody
-	@PostMapping(value = "/api/dangky", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/api/dangky", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
 	public ResponseEntity<ServiceStatus> createUser(@RequestBody TaiKhoan taiKhoan, BindingResult bindingResult) {
+		// check -----------------------------
 		taiKhoanValidator.validateFormRegister(taiKhoan, bindingResult);
 	   if (bindingResult.hasErrors()) {
 		   FieldError fieldError = null;
@@ -73,18 +74,22 @@ public class KhachHangController {
 		   
 		   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
         }
+	   // ---------------------------------------
+	   // mã hoá mật khẩu
 		taiKhoan.setMatKhau(bCryptPasswordEncoder.encode(taiKhoan.getMatKhau()));
 		taiKhoan.setMatKhauXacNhan(bCryptPasswordEncoder.encode(taiKhoan.getMatKhauXacNhan()));
 		taiKhoan.setRoles(new HashSet<>(roleRepository.findByName("MEMBER")));
 		KhachHang khachHang = new KhachHang();
 		khachHang.setTaiKhoan(taiKhoan);
 		khachHangRepository.insert(khachHang);
+		// gửi email s khi đăng ký
 		emailController.sendEmail(taiKhoan.getEmail(), "ANANAS Đăng ký", "Chào mừng đến với kênh mua sắm trực tiếp của văn phòng phẩm ANANAS");
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng ký thành công"), HttpStatus.OK);
 	}
 	@ResponseBody
-	@PostMapping(value = "/api/dangnhap", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/api/dangnhap", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
 	public ResponseEntity<ServiceStatus> login(@RequestBody TaiKhoan taiKhoan, BindingResult bindingResult) {
+		// check ----------------------------------------
 		taiKhoanValidator.validateFormLogin(taiKhoan, bindingResult);
 		if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
@@ -97,13 +102,15 @@ public class KhachHangController {
 			   
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
         }
-		// Trả về jwt cho người dùng.
+		//----------------------------------------------------
+		// Xác nhận tài khoản mật khẩu
 	 	   Authentication authentication = authenticationManager.authenticate(
 	               new UsernamePasswordAuthenticationToken(
 	                       taiKhoan.getTaiKhoan(),
 	                       taiKhoan.getMatKhau()
 	               )
 	       );
+	 	 // tự động generate token
         String jwt = tokenProvider.generateToken((CustomTaiKhoanDetails) authentication.getPrincipal());
         
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, jwt), HttpStatus.OK);
@@ -112,6 +119,7 @@ public class KhachHangController {
 	@ResponseBody
 	@PostMapping(value = "/api/khachhang/capnhat")
 	public ResponseEntity<ServiceStatus> updateCustomerByUsername(@RequestBody KhachHang khachHang, @RequestParam String username, BindingResult bindingResult) {
+		// check ---------------------------
 		khachHangValidator.validate(khachHang, bindingResult);
 		if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
@@ -124,6 +132,8 @@ public class KhachHangController {
 			   
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
 		}
+		//---------------------------------------
+		// lấy username từ context (biến chung của project) để so sánh
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
 			try {
 				KhachHang khachhangUpdated = khachHangRepository.findByUsername(username);
@@ -144,6 +154,7 @@ public class KhachHangController {
 	@GetMapping(value = "/api/khachhang/chitiet")
 	public ResponseEntity<KhachHang> getCustomerByUsername(@RequestParam String username) {
 		KhachHang khachHang = null;
+		// lấy username từ context (biến chung của project) để so sánh
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
 			khachHang = khachHangRepository.findByUsername(username);
 		}

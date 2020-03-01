@@ -23,6 +23,7 @@ public class SanPhamValidator implements Validator{
 	public void productValidation(Object target, Errors errors) {
 		try {
 			SanPham sanPham = (SanPham) target;
+			// ko đc để trống các nội dung sau:
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tenSanPham", "Tên sản phẩm không bỏ trống", "1");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "giaSanPham", "Giá sản phẩm không bỏ trống", "2");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "soLuongTon", "Số lượng tồn không bỏ trống", "3");

@@ -37,7 +37,7 @@ public class HinhAnhController {
 	public ResponseEntity<Binary> getImage(@RequestParam String id, Model model) {
 		HinhAnh hinhAnh = hinhAnhService.getImg(id).get();
 		return new ResponseEntity<Binary>(hinhAnh.getImg(), HttpStatus.OK);
-//		return img
+//		trả về hình ảnh
 //		Encoder encoder = Base64.getEncoder();
 //		return encoder.encodeToString(hinhAnh.getImg().getData());
 	}

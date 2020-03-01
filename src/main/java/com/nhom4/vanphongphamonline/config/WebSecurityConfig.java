@@ -27,13 +27,13 @@ import com.nhom4.vanphongphamonline.jwt.JwtAuthenticationFilter;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService; // khởi tại userDetails
     @Bean
     public UserDetailsService userDetailsService() {
         return super.userDetailsService();
     }
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+    public JwtAuthenticationFilter jwtAuthenticationFilter() { // Lọc token để đăng nhập và request với token khi truy cập server
         return new JwtAuthenticationFilter();
     }
     @Bean
@@ -41,20 +41,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+//  mã hoá password khi đăng nhập, đăng ký
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 	@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//		Kiểm tra password có đúng ko?
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }
+//	fix lỗi CORS
 	@Bean
 	CORSFilter corsFilter() {
 	    CORSFilter filter = new CORSFilter();
 	    return filter;
 	}
 
+//	 danh sách các đường dẫn cho phép các loại role nào truy cập, nếu ko có mặc định là có token mới được truy cập
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	http.addFilterBefore(corsFilter(), SessionManagementFilter.class)

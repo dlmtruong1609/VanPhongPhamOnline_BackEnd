@@ -21,7 +21,7 @@ public class TaiKhoan {
 	private String matKhauXacNhan;
 	@Field
 	private String email;
-	@DBRef
+	@DBRef // vì danh sách hiển thị nhiều nên dùng dbref để hạn chế hiển thị thông tin quá dài khi show ra
 	private Set<Role> roles;
 
 	public TaiKhoan(String taiKhoan, String matKhau, String matKhauXacNhan, String email, Set<Role> roles) {
