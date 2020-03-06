@@ -61,7 +61,7 @@ public class GioHangController {
 //		-------------------------------------
 		list = new ArrayList<ChiTietHoaDon>();
 		list.add(chiTietHoaDon);
-		if(hdSS != null) { 
+		if(hdSS!= null) { 
 			for (int i = 0; i < hdSS.getDanhsachCTHD().size(); i++) {
 				ChiTietHoaDon cthd = hdSS.getDanhsachCTHD().get(i);
 				if(cthd.getSanPham().getMaSanPham().equals(chiTietHoaDon.getSanPham().getMaSanPham())) {
@@ -91,6 +91,7 @@ public class GioHangController {
 			hdSS.setTongTien(chiTietHoaDon.getDonGia());
 			hdSS.setDanhsachCTHD(list);
 		}
+		
 		session.setAttribute("hoaDon", hdSS);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm thành con vào giỏ hàng"), HttpStatus.OK);
 	}
@@ -140,6 +141,7 @@ public class GioHangController {
 		if(hd.getDanhsachCTHD() != null) {
 			for (int i = 0; i < hd.getDanhsachCTHD().size(); i++) {
 				if(hd.getDanhsachCTHD().get(i).getSanPham().getMaSanPham().equals(id)) {
+					hd.setTongTien(hd.getTongTien() - hd.getDanhsachCTHD().get(i).getDonGia());;
 					hd.getDanhsachCTHD().remove(i);
 				}
 			}

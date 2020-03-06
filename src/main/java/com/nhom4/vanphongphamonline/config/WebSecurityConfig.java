@@ -61,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //	 danh sách các đường dẫn cho phép các loại role nào truy cập, nếu ko có mặc định là có token mới được truy cập
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    	http.addFilterBefore(corsFilter(), SessionManagementFilter.class)
+    	http.csrf().disable().addFilterBefore(corsFilter(), SessionManagementFilter.class)
             .authorizeRequests()
                 .antMatchers("/api/nhacungcap/data").permitAll()
                 .antMatchers("/api/dangky").permitAll()
@@ -87,15 +87,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-    	 http.csrf().disable();
     }
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
-
-        return source;
-    }
-
     
 }

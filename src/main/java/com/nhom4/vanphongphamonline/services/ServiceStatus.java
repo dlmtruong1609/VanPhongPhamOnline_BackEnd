@@ -7,13 +7,13 @@ import com.nhom4.vanphongphamonline.model.HoaDon;
 public class ServiceStatus {
 	private int code;
 	private String message;
-	private Object resutl;
+	private Object result;
 	
-	public Object getResutl() {
-		return resutl;
+	public Object getResult() {
+		return result;
 	}
-	public void setResutl(Object resutl) {
-		this.resutl = resutl;
+	public void setResult(Object result) {
+		this.result = result;
 	}
 	public int getCode() {
 		return code;
@@ -34,11 +34,11 @@ public class ServiceStatus {
 	}
 	
 
-	public ServiceStatus(int code, String message, Object resutl) {
+	public ServiceStatus(int code, String message, Object result) {
 		super();
 		this.code = code;
 		this.message = message;
-		this.resutl = resutl;
+		this.result = result;
 	}
 	public ServiceStatus() {
 		super();

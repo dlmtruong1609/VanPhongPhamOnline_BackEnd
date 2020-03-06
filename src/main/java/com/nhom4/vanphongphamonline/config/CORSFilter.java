@@ -38,13 +38,15 @@ public class CORSFilter implements Filter {
 
             // Access-Control-Allow-Credentials
             response.setHeader("Access-Control-Allow-Credentials", "true");
-
+            response.setStatus(200);
             // Access-Control-Allow-Methods
             response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-
             // Access-Control-Allow-Headers
-            response.setHeader("Access-Control-Allow-Headers",
-                "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, " + "X-CSRF-TOKEN");
+            response.setHeader("Access-Control-Allow-Headers", 
+            		"Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, "
+            		+ "Access-Control-Request-Method, "
+            		+ "Access-Control-Request-Headers, Authorization, "
+            		+ "Access-Control-Allow-Origin, " + "X-CSRF-TOKEN");
         }
 
         chain.doFilter(req, res);
