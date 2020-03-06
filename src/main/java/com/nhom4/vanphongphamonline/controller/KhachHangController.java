@@ -2,6 +2,9 @@ package com.nhom4.vanphongphamonline.controller;
 
 import java.util.HashSet;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -116,6 +120,14 @@ public class KhachHangController {
         
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, jwt, taiKhoan), HttpStatus.OK);
 	}
+	@PostMapping(value = "/api/dangxuat")
+	public ResponseEntity<ServiceStatus> logout(HttpServletRequest request, HttpServletResponse response) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null) {
+		    new SecurityContextLogoutHandler().logout(request, response, auth);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng xuất thành công"), HttpStatus.OK);
+	}
 	
 	@ResponseBody
 	@PostMapping(value = "/api/khachhang/capnhat")
@@ -153,13 +165,15 @@ public class KhachHangController {
 	}
 	
 	@GetMapping(value = "/api/khachhang/chitiet")
-	public ResponseEntity<KhachHang> getCustomerByUsername(@RequestParam String username) {
+	public ResponseEntity<ServiceStatus> getCustomerByUsername(@RequestParam String username) {
 		KhachHang khachHang = null;
 		// lấy username từ context (biến chung của project) để so sánh
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
 			khachHang = khachHangRepository.findByUsername(username);
+		} else {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không đúng tài khoản", null), HttpStatus.OK);
 		}
 		System.out.println(khachHang);
-		return new ResponseEntity<KhachHang>(khachHang, HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", khachHang), HttpStatus.OK);
 	}
 }
