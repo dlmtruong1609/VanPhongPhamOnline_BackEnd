@@ -53,18 +53,20 @@ public class JwtTokenProvider {
     }
     //valid token
     public boolean validateToken(String authToken) {
-        try {
-            Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);
-            return true;
-        } catch (MalformedJwtException ex) {
-        	ex.printStackTrace();
-        } catch (ExpiredJwtException ex) {
-        	ex.printStackTrace();
-        } catch (UnsupportedJwtException ex) {
-        	ex.printStackTrace();
-        } catch (IllegalArgumentException ex) {
-        	ex.printStackTrace();
-        }
+    	if(authToken != null) {
+            try {
+                Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);
+                return true;
+            } catch (MalformedJwtException ex) {
+            	ex.printStackTrace();
+            } catch (ExpiredJwtException ex) {
+            	ex.printStackTrace();
+            } catch (UnsupportedJwtException ex) {
+            	ex.printStackTrace();
+            } catch (IllegalArgumentException ex) {
+            	ex.printStackTrace();
+            }
+    	}
         return false;
     }
 }

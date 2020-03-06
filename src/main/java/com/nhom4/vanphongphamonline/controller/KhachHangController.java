@@ -120,14 +120,14 @@ public class KhachHangController {
         
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, jwt, taiKhoan), HttpStatus.OK);
 	}
-	@PostMapping(value = "/api/dangxuat")
-	public ResponseEntity<ServiceStatus> logout(HttpServletRequest request, HttpServletResponse response) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null) {
-		    new SecurityContextLogoutHandler().logout(request, response, auth);
-		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng xuất thành công"), HttpStatus.OK);
-	}
+//	@PostMapping(value = "/api/dangxuat")
+//	public ResponseEntity<ServiceStatus> logout(HttpServletRequest request, HttpServletResponse response) {
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		if (auth != null) {
+//		    new SecurityContextLogoutHandler().logout(request, response, auth);
+//		}
+//		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng xuất thành công"), HttpStatus.OK);
+//	}
 	
 	@ResponseBody
 	@PostMapping(value = "/api/khachhang/capnhat")
