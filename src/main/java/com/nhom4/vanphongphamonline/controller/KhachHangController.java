@@ -176,4 +176,8 @@ public class KhachHangController {
 		System.out.println(khachHang);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", khachHang), HttpStatus.OK);
 	}
+//	@PostMapping(value = "/api/lienhe")
+//	public ResponseEntity<ServiceStatus> contactEmail() {
+//		
+//	}
 }

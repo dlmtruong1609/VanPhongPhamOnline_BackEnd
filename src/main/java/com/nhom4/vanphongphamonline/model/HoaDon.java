@@ -23,6 +23,15 @@ public class HoaDon {
 	private List<ChiTietHoaDon> danhsachCTHD;
 	@Field
 	private KhachHang khachHang;
+	@Field
+	private DiaChi diaChi;
+	@Field
+	private DiaChi diaChiKhac;
+	@Field
+	private String ghiChu;
+	@Field
+	private String cachThucThanhToan;
+	
 	public String getMaHoaDon() {
 		return maHoaDon;
 	}
@@ -53,23 +62,55 @@ public class HoaDon {
 	public void setKhachHang(KhachHang khachHang) {
 		this.khachHang = khachHang;
 	}
+	public DiaChi getDiaChi() {
+		return diaChi;
+	}
+	public void setDiaChi(DiaChi diaChi) {
+		this.diaChi = diaChi;
+	}
+	public DiaChi getDiaChiKhac() {
+		return diaChiKhac;
+	}
+	public void setDiaChiKhac(DiaChi diaChiKhac) {
+		this.diaChiKhac = diaChiKhac;
+	}
+	public String getGhiChu() {
+		return ghiChu;
+	}
+	public void setGhiChu(String ghiChu) {
+		this.ghiChu = ghiChu;
+	}
+	public String getCachThucThanhToan() {
+		return cachThucThanhToan;
+	}
+	public void setCachThucThanhToan(String cachThucThanhToan) {
+		this.cachThucThanhToan = cachThucThanhToan;
+	}
+	
+	
+	public HoaDon() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	public HoaDon(String maHoaDon, LocalDate ngayLapHoaDon, double tongTien, List<ChiTietHoaDon> danhsachCTHD,
-			KhachHang khachHang) {
+			KhachHang khachHang, DiaChi diaChi, DiaChi diaChiKhac, String ghiChu, String cachThucThanhToan) {
 		super();
 		this.maHoaDon = maHoaDon;
 		this.ngayLapHoaDon = ngayLapHoaDon;
 		this.tongTien = tongTien;
 		this.danhsachCTHD = danhsachCTHD;
 		this.khachHang = khachHang;
+		this.diaChi = diaChi;
+		this.diaChiKhac = diaChiKhac;
+		this.ghiChu = ghiChu;
+		this.cachThucThanhToan = cachThucThanhToan;
 	}
-	public HoaDon() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	
 	@Override
 	public String toString() {
 		return "HoaDon [maHoaDon=" + maHoaDon + ", ngayLapHoaDon=" + ngayLapHoaDon + ", tongTien=" + tongTien
-				+ ", danhsachCTHD=" + danhsachCTHD + ", khachHang=" + khachHang + "]";
+				+ ", danhsachCTHD=" + danhsachCTHD + ", khachHang=" + khachHang + ", diaChi=" + diaChi + ", diaChiKhac="
+				+ diaChiKhac + ", ghiChu=" + ghiChu + ", cachThucThanhToan=" + cachThucThanhToan + "]";
 	}
 	@Override
 	public int hashCode() {
