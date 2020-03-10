@@ -1,6 +1,7 @@
 package com.nhom4.vanphongphamonline.controller;
 
 import java.util.HashSet;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.jwt.JwtTokenProvider;
 import com.nhom4.vanphongphamonline.model.KhachHang;
+import com.nhom4.vanphongphamonline.model.SanPham;
 import com.nhom4.vanphongphamonline.model.TaiKhoan;
 import com.nhom4.vanphongphamonline.repository.KhachHangRepository;
 import com.nhom4.vanphongphamonline.repository.RoleRepository;
@@ -163,7 +165,7 @@ public class KhachHangController {
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật thông tin khách hàng thành công"), HttpStatus.OK);
 	}
-	
+	@ResponseBody
 	@GetMapping(value = "/api/khachhang/chitiet")
 	public ResponseEntity<ServiceStatus> getCustomerByUsername(@RequestParam String username) {
 		KhachHang khachHang = null;
@@ -176,8 +178,11 @@ public class KhachHangController {
 		System.out.println(khachHang);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", khachHang), HttpStatus.OK);
 	}
-//	@PostMapping(value = "/api/lienhe")
-//	public ResponseEntity<ServiceStatus> contactEmail() {
-//		
-//	}
+	@ResponseBody
+	@GetMapping(value = "/api/quanly/khachhang/danhsach")
+	public ResponseEntity<List<KhachHang>> getAllCustomer() {
+		List<KhachHang> list = null;
+		list = khachHangRepository.findAll();
+		return new ResponseEntity<List<KhachHang>>(list, HttpStatus.OK);
+	}
 }
