@@ -31,10 +31,11 @@ public class DiaChiController {
 	    try {
 	        JSONParser parser = new JSONParser();
 	        //Use JSONObject for simple JSON and JSONArray for array of JSON.
-	        JSONArray data = (JSONArray) parser.parse(
-	              new FileReader(new File(getClass().getClassLoader().getResource("data/address/city.json").getFile())));//path to the JSON file.
+	        JSONObject data = (JSONObject) parser.parse(
+	              new FileReader(new File(getClass().getClassLoader().getResource("data/address/tinh_tp.json").getFile())));//path to the JSON file.
 
 	        json = data.toJSONString();
+	        System.out.println(json);
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
@@ -47,8 +48,8 @@ public class DiaChiController {
 	    try {
 	        JSONParser parser = new JSONParser();
 	        //Use JSONObject for simple JSON and JSONArray for array of JSON.
-	        JSONArray data = (JSONArray) parser.parse(
-	              new FileReader(new File(getClass().getClassLoader().getResource("data/address/district/district" + id + ".json").getFile())));//path to the JSON file.
+	        JSONObject data = (JSONObject) parser.parse(
+	              new FileReader(new File(getClass().getClassLoader().getResource("data/address/district/" + id + ".json").getFile())));//path to the JSON file.
 
 	        json = data.toJSONString();
 	    } catch (IOException e) {
@@ -59,15 +60,12 @@ public class DiaChiController {
 	@ResponseBody
 	@PostMapping(value = "api/diachi/thitran")
 	public ResponseEntity<ServiceStatus> getWardByDistrict(@RequestBody String id) throws org.json.simple.parser.ParseException, ParseException {
-		if(Integer.parseInt(id) > 6) {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Chưa hỗ trợ khu vực này"), HttpStatus.OK);
-		}
 		String json = null;
 	    try {
 	        JSONParser parser = new JSONParser();
 	        //Use JSONObject for simple JSON and JSONArray for array of JSON.
-	        JSONArray data = (JSONArray) parser.parse(
-	              new FileReader(new File(getClass().getClassLoader().getResource("data/address/ward/ward" + id + ".json").getFile())));//path to the JSON file.
+	        JSONObject data = (JSONObject) parser.parse(
+	              new FileReader(new File(getClass().getClassLoader().getResource("data/address/ward/" + id + ".json").getFile())));//path to the JSON file.
 
 	        json = data.toJSONString();
 	    } catch (IOException e) {

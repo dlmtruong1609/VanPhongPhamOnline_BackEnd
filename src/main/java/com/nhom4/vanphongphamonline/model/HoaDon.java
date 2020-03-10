@@ -26,8 +26,6 @@ public class HoaDon {
 	@Field
 	private DiaChi diaChi;
 	@Field
-	private DiaChi diaChiKhac;
-	@Field
 	private String ghiChu;
 	@Field
 	private String cachThucThanhToan;
@@ -68,12 +66,6 @@ public class HoaDon {
 	public void setDiaChi(DiaChi diaChi) {
 		this.diaChi = diaChi;
 	}
-	public DiaChi getDiaChiKhac() {
-		return diaChiKhac;
-	}
-	public void setDiaChiKhac(DiaChi diaChiKhac) {
-		this.diaChiKhac = diaChiKhac;
-	}
 	public String getGhiChu() {
 		return ghiChu;
 	}
@@ -93,7 +85,7 @@ public class HoaDon {
 		// TODO Auto-generated constructor stub
 	}
 	public HoaDon(String maHoaDon, LocalDate ngayLapHoaDon, double tongTien, List<ChiTietHoaDon> danhsachCTHD,
-			KhachHang khachHang, DiaChi diaChi, DiaChi diaChiKhac, String ghiChu, String cachThucThanhToan) {
+			KhachHang khachHang, DiaChi diaChi, String ghiChu, String cachThucThanhToan) {
 		super();
 		this.maHoaDon = maHoaDon;
 		this.ngayLapHoaDon = ngayLapHoaDon;
@@ -101,7 +93,6 @@ public class HoaDon {
 		this.danhsachCTHD = danhsachCTHD;
 		this.khachHang = khachHang;
 		this.diaChi = diaChi;
-		this.diaChiKhac = diaChiKhac;
 		this.ghiChu = ghiChu;
 		this.cachThucThanhToan = cachThucThanhToan;
 	}
@@ -109,8 +100,7 @@ public class HoaDon {
 	@Override
 	public String toString() {
 		return "HoaDon [maHoaDon=" + maHoaDon + ", ngayLapHoaDon=" + ngayLapHoaDon + ", tongTien=" + tongTien
-				+ ", danhsachCTHD=" + danhsachCTHD + ", khachHang=" + khachHang + ", diaChi=" + diaChi + ", diaChiKhac="
-				+ diaChiKhac + ", ghiChu=" + ghiChu + ", cachThucThanhToan=" + cachThucThanhToan + "]";
+				+ ", danhsachCTHD=" + danhsachCTHD + ", khachHang=" + khachHang + ", diaChi=" + diaChi + ", ghiChu=" + ghiChu + ", cachThucThanhToan=" + cachThucThanhToan + "]";
 	}
 	@Override
 	public int hashCode() {
