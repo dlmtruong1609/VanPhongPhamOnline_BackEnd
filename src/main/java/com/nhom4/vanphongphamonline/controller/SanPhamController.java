@@ -73,8 +73,11 @@ public class SanPhamController {
 	}
 	@ResponseBody
 	@GetMapping(value = "/api/quanly/sanpham/chitiet")
-	public Optional<SanPham> getProductById(@RequestParam String id) {
-		return sanPhamRepository.findById(id);
+	public ResponseEntity<ServiceStatus> getProductById(@RequestParam String id) {
+		if(sanPhamRepository.findById(id) == null) {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Sản phẩm không tìm thấy"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Tìm thành công", sanPhamRepository.findById(id)), HttpStatus.OK);
 	}
 	@ResponseBody
 	@PostMapping(value = "/api/quanly/sanpham/xoa")

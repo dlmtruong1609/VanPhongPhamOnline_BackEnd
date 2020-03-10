@@ -88,7 +88,7 @@ public class KhachHangController {
 		khachHang.setTaiKhoan(taiKhoan);
 		khachHangRepository.insert(khachHang);
 		// gửi email s khi đăng ký
-		emailController.sendEmail(taiKhoan.getEmail(), "ANANAS Đăng ký", "Chào mừng đến với kênh mua sắm trực tiếp của văn phòng phẩm ANANAS");
+//		emailController.sendEmail(taiKhoan.getEmail(), "ANANAS Đăng ký", "Chào mừng đến với kênh mua sắm trực tiếp của văn phòng phẩm ANANAS");
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng ký thành công"), HttpStatus.OK);
 	}
 	@ResponseBody
