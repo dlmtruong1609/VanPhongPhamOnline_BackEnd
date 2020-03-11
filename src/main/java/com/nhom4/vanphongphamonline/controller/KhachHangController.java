@@ -175,7 +175,6 @@ public class KhachHangController {
 		} else {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không đúng tài khoản", null), HttpStatus.OK);
 		}
-		System.out.println(khachHang);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", khachHang), HttpStatus.OK);
 	}
 	@ResponseBody

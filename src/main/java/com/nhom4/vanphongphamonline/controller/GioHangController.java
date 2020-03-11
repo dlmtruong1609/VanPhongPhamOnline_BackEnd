@@ -46,7 +46,7 @@ public class GioHangController {
 		HttpSession session = request.getSession(); // lấy current session
 		HoaDon hdSS = (HoaDon) session.getAttribute("hoaDon"); // lấy thuộc tính mang tên hoaDon
 		// check ------------------------------
-		hoaDonValidator.validate(chiTietHoaDon, bindingResult);
+		hoaDonValidator.validateCTHD(chiTietHoaDon, bindingResult);
 		if (bindingResult.hasErrors()) {
 		   FieldError fieldError = null;
 		   for (Object object : bindingResult.getAllErrors()) {
@@ -103,7 +103,7 @@ public class GioHangController {
 		for (int i = 0; i < hoaDon.getDanhsachCTHD().size(); i++) {
 			ChiTietHoaDon chiTietHoaDon = hoaDon.getDanhsachCTHD().get(i);
 			// check ----------------------
-			hoaDonValidator.validate(chiTietHoaDon, bindingResult);
+			hoaDonValidator.validateCTHD(chiTietHoaDon, bindingResult);
 			total += chiTietHoaDon.getDonGia(); 
 			if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;

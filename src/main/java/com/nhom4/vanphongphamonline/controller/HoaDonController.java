@@ -2,6 +2,9 @@ package com.nhom4.vanphongphamonline.controller;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +39,7 @@ public class HoaDonController {
 	}
 	@ResponseBody
 	@PostMapping(value = "/api/hoadon/thanhtoan") // sử dụng khi thanh toán ko dùng để add vào giỏ hàng
-	public ResponseEntity<ServiceStatus> createOrder(@RequestBody HoaDon hoaDon, BindingResult bindingResult) {
+	public ResponseEntity<ServiceStatus> createOrder(@RequestBody HoaDon hoaDon, BindingResult bindingResult, HttpServletRequest request) {
 		// check ---------------------------------------
 		hoaDonValidator.validate(hoaDon, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -50,11 +53,10 @@ public class HoaDonController {
 			   
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
 	        }
-		hoaDon.getDanhsachCTHD().forEach(item -> {
-			chiTietHoaDonRepository.insert(item);
-		});
 		//--------------------------------------------------
 		hoaDonRepository.insert(hoaDon);
+		HttpSession session = request.getSession();
+		session.invalidate();
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thanh toán thành công"), HttpStatus.OK);
 	}
 	@ResponseBody

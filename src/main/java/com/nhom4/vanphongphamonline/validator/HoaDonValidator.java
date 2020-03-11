@@ -19,8 +19,7 @@ public class HoaDonValidator implements Validator{
 		return TaiKhoan.class.equals(clazz);
 	}
 
-	@Override
-	public void validate(Object target, Errors errors) {
+	public void validateCTHD(Object target, Errors errors) {
 		// TODO Auto-generated method stub
 		try {
 			ChiTietHoaDon chiTietHoaDon = (ChiTietHoaDon) target;
@@ -40,6 +39,12 @@ public class HoaDonValidator implements Validator{
 			// TODO: handle exception
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void validate(Object target, Errors errors) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
