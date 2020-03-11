@@ -39,11 +39,11 @@ public class DiaChiController {
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, json), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách thành phố", json), HttpStatus.OK);
 	}
 	@ResponseBody
-	@PostMapping(value = "api/diachi/quanhuyen")
-	public ResponseEntity<ServiceStatus> getDistrictByCity(@RequestBody String id) throws org.json.simple.parser.ParseException, ParseException {
+	@GetMapping(value = "api/diachi/quanhuyen")
+	public ResponseEntity<ServiceStatus> getDistrictByCity(@RequestParam String id) throws org.json.simple.parser.ParseException, ParseException {
 		String json = null;
 	    try {
 	        JSONParser parser = new JSONParser();
@@ -55,11 +55,11 @@ public class DiaChiController {
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, json), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách quận huyện", json), HttpStatus.OK);
 	}
 	@ResponseBody
-	@PostMapping(value = "api/diachi/thitran")
-	public ResponseEntity<ServiceStatus> getWardByDistrict(@RequestBody String id) throws org.json.simple.parser.ParseException, ParseException {
+	@GetMapping	(value = "api/diachi/thitran")
+	public ResponseEntity<ServiceStatus> getWardByDistrict(@RequestParam String id) throws org.json.simple.parser.ParseException, ParseException {
 		String json = null;
 	    try {
 	        JSONParser parser = new JSONParser();
@@ -71,6 +71,6 @@ public class DiaChiController {
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, json), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách thị trấn", json), HttpStatus.OK);
 	}
 }
