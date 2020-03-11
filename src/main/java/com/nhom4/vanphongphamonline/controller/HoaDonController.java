@@ -1,5 +1,10 @@
 package com.nhom4.vanphongphamonline.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +44,7 @@ public class HoaDonController {
 	}
 	@ResponseBody
 	@PostMapping(value = "/api/hoadon/thanhtoan") // sử dụng khi thanh toán ko dùng để add vào giỏ hàng
-	public ResponseEntity<ServiceStatus> createOrder(@RequestBody HoaDon hoaDon, BindingResult bindingResult, HttpServletRequest request) {
+	public ResponseEntity<ServiceStatus> createOrder(@RequestBody HoaDon hoaDon, BindingResult bindingResult, HttpServletRequest request) throws ParseException {
 		// check ---------------------------------------
 		hoaDonValidator.validate(hoaDon, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -54,6 +59,8 @@ public class HoaDonController {
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
 	        }
 		//--------------------------------------------------
+	      
+		hoaDon.setNgayLapHoaDon(new Date());
 		hoaDonRepository.insert(hoaDon);
 		HttpSession session = request.getSession();
 		session.invalidate();

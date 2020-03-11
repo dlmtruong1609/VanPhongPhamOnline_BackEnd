@@ -8,6 +8,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.nhom4.vanphongphamonline.model.ChiTietHoaDon;
+import com.nhom4.vanphongphamonline.model.HoaDon;
 import com.nhom4.vanphongphamonline.model.TaiKhoan;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
 @Component
@@ -26,7 +27,7 @@ public class HoaDonValidator implements Validator{
 //			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tongTien", "Chưa thành tiền", "1");
 //			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "ngayLapHoaDon", "Chưa có ngày tạo", "2");
 //			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "khachHang", "Hoá đơn chưa có khách hàng", "3");
-//			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "danhSachCTHD", "Chưa có sản phẩm cần thanh toán", "4");
+//			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "danhsachCTHD", "Chưa có sản phẩm cần thanh toán", "4");
 //			
 			int soLuongTon = chiTietHoaDon.getSanPham().getSoLuongTon();
 			int soLuongDat = chiTietHoaDon.getSoLuong();
@@ -44,7 +45,10 @@ public class HoaDonValidator implements Validator{
 	@Override
 	public void validate(Object target, Errors errors) {
 		// TODO Auto-generated method stub
-		
+		HoaDon hoaDon = (HoaDon) target;
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tongTien", "Chưa thành tiền", "1");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "khachHang", "Hoá đơn chưa có khách hàng", "2");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "danhsachCTHD", "Chưa có sản phẩm cần thanh toán", "3");
 	}
 
 }

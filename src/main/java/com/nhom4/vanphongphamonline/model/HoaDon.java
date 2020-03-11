@@ -1,6 +1,8 @@
 package com.nhom4.vanphongphamonline.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.GeneratedValue;
@@ -16,7 +18,7 @@ public class HoaDon {
 	@Id
 	private String maHoaDon;
 	@Field
-	private LocalDate ngayLapHoaDon;
+	private Date ngayLapHoaDon;
 	@Field
 	private double tongTien;
 	@Field
@@ -36,10 +38,10 @@ public class HoaDon {
 	public void setMaHoaDon(String maHoaDon) {
 		this.maHoaDon = maHoaDon;
 	}
-	public LocalDate getNgayLapHoaDon() {
+	public Date getNgayLapHoaDon() {
 		return ngayLapHoaDon;
 	}
-	public void setNgayLapHoaDon(LocalDate ngayLapHoaDon) {
+	public void setNgayLapHoaDon(Date ngayLapHoaDon) {
 		this.ngayLapHoaDon = ngayLapHoaDon;
 	}
 	public double getTongTien() {
@@ -84,7 +86,7 @@ public class HoaDon {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public HoaDon(String maHoaDon, LocalDate ngayLapHoaDon, double tongTien, List<ChiTietHoaDon> danhsachCTHD,
+	public HoaDon(String maHoaDon, Date ngayLapHoaDon, double tongTien, List<ChiTietHoaDon> danhsachCTHD,
 			KhachHang khachHang, DiaChi diaChi, String ghiChu, String cachThucThanhToan) {
 		super();
 		this.maHoaDon = maHoaDon;
