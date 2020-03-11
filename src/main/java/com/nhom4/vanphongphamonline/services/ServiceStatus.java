@@ -8,7 +8,14 @@ public class ServiceStatus {
 	private int code;
 	private String message;
 	private Object result;
+	private List<Object> list;
 	
+	public List<Object> getList() {
+		return list;
+	}
+	public void setList(List<Object> list) {
+		this.list = list;
+	}
 	public Object getResult() {
 		return result;
 	}
@@ -32,7 +39,12 @@ public class ServiceStatus {
 		this.code = code;
 		this.message = message;
 	}
-
+	public ServiceStatus(int code, String message, List<Object> list) {
+		super();
+		this.code = code;
+		this.message = message;
+		this.list = list;
+	}
 	public ServiceStatus(int code, String message, Object result) {
 		super();
 		this.code = code;

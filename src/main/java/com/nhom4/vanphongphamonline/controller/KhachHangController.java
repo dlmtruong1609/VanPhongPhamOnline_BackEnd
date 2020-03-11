@@ -180,9 +180,12 @@ public class KhachHangController {
 	}
 	@ResponseBody
 	@GetMapping(value = "/api/quanly/khachhang/danhsach")
-	public ResponseEntity<List<KhachHang>> getAllCustomer() {
+	public ResponseEntity<ServiceStatus> getAllCustomer() {
 		List<KhachHang> list = null;
 		list = khachHangRepository.findAll();
-		return new ResponseEntity<List<KhachHang>>(list, HttpStatus.OK);
+		if(list == null) {
+			return new ResponseEntity<ServiceStatus>( new ServiceStatus(1, "Không có sản phẩm nào tồn tại"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>( new ServiceStatus(0, "Danh sách khách hàng", list), HttpStatus.OK);
 	}
 }

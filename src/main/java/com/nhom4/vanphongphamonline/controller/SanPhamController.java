@@ -58,10 +58,13 @@ public class SanPhamController {
 	}
 	@ResponseBody
 	@GetMapping(value = "/api/quanly/sanpham/danhsach")
-	public ResponseEntity<List<SanPham>> getAllProduct() {
+	public ResponseEntity<ServiceStatus> getAllProduct() {
 		List<SanPham> list = null;
 		list = sanPhamRepository.findAll();
-		return new ResponseEntity<List<SanPham>>(list, HttpStatus.OK);
+		if(list == null) {
+			return new ResponseEntity<ServiceStatus>( new ServiceStatus(1, "Không có sản phẩm nào tồn tại"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>( new ServiceStatus(0, "Danh sách sản phẩm", list), HttpStatus.OK);
 	}
 //	Tim kiem text search
 	@ResponseBody
@@ -87,7 +90,7 @@ public class SanPhamController {
 		} else {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Sản phẩm không tồn tại"), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Xoá sản phẩm thành công"), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Xoá sản phẩm thành công", sanPhamRepository.findAll()), HttpStatus.OK);
 	}
 	@ResponseBody
 	@PostMapping(value = "/api/quanly/sanpham/capnhat")
@@ -121,9 +124,12 @@ public class SanPhamController {
 	
 	@ResponseBody
 	@GetMapping(value = "/api/sanpham/trang") // phân trang
-	public ResponseEntity<Page<SanPham>> getProductPageByIndex(@RequestParam int index) {
+	public ResponseEntity<ServiceStatus> getProductPageByIndex(@RequestParam int index) {
 		Page<SanPham> page = sanPhamRepository.findAll(PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
-		return new ResponseEntity<Page<SanPham>>(page, HttpStatus.OK);
+		if(page == null) {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Không có sản phẩm"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
 	}
 	
 }
