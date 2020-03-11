@@ -32,7 +32,6 @@ public class ServiceStatus {
 		this.code = code;
 		this.message = message;
 	}
-	
 
 	public ServiceStatus(int code, String message, Object result) {
 		super();
