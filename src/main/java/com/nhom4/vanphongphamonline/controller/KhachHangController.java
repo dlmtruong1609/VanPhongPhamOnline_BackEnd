@@ -1,5 +1,6 @@
 package com.nhom4.vanphongphamonline.controller;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.jwt.JwtTokenProvider;
 import com.nhom4.vanphongphamonline.model.KhachHang;
+import com.nhom4.vanphongphamonline.model.Role;
 import com.nhom4.vanphongphamonline.model.SanPham;
 import com.nhom4.vanphongphamonline.model.TaiKhoan;
 import com.nhom4.vanphongphamonline.repository.KhachHangRepository;
@@ -130,7 +133,15 @@ public class KhachHangController {
 //		}
 //		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng xuất thành công"), HttpStatus.OK);
 //	}
-	
+	private boolean hasRoleAdmin() {
+		KhachHang khachHang = khachHangRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        for (Role role : khachHang.getTaiKhoan().getRoles()){
+        	if(role.getTenRole().equals("ADMIN")) {
+        		return true;
+        	}
+        }
+        return false;
+	}
 	@ResponseBody
 	@PostMapping(value = "/api/khachhang/capnhat")
 	public ResponseEntity<ServiceStatus> updateCustomerByUsername(@RequestBody KhachHang khachHang, @RequestParam String username, BindingResult bindingResult) {
@@ -149,7 +160,7 @@ public class KhachHangController {
 		}
 		//---------------------------------------
 		// lấy username từ context (biến chung của project) để so sánh
-		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
+		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || hasRoleAdmin()) {
 			try {
 				KhachHang khachhangUpdated = khachHangRepository.findByUsername(username);
 				khachhangUpdated.setTenKhachHang(khachHang.getTenKhachHang());
@@ -170,7 +181,7 @@ public class KhachHangController {
 	public ResponseEntity<ServiceStatus> getCustomerByUsername(@RequestParam String username) {
 		KhachHang khachHang = null;
 		// lấy username từ context (biến chung của project) để so sánh
-		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
+		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || hasRoleAdmin()) {
 			khachHang = khachHangRepository.findByUsername(username);
 		} else {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không đúng tài khoản", null), HttpStatus.OK);
