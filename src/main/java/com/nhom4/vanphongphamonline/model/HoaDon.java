@@ -11,12 +11,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Document
 public class HoaDon {
 	@GeneratedValue
 	@Id
 	private String maHoaDon;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm a")
 	@Field
 	private Date ngayLapHoaDon;
 	@Field

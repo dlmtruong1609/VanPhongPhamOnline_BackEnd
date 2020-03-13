@@ -1,6 +1,7 @@
 package com.nhom4.vanphongphamonline.model;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import javax.persistence.GeneratedValue;
 
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.format.annotation.DateTimeFormat;
 @Document
 public class KhachHang {
 	@GeneratedValue
@@ -22,8 +24,9 @@ public class KhachHang {
 	private String dienThoai;
 	@Field
 	private String cmnd;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Field
-	private LocalDate ngaySinh;
+	private Date ngaySinh;
 	@Field
 	private TaiKhoan taiKhoan;
 	public String getMaKhachHang() {
@@ -56,10 +59,10 @@ public class KhachHang {
 	public void setCmnd(String cmnd) {
 		this.cmnd = cmnd;
 	}
-	public LocalDate getNgaySinh() {
+	public Date getNgaySinh() {
 		return ngaySinh;
 	}
-	public void setNgaySinh(LocalDate ngaySinh) {
+	public void setNgaySinh(Date ngaySinh) {
 		this.ngaySinh = ngaySinh;
 	}
 	public TaiKhoan getTaiKhoan() {
@@ -69,7 +72,7 @@ public class KhachHang {
 		this.taiKhoan = taiKhoan;
 	}
 	public KhachHang(String maKhachHang, String tenKhachHang, DiaChi diaChi, String dienThoai, String cmnd,
-			LocalDate ngaySinh, TaiKhoan taiKhoan) {
+			Date ngaySinh, TaiKhoan taiKhoan) {
 		super();
 		this.maKhachHang = maKhachHang;
 		this.tenKhachHang = tenKhachHang;

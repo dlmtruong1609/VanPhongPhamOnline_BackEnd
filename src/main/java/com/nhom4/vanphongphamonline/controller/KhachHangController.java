@@ -123,16 +123,9 @@ public class KhachHangController {
 	 	 // tự động generate token
         String jwt = tokenProvider.generateToken((CustomTaiKhoanDetails) authentication.getPrincipal());
         
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, jwt, taiKhoan), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng nhập thành công", jwt), HttpStatus.OK);
 	}
-//	@PostMapping(value = "/api/dangxuat")
-//	public ResponseEntity<ServiceStatus> logout(HttpServletRequest request, HttpServletResponse response) {
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//		if (auth != null) {
-//		    new SecurityContextLogoutHandler().logout(request, response, auth);
-//		}
-//		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng xuất thành công"), HttpStatus.OK);
-//	}
+	// kiểm tra có phải là role admin hay ko?
 	private boolean hasRoleAdmin() {
 		KhachHang khachHang = khachHangRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         for (Role role : khachHang.getTaiKhoan().getRoles()){
@@ -166,6 +159,8 @@ public class KhachHangController {
 				khachhangUpdated.setTenKhachHang(khachHang.getTenKhachHang());
 				khachhangUpdated.setDienThoai(khachHang.getDienThoai());
 				khachhangUpdated.setCmnd(khachHang.getCmnd());
+				khachhangUpdated.setDiaChi(khachHang.getDiaChi());
+				khachhangUpdated.setNgaySinh(khachHang.getNgaySinh());
 				khachHangRepository.save(khachhangUpdated);
 			} catch (Exception e) {
 				// TODO: handle exception
