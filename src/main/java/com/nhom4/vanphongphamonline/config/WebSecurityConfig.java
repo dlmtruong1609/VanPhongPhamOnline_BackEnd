@@ -78,6 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/img/hinhanh").permitAll()
                 .antMatchers("/api/hoadon/thanhtoan").hasAnyRole("MEMBER", "ADMIN")
                 .antMatchers("/api/hoadon/chitiet").hasAnyRole("MEMBER", "ADMIN")
+                .antMatchers("/api/hoadon/danhsach").hasAnyRole("MEMBER", "ADMIN")
                 .antMatchers("/api/quanly/khachhang/danhsach").permitAll()
                 .antMatchers("/api/khachhang/capnhat").hasAnyRole("MEMBER", "ADMIN")
                 .antMatchers("/api/khachhang/chitiet").hasAnyRole("MEMBER", "ADMIN")

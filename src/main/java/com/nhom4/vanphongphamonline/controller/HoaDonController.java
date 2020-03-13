@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,11 +69,21 @@ public class HoaDonController {
 	}
 	@ResponseBody
 	@GetMapping(value = "/api/hoadon/chitiet")
-	public ResponseEntity<Optional<HoaDon>> getOrderById(@RequestParam String id, @RequestParam String username) {
+	public ResponseEntity<ServiceStatus> getOrderById(@RequestParam String id, @RequestParam String username) {
 		Optional<HoaDon> hoaDon = null;
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
 			hoaDon = hoaDonRepository.findById(id);
 		}
-		return new ResponseEntity<Optional<HoaDon>>(hoaDon, HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Chi tiết hoá đơn", hoaDon), HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/api/hoadon/danhsach")
+	public ResponseEntity<ServiceStatus> getAllOrder(@RequestParam String username) {
+		List<HoaDon> list = null;
+		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
+			list = hoaDonRepository.getAllOrderByUsername(username);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách hoá đơn", list), HttpStatus.OK);
 	}
 }
