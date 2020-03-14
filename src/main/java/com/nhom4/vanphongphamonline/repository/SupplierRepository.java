@@ -2,9 +2,9 @@ package com.nhom4.vanphongphamonline.repository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import com.nhom4.vanphongphamonline.model.NhaCungCap;
+import com.nhom4.vanphongphamonline.model.Supplier;
 
 @Repository
-public interface NhaCungCapRepository extends MongoRepository<NhaCungCap, String> {
+public interface SupplierRepository extends MongoRepository<Supplier, String> {
 	
 }

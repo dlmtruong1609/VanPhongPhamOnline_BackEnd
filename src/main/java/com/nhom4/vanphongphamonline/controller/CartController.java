@@ -25,28 +25,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.WebSession;
 
-import com.nhom4.vanphongphamonline.model.ChiTietHoaDon;
-import com.nhom4.vanphongphamonline.model.HoaDon;
-import com.nhom4.vanphongphamonline.model.SanPham;
+import com.nhom4.vanphongphamonline.model.OrderDetail;
+import com.nhom4.vanphongphamonline.model.Order;
+import com.nhom4.vanphongphamonline.model.Product;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
-import com.nhom4.vanphongphamonline.validator.HoaDonValidator;
+import com.nhom4.vanphongphamonline.validator.OrderValidator;
 
 @Controller
-public class GioHangController {
+public class CartController {
 //	Tự động tạo ID bắt dầu từ 0
 //	@Autowired
 //	private static AtomicInteger ID_GENERATOR = new AtomicInteger(0);
-	List<ChiTietHoaDon> list; //list để add chi tiet hoa đơn khi thêm
+	List<OrderDetail> list; //list để add chi tiet hoa đơn khi thêm
 	@Autowired
-	HoaDonValidator hoaDonValidator; // valid hoá đơn
+	OrderValidator orderValidator; // valid hoá đơn
 	double total = 0; // tính tổng tiền của hoá đơn
 	@ResponseBody
-	@PostMapping(value = "/api/giohang/them")
-	public ResponseEntity<ServiceStatus> saveOrder(HttpServletRequest request, @RequestBody ChiTietHoaDon chiTietHoaDon, BindingResult bindingResult) {
+	@PostMapping(value = "/api/v1/cart/add")
+	public ResponseEntity<ServiceStatus> saveOrder(HttpServletRequest request, @RequestBody OrderDetail orderDetail, BindingResult bindingResult) {
 		HttpSession session = request.getSession(); // lấy current session
-		HoaDon hdSS = (HoaDon) session.getAttribute("hoaDon"); // lấy thuộc tính mang tên hoaDon
+		Order orderSession = (Order) session.getAttribute("order"); // lấy thuộc tính mang tên order
 		// check ------------------------------
-		hoaDonValidator.validateCTHD(chiTietHoaDon, bindingResult);
+		orderValidator.validateOrderDetail(orderDetail, bindingResult);
 		if (bindingResult.hasErrors()) {
 		   FieldError fieldError = null;
 		   for (Object object : bindingResult.getAllErrors()) {
@@ -59,52 +59,52 @@ public class GioHangController {
 		   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
         }
 //		-------------------------------------
-		list = new ArrayList<ChiTietHoaDon>();
-		list.add(chiTietHoaDon);
-		if(hdSS!= null) { 
-			for (int i = 0; i < hdSS.getDanhsachCTHD().size(); i++) {
-				ChiTietHoaDon cthd = hdSS.getDanhsachCTHD().get(i);
-				if(cthd.getSanPham().getMaSanPham().equals(chiTietHoaDon.getSanPham().getMaSanPham())) {
-					if((cthd.getSoLuong() + chiTietHoaDon.getSoLuong()) > cthd.getSanPham().getSoLuongTon()) {
+		list = new ArrayList<OrderDetail>();
+		list.add(orderDetail);
+		if(orderSession!= null) { 
+			for (int i = 0; i < orderSession.getListOrderDetail().size(); i++) {
+				OrderDetail cthd = orderSession.getListOrderDetail().get(i);
+				if(cthd.getProduct().getId().equals(orderDetail.getProduct().getId())) {
+					if((cthd.getQuantity() + orderDetail.getQuantity()) > cthd.getProduct().getInventory()) {
 						return new ResponseEntity<ServiceStatus>(new ServiceStatus(5, "Số lượng đặt vượt quá số lượng trong kho, vui lòng xem lại giỏ hàng"), HttpStatus.OK);
 					}
-					cthd.setSoLuong(cthd.getSoLuong() + chiTietHoaDon.getSoLuong()); // tính số lượng
-					cthd.setDonGia(cthd.getDonGia() + chiTietHoaDon.getDonGia()); // tính đơn giá
+					cthd.setQuantity(cthd.getQuantity() + orderDetail.getQuantity()); // tính số lượng
+					cthd.setUnitPrice(cthd.getUnitPrice() + orderDetail.getUnitPrice()); // tính đơn giá
 					// remove chi tiet hoá đơn là vì khi nếu cùng sản phẩm được thêm vào giỏ hàng thì chỉ cần
 					// tăng số lượng lên thôi, ko cần phải add thêm 1 sản phẩm nữa sẽ gây trùng lặp lại
-					list.remove(chiTietHoaDon); 
+					list.remove(orderDetail); 
 				} 
-				if(!hdSS.getDanhsachCTHD().contains(chiTietHoaDon)){
+				if(!orderSession.getListOrderDetail().contains(orderDetail)){
 					// xử lý khi thêm 1 sản phẩm mới ko có trong giỏ hàng
-					if(chiTietHoaDon.getSanPham().getMaSanPham() != cthd.getSanPham().getMaSanPham()) {
-						total += chiTietHoaDon.getDonGia();
+					if(orderDetail.getProduct().getId() != cthd.getProduct().getId()) {
+						total += orderDetail.getUnitPrice();
 					}
 				}
-				total += cthd.getDonGia(); 
+				total += cthd.getUnitPrice(); 
 			}
-			hdSS.setTongTien(total);
+			orderSession.setTotalMoney(total);
 			total = 0;
-			hdSS.getDanhsachCTHD().addAll(list);
-			hdSS.setDanhsachCTHD(hdSS.getDanhsachCTHD());
-		} else { // hdss là null
-			hdSS = new HoaDon();
-			hdSS.setTongTien(chiTietHoaDon.getDonGia());
-			hdSS.setDanhsachCTHD(list);
+			orderSession.getListOrderDetail().addAll(list);
+			orderSession.setListOrderDetail(orderSession.getListOrderDetail());
+		} else { // orderSession là null
+			orderSession = new Order();
+			orderSession.setTotalMoney(orderDetail.getUnitPrice());
+			orderSession.setListOrderDetail(list);
 		}
 		
-		session.setAttribute("hoaDon", hdSS);
+		session.setAttribute("order", orderSession);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm thành con vào giỏ hàng"), HttpStatus.OK);
 	}
 
 	@ResponseBody
-	@PostMapping(value = "/api/giohang/capnhat") // id cua sanpham, action la tang hoac giam
-	public ResponseEntity<ServiceStatus> updateOrder(@RequestBody HoaDon hoaDon, HttpServletRequest request, BindingResult bindingResult) {
+	@PostMapping(value = "/api/v1/cart/update") // id cua sanpham, action la tang hoac giam
+	public ResponseEntity<ServiceStatus> updateOrder(@RequestBody Order order, HttpServletRequest request, BindingResult bindingResult) {
 		HttpSession session = request.getSession();
-		for (int i = 0; i < hoaDon.getDanhsachCTHD().size(); i++) {
-			ChiTietHoaDon chiTietHoaDon = hoaDon.getDanhsachCTHD().get(i);
+		for (int i = 0; i < order.getListOrderDetail().size(); i++) {
+			OrderDetail orderDetail = order.getListOrderDetail().get(i);
 			// check ----------------------
-			hoaDonValidator.validateCTHD(chiTietHoaDon, bindingResult);
-			total += chiTietHoaDon.getDonGia(); 
+			orderValidator.validateOrderDetail(orderDetail, bindingResult);
+			total += orderDetail.getUnitPrice(); 
 			if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
 			   for (Object object : bindingResult.getAllErrors()) {
@@ -118,37 +118,37 @@ public class GioHangController {
 	        }
 			//-------------------------------
 		}
-		hoaDon.setTongTien(total);
+		order.setTotalMoney(total);
 		total = 0;
-		session.setAttribute("hoaDon", hoaDon);
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật thành công", session.getAttribute("hoaDon")), HttpStatus.OK);
+		session.setAttribute("order", order);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật thành công", session.getAttribute("order")), HttpStatus.OK);
 	}
 
 	@ResponseBody
-	@GetMapping(value = "/api/giohang/dulieu")
+	@GetMapping(value = "/api/v1/cart/data")
 	public ResponseEntity<ServiceStatus> getOrderInfo(HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		if(session.getAttribute("hoaDon") == null) {
+		if(session.getAttribute("order") == null) {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm trong giỏ hàng", ""), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", session.getAttribute("hoaDon")), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", session.getAttribute("order")), HttpStatus.OK);
 	}
 	@ResponseBody
-	@PostMapping(value = "/api/giohang/xoa") // id la ma san pham
+	@PostMapping(value = "/api/v1/cart/delete") // id la ma san pham
 	public ResponseEntity<ServiceStatus> removeOrder(@RequestParam String id, HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		HoaDon hd = (HoaDon) session.getAttribute("hoaDon");
-		if(hd.getDanhsachCTHD() != null) {
-			for (int i = 0; i < hd.getDanhsachCTHD().size(); i++) {
-				if(hd.getDanhsachCTHD().get(i).getSanPham().getMaSanPham().equals(id)) {
-					hd.setTongTien(hd.getTongTien() - hd.getDanhsachCTHD().get(i).getDonGia());;
-					hd.getDanhsachCTHD().remove(i);
+		Order order = (Order) session.getAttribute("order");
+		if(order.getListOrderDetail() != null) {
+			for (int i = 0; i < order.getListOrderDetail().size(); i++) {
+				if(order.getListOrderDetail().get(i).getProduct().getId().equals(id)) {
+					order.setTotalMoney(order.getTotalMoney() - order.getListOrderDetail().get(i).getUnitPrice());;
+					order.getListOrderDetail().remove(i);
 				}
 			}
 		} else {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm trong giỏ hàng", ""), HttpStatus.OK);
 		}
-		session.setAttribute("hoaDon", hd);
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", session.getAttribute("hoaDon")), HttpStatus.OK);
+		session.setAttribute("order", order);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", session.getAttribute("order")), HttpStatus.OK);
 	}
 }

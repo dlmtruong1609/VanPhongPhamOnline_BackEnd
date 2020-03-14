@@ -20,26 +20,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.nhom4.vanphongphamonline.model.SanPham;
-import com.nhom4.vanphongphamonline.repository.ChiTietHoaDonRepository;
-import com.nhom4.vanphongphamonline.repository.SanPhamRepository;
+import com.nhom4.vanphongphamonline.model.Product;
+import com.nhom4.vanphongphamonline.repository.OrderDetailRepository;
+import com.nhom4.vanphongphamonline.repository.ProductRepository;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
-import com.nhom4.vanphongphamonline.validator.SanPhamValidator;
+import com.nhom4.vanphongphamonline.validator.ProductValidator;
 @Controller
-public class SanPhamController {
+public class ProductController {
 	@Autowired
-	private SanPhamRepository sanPhamRepository;
+	private ProductRepository productRepository;
 	@Autowired 
-	private SanPhamValidator sanPhamValidator;
+	private ProductValidator productValidator;
 	@Autowired
-	public SanPhamController(SanPhamRepository sanPhamRepository) {
-		this.sanPhamRepository = sanPhamRepository;
+	public ProductController(ProductRepository productRepository) {
+		this.productRepository = productRepository;
 	}
 	@ResponseBody
-	@PostMapping(value = "/api/quanly/sanpham/them")
-	public ResponseEntity<ServiceStatus> addProduct(@RequestBody SanPham sanPham, BindingResult bindingResult) {
+	@PostMapping(value = "/api/v1/admin/product/add")
+	public ResponseEntity<ServiceStatus> addProduct(@RequestBody Product product, BindingResult bindingResult) {
 		// check --------------------------------------
-		sanPhamValidator.productValidation(sanPham, bindingResult);
+		productValidator.productValidation(product, bindingResult);
 		if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
 			   for (Object object : bindingResult.getAllErrors()) {
@@ -52,15 +52,15 @@ public class SanPhamController {
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
 	        }
 		//--------------------------------------------------------
-		sanPhamRepository.insert(sanPham);
+		productRepository.insert(product);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm sản phẩm thành công"), HttpStatus.OK);
 		
 	}
 	@ResponseBody
-	@GetMapping(value = "/api/quanly/sanpham/danhsach")
+	@GetMapping(value = "/api/v1/product/list")
 	public ResponseEntity<ServiceStatus> getAllProduct() {
-		List<SanPham> list = null;
-		list = sanPhamRepository.findAll();
+		List<Product> list = null;
+		list = productRepository.findAll();
 		if(list == null) {
 			return new ResponseEntity<ServiceStatus>( new ServiceStatus(1, "Không có sản phẩm nào tồn tại"), HttpStatus.OK);
 		}
@@ -68,36 +68,36 @@ public class SanPhamController {
 	}
 //	Tim kiem text search
 	@ResponseBody
-	@GetMapping(value = "/api/quanly/sanpham/timkiem")
-	public ResponseEntity<List<SanPham>> getAllProductByName(@RequestParam String name) {
-		List<SanPham> list = null;
-		list = sanPhamRepository.findByProductName(name);
-		return new ResponseEntity<List<SanPham>>(list, HttpStatus.OK);
+	@GetMapping(value = "/api/v1/admin/product/search")
+	public ResponseEntity<List<Product>> getAllProductByName(@RequestParam String name) {
+		List<Product> list = null;
+		list = productRepository.findByProductName(name);
+		return new ResponseEntity<List<Product>>(list, HttpStatus.OK);
 	}
 	@ResponseBody
-	@GetMapping(value = "/api/quanly/sanpham/chitiet")
+	@GetMapping(value = "/api/v1/product/detail")
 	public ResponseEntity<ServiceStatus> getProductById(@RequestParam String id) {
-		if(sanPhamRepository.findById(id) == null) {
+		if(productRepository.findById(id) == null) {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Sản phẩm không tìm thấy"), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Tìm thành công", sanPhamRepository.findById(id)), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Tìm thành công", productRepository.findById(id)), HttpStatus.OK);
 	}
 	@ResponseBody
-	@PostMapping(value = "/api/quanly/sanpham/xoa")
+	@PostMapping(value = "/api/v1/admin/product/delete")
 	public ResponseEntity<ServiceStatus> deleteProductById(@RequestParam String id) {
-		if(sanPhamRepository.findById(id).isPresent()!=false) {
-			sanPhamRepository.deleteById(id);
+		if(productRepository.findById(id).isPresent()!=false) {
+			productRepository.deleteById(id);
 		} else {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Sản phẩm không tồn tại"), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Xoá sản phẩm thành công", sanPhamRepository.findAll()), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Xoá sản phẩm thành công", productRepository.findAll()), HttpStatus.OK);
 	}
 	@ResponseBody
-	@PostMapping(value = "/api/quanly/sanpham/capnhat")
-	public ResponseEntity<ServiceStatus> updateProductById(@RequestParam String id, @RequestBody SanPham sanPham, BindingResult bindingResult) {
-		if(sanPhamRepository.findById(id).isPresent()!=false) {
+	@PostMapping(value = "/api/v1/admin/product/update")
+	public ResponseEntity<ServiceStatus> updateProductById(@RequestParam String id, @RequestBody Product product, BindingResult bindingResult) {
+		if(productRepository.findById(id).isPresent()!=false) {
 			// check ---------------------------------
-			sanPhamValidator.productValidation(sanPham, bindingResult);
+			productValidator.productValidation(product, bindingResult);
 			if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
 			   for (Object object : bindingResult.getAllErrors()) {
@@ -110,12 +110,12 @@ public class SanPhamController {
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
 	        } 
 			// ----------------------------------------------
-			SanPham sp = sanPhamRepository.findById(id).get();
-			sp.setTenSanPham(sanPham.getTenSanPham());
-			sp.setGiaSanPham(sanPham.getGiaSanPham());
-			sp.setMoTa(sanPham.getMoTa());
-			sp.setSoLuongTon(sanPham.getSoLuongTon());
-			sanPhamRepository.save(sp);
+			Product productUpdated = productRepository.findById(id).get();
+			productUpdated.setName(product.getName());
+			productUpdated.setPrice(product.getPrice());
+			productUpdated.setDescription(product.getDescription());
+			productUpdated.setInventory(product.getInventory());
+			productRepository.save(productUpdated);
 		} else {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Sản phẩm không tồn tại"), HttpStatus.OK);
 		}
@@ -123,9 +123,9 @@ public class SanPhamController {
 	}
 	
 	@ResponseBody
-	@GetMapping(value = "/api/sanpham/trang") // phân trang
+	@GetMapping(value = "/api/v1/product/page") // phân trang
 	public ResponseEntity<ServiceStatus> getProductPageByIndex(@RequestParam int index) {
-		Page<SanPham> page = sanPhamRepository.findAll(PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
+		Page<Product> page = productRepository.findAll(PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
 		if(page == null) {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Không có sản phẩm"), HttpStatus.OK);
 		}

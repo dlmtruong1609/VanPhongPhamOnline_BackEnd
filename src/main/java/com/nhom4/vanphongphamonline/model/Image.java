@@ -6,7 +6,7 @@ import org.bson.types.Binary;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class HinhAnh {
+public class Image {
 	@Id
 	private String id;
 	private Binary img;
@@ -29,7 +29,7 @@ public class HinhAnh {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public HinhAnh(String title) {
+	public Image(String title) {
 		super();
 		this.title = title;
 	}

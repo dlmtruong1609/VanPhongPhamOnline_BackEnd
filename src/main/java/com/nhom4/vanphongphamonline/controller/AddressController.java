@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
 
 @Controller
-public class DiaChiController {
+public class AddressController {
 	@ResponseBody
-	@GetMapping(value = "api/diachi/thanhpho")
+	@GetMapping(value = "api/v1/address/city")
 	public ResponseEntity<ServiceStatus> getAllCity() throws org.json.simple.parser.ParseException, ParseException {
 		String json = null;
 	    try {
@@ -42,7 +42,7 @@ public class DiaChiController {
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách thành phố", json), HttpStatus.OK);
 	}
 	@ResponseBody
-	@GetMapping(value = "api/diachi/quanhuyen")
+	@GetMapping(value = "api/v1/address/district")
 	public ResponseEntity<ServiceStatus> getDistrictByCity(@RequestParam String id) throws org.json.simple.parser.ParseException, ParseException {
 		String json = null;
 	    try {
@@ -58,7 +58,7 @@ public class DiaChiController {
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách quận huyện", json), HttpStatus.OK);
 	}
 	@ResponseBody
-	@GetMapping	(value = "api/diachi/thitran")
+	@GetMapping	(value = "api/v1/address/ward")
 	public ResponseEntity<ServiceStatus> getWardByDistrict(@RequestParam String id) throws org.json.simple.parser.ParseException, ParseException {
 		String json = null;
 	    try {

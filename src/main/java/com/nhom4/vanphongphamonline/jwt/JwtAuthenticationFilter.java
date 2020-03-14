@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.nhom4.vanphongphamonline.services.TaiKhoanDetailsServiceImpl;
+import com.nhom4.vanphongphamonline.services.AccountDetailsServiceImpl;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -23,7 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtTokenProvider tokenProvider;
 
     @Autowired
-    private TaiKhoanDetailsServiceImpl taiKhoanDetailsServiceImpl;
+    private AccountDetailsServiceImpl taiKhoanDetailsServiceImpl;
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain filterChain)

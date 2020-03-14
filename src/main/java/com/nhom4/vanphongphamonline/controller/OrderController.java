@@ -24,30 +24,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.nhom4.vanphongphamonline.model.HoaDon;
-import com.nhom4.vanphongphamonline.model.KhachHang;
-import com.nhom4.vanphongphamonline.repository.ChiTietHoaDonRepository;
-import com.nhom4.vanphongphamonline.repository.HoaDonRepository;
+import com.nhom4.vanphongphamonline.model.Order;
+import com.nhom4.vanphongphamonline.model.Customer;
+import com.nhom4.vanphongphamonline.repository.OrderDetailRepository;
+import com.nhom4.vanphongphamonline.repository.OrderRepository;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
-import com.nhom4.vanphongphamonline.validator.HoaDonValidator;
+import com.nhom4.vanphongphamonline.validator.OrderValidator;
 
 @Controller
-public class HoaDonController {
+public class OrderController {
 	@Autowired
-	private HoaDonRepository hoaDonRepository;
+	private OrderRepository orderRepository;
 	@Autowired
-	private ChiTietHoaDonRepository chiTietHoaDonRepository;
+	private OrderValidator orderValidator;
 	@Autowired
-	private HoaDonValidator hoaDonValidator;
-	@Autowired
-	public HoaDonController(HoaDonRepository hoaDonRepository) {
-		this.hoaDonRepository = hoaDonRepository;
+	public OrderController(OrderRepository orderRepository) {
+		this.orderRepository = orderRepository;
 	}
 	@ResponseBody
-	@PostMapping(value = "/api/hoadon/thanhtoan") // sử dụng khi thanh toán ko dùng để add vào giỏ hàng
-	public ResponseEntity<ServiceStatus> createOrder(@RequestBody HoaDon hoaDon, BindingResult bindingResult, HttpServletRequest request) throws ParseException {
+	@PostMapping(value = "/api/v1/order/pay") // sử dụng khi thanh toán ko dùng để add vào giỏ hàng
+	public ResponseEntity<ServiceStatus> createOrder(@RequestBody Order order, BindingResult bindingResult, HttpServletRequest request) throws ParseException {
 		// check ---------------------------------------
-		hoaDonValidator.validate(hoaDon, bindingResult);
+		orderValidator.validate(order, bindingResult);
 		if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
 			   for (Object object : bindingResult.getAllErrors()) {
@@ -61,28 +59,28 @@ public class HoaDonController {
 	        }
 		//--------------------------------------------------
 	      
-		hoaDon.setNgayLapHoaDon(new Date());
-		hoaDonRepository.insert(hoaDon);
+		order.setBillDate(new Date());
+		orderRepository.insert(order);
 		HttpSession session = request.getSession();
 		session.invalidate();
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thanh toán thành công"), HttpStatus.OK);
 	}
 	@ResponseBody
-	@GetMapping(value = "/api/hoadon/chitiet")
+	@GetMapping(value = "/api/v1/order/detail")
 	public ResponseEntity<ServiceStatus> getOrderById(@RequestParam String id, @RequestParam String username) {
-		Optional<HoaDon> hoaDon = null;
+		Optional<Order> order = null;
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
-			hoaDon = hoaDonRepository.findById(id);
+			order = orderRepository.findById(id);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Chi tiết hoá đơn", hoaDon), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Chi tiết hoá đơn", order), HttpStatus.OK);
 	}
 	
 	@ResponseBody
-	@GetMapping(value = "/api/hoadon/danhsach")
+	@GetMapping(value = "/api/v1/order/list")
 	public ResponseEntity<ServiceStatus> getAllOrder(@RequestParam String username) {
-		List<HoaDon> list = null;
+		List<Order> list = null;
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
-			list = hoaDonRepository.getAllOrderByUsername(username);
+			list = orderRepository.getAllOrderByUsername(username);
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách hoá đơn", list), HttpStatus.OK);
 	}

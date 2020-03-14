@@ -33,22 +33,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.jwt.JwtTokenProvider;
-import com.nhom4.vanphongphamonline.model.KhachHang;
+import com.nhom4.vanphongphamonline.model.Customer;
 import com.nhom4.vanphongphamonline.model.Role;
-import com.nhom4.vanphongphamonline.model.SanPham;
-import com.nhom4.vanphongphamonline.model.TaiKhoan;
-import com.nhom4.vanphongphamonline.repository.KhachHangRepository;
+import com.nhom4.vanphongphamonline.model.Product;
+import com.nhom4.vanphongphamonline.model.Account;
+import com.nhom4.vanphongphamonline.repository.CustomerRepository;
 import com.nhom4.vanphongphamonline.repository.RoleRepository;
 import com.nhom4.vanphongphamonline.services.CustomTaiKhoanDetails;
 import com.nhom4.vanphongphamonline.services.SecurityService;
 import com.nhom4.vanphongphamonline.services.SecurityServiceImpl;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
-import com.nhom4.vanphongphamonline.validator.KhachHangValidator;
-import com.nhom4.vanphongphamonline.validator.TaiKhoanValidator;
+import com.nhom4.vanphongphamonline.validator.CustomerValidator;
+import com.nhom4.vanphongphamonline.validator.AccountValidator;
 @Controller
-public class KhachHangController {
+public class CustomerController {
 	@Autowired
-	private KhachHangRepository khachHangRepository;
+	private CustomerRepository customerRepository;
 	@Autowired
 	private EmailController emailController;
     @Autowired
@@ -56,23 +56,23 @@ public class KhachHangController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    private TaiKhoanValidator taiKhoanValidator;
+    private AccountValidator accountValidator;
     @Autowired
-    private KhachHangValidator khachHangValidator;
+    private CustomerValidator customerValidator;
     @Autowired
     private JwtTokenProvider tokenProvider;
     @Autowired
     AuthenticationManager authenticationManager;
 	@Autowired
-	public KhachHangController(KhachHangRepository khachHangRepository) {
-		this.khachHangRepository = khachHangRepository;
+	public CustomerController(CustomerRepository customerRepository) {
+		this.customerRepository = customerRepository;
 		// TODO Auto-generated constructor stub
 	}
 	@ResponseBody
-	@PostMapping(value = "/api/dangky", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
-	public ResponseEntity<ServiceStatus> createUser(@RequestBody TaiKhoan taiKhoan, BindingResult bindingResult) {
+	@PostMapping(value = "/api/v1/register", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
+	public ResponseEntity<ServiceStatus> createUser(@RequestBody Account account, BindingResult bindingResult) {
 		// check -----------------------------
-		taiKhoanValidator.validateFormRegister(taiKhoan, bindingResult);
+		accountValidator.validateFormRegister(account, bindingResult);
 	   if (bindingResult.hasErrors()) {
 		   FieldError fieldError = null;
 		   for (Object object : bindingResult.getAllErrors()) {
@@ -86,21 +86,21 @@ public class KhachHangController {
         }
 	   // ---------------------------------------
 	   // mã hoá mật khẩu
-		taiKhoan.setMatKhau(bCryptPasswordEncoder.encode(taiKhoan.getMatKhau()));
-		taiKhoan.setMatKhauXacNhan(bCryptPasswordEncoder.encode(taiKhoan.getMatKhauXacNhan()));
-		taiKhoan.setRoles(new HashSet<>(roleRepository.findByName("MEMBER")));
-		KhachHang khachHang = new KhachHang();
-		khachHang.setTaiKhoan(taiKhoan);
-		khachHangRepository.insert(khachHang);
+	    account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
+	    account.setPasswordConfirm(bCryptPasswordEncoder.encode(account.getPasswordConfirm()));
+	    account.setRoles(new HashSet<>(roleRepository.findByName("MEMBER")));
+		Customer customer = new Customer();
+		customer.setAccount(account);
+		customerRepository.insert(customer);
 		// gửi email s khi đăng ký
 //		emailController.sendEmail(taiKhoan.getEmail(), "ANANAS Đăng ký", "Chào mừng đến với kênh mua sắm trực tiếp của văn phòng phẩm ANANAS");
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng ký thành công"), HttpStatus.OK);
 	}
 	@ResponseBody
-	@PostMapping(value = "/api/dangnhap", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
-	public ResponseEntity<ServiceStatus> login(@RequestBody TaiKhoan taiKhoan, BindingResult bindingResult) {
+	@PostMapping(value = "/api/v1/login", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
+	public ResponseEntity<ServiceStatus> login(@RequestBody Account account, BindingResult bindingResult) {
 		// check ----------------------------------------
-		taiKhoanValidator.validateFormLogin(taiKhoan, bindingResult);
+		accountValidator.validateFormLogin(account, bindingResult);
 		if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
 			   for (Object object : bindingResult.getAllErrors()) {
@@ -116,8 +116,8 @@ public class KhachHangController {
 		// Xác nhận tài khoản mật khẩu
 	 	   Authentication authentication = authenticationManager.authenticate(
 	               new UsernamePasswordAuthenticationToken(
-	                       taiKhoan.getTaiKhoan(),
-	                       taiKhoan.getMatKhau()
+	            		   account.getUsername(),
+	            		   account.getPassword()
 	               )
 	       );
 	 	 // tự động generate token
@@ -127,19 +127,19 @@ public class KhachHangController {
 	}
 	// kiểm tra có phải là role admin hay ko?
 	private boolean hasRoleAdmin() {
-		KhachHang khachHang = khachHangRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        for (Role role : khachHang.getTaiKhoan().getRoles()){
-        	if(role.getTenRole().equals("ADMIN")) {
+		Customer customer = customerRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        for (Role role : customer.getAccount().getRoles()){
+        	if(role.getName().equals("ADMIN")) {
         		return true;
         	}
         }
         return false;
 	}
 	@ResponseBody
-	@PostMapping(value = "/api/khachhang/capnhat")
-	public ResponseEntity<ServiceStatus> updateCustomerByUsername(@RequestBody KhachHang khachHang, @RequestParam String username, BindingResult bindingResult) {
+	@PostMapping(value = "/api/v1/customer/update")
+	public ResponseEntity<ServiceStatus> updateCustomerByUsername(@RequestBody Customer customer, @RequestParam String username, BindingResult bindingResult) {
 		// check ---------------------------
-		khachHangValidator.validate(khachHang, bindingResult);
+		customerValidator.validate(customer, bindingResult);
 		if (bindingResult.hasErrors()) {
 			   FieldError fieldError = null;
 			   for (Object object : bindingResult.getAllErrors()) {
@@ -155,13 +155,13 @@ public class KhachHangController {
 		// lấy username từ context (biến chung của project) để so sánh
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || hasRoleAdmin()) {
 			try {
-				KhachHang khachhangUpdated = khachHangRepository.findByUsername(username);
-				khachhangUpdated.setTenKhachHang(khachHang.getTenKhachHang());
-				khachhangUpdated.setDienThoai(khachHang.getDienThoai());
-				khachhangUpdated.setCmnd(khachHang.getCmnd());
-				khachhangUpdated.setDiaChi(khachHang.getDiaChi());
-				khachhangUpdated.setNgaySinh(khachHang.getNgaySinh());
-				khachHangRepository.save(khachhangUpdated);
+				Customer customerUpdated = customerRepository.findByUsername(username);
+				customerUpdated.setName(customer.getName());
+				customerUpdated.setPhone(customer.getPhone());
+				customerUpdated.setIdentityCard(customer.getIdentityCard());
+				customerUpdated.setAddress(customer.getAddress());
+				customerUpdated.setBirthday(customer.getBirthday());
+				customerRepository.save(customerUpdated);
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
@@ -172,22 +172,22 @@ public class KhachHangController {
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật thông tin khách hàng thành công"), HttpStatus.OK);
 	}
 	@ResponseBody
-	@GetMapping(value = "/api/khachhang/chitiet")
+	@GetMapping(value = "/api/v1/customer/detail")
 	public ResponseEntity<ServiceStatus> getCustomerByUsername(@RequestParam String username) {
-		KhachHang khachHang = null;
+		Customer customer = null;
 		// lấy username từ context (biến chung của project) để so sánh
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || hasRoleAdmin()) {
-			khachHang = khachHangRepository.findByUsername(username);
+			customer = customerRepository.findByUsername(username);
 		} else {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không đúng tài khoản", null), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", khachHang), HttpStatus.OK);
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", customer), HttpStatus.OK);
 	}
 	@ResponseBody
-	@GetMapping(value = "/api/quanly/khachhang/danhsach")
+	@GetMapping(value = "/api/v1/admin/customer/list")
 	public ResponseEntity<ServiceStatus> getAllCustomer() {
-		List<KhachHang> list = null;
-		list = khachHangRepository.findAll();
+		List<Customer> list = null;
+		list = customerRepository.findAll();
 		if(list == null) {
 			return new ResponseEntity<ServiceStatus>( new ServiceStatus(1, "Không có sản phẩm nào tồn tại"), HttpStatus.OK);
 		}

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.nhom4.vanphongphamonline.model.TaiKhoan;
+import com.nhom4.vanphongphamonline.model.Account;
  
 @Controller
 public class EmailController {

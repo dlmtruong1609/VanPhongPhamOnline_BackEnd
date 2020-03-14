@@ -11,21 +11,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.nhom4.vanphongphamonline.model.KhachHang;
+import com.nhom4.vanphongphamonline.model.Customer;
 import com.nhom4.vanphongphamonline.model.Role;
-import com.nhom4.vanphongphamonline.model.TaiKhoan;
-import com.nhom4.vanphongphamonline.repository.KhachHangRepository;
+import com.nhom4.vanphongphamonline.model.Account;
+import com.nhom4.vanphongphamonline.repository.CustomerRepository;
 @Service
-public class TaiKhoanDetailsServiceImpl implements UserDetailsService {
+public class AccountDetailsServiceImpl implements UserDetailsService {
 	@Autowired
-	private KhachHangRepository khachHangRepository;
+	private CustomerRepository customerRepository;
 	@Override // load user khi truy cập link website
-	public UserDetails loadUserByUsername(String tenTaiKhoan) throws UsernameNotFoundException {
-	    KhachHang khachHang = khachHangRepository.findByUsername(tenTaiKhoan);
-        if (khachHang.getTaiKhoan() == null) throw new UsernameNotFoundException(tenTaiKhoan);
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	    Customer customer = customerRepository.findByUsername(username);
+        if (customer.getAccount() == null) throw new UsernameNotFoundException(username);
 
 
-        return new CustomTaiKhoanDetails(khachHang);
+        return new CustomTaiKhoanDetails(customer);
 	}
 	
 }

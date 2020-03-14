@@ -11,22 +11,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import com.nhom4.vanphongphamonline.model.KhachHang;
+import com.nhom4.vanphongphamonline.model.Customer;
 import com.nhom4.vanphongphamonline.model.Role;
-import com.nhom4.vanphongphamonline.model.TaiKhoan;
+import com.nhom4.vanphongphamonline.model.Account;
 public class CustomTaiKhoanDetails implements UserDetails {
-	private KhachHang khachHang;
+	private Customer customer;
 	
-	public CustomTaiKhoanDetails(KhachHang khachHang) {
+	public CustomTaiKhoanDetails(Customer customer) {
 		// TODO Auto-generated constructor stub
-		this.khachHang = khachHang;
+		this.customer = customer;
 	}
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
 		// kiểm tra role để truy cập đến các đường link cho phép
-        for (Role role : khachHang.getTaiKhoan().getRoles()){
-        	return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.getTenRole()));
+        for (Role role : customer.getAccount().getRoles()){
+        	return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.getName()));
         }
 		return null;
 	}
@@ -34,16 +34,16 @@ public class CustomTaiKhoanDetails implements UserDetails {
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return khachHang.getTaiKhoan().getMatKhau();
+		return customer.getAccount().getPassword();
 	}
 
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return khachHang.getTaiKhoan().getTaiKhoan();
+		return customer.getAccount().getUsername();
 	}
 	public String getEmail() {
-		return khachHang.getTaiKhoan().getEmail();
+		return customer.getAccount().getEmail();
 	}
 	@Override
 	public boolean isAccountNonExpired() {

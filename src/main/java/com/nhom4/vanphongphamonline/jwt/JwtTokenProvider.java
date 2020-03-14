@@ -5,7 +5,7 @@ import java.util.Date;
 import org.springframework.stereotype.Component;
 
 import com.nhom4.vanphongphamonline.services.CustomTaiKhoanDetails;
-import com.nhom4.vanphongphamonline.services.TaiKhoanDetailsServiceImpl;
+import com.nhom4.vanphongphamonline.services.AccountDetailsServiceImpl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

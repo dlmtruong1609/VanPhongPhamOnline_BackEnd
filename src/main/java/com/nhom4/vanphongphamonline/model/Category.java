@@ -1,24 +1,22 @@
 package com.nhom4.vanphongphamonline.model;
 
-import java.util.Set;
+import javax.persistence.GeneratedValue;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document("role")
-public class Role {
+@Document
+public class Category {
+	@GeneratedValue
 	@Id
-	private Long id;
+	private String id;
 	@Field
 	private String name;
-//	@DBRef
-//	private Set<TaiKhoan> taiKhoans;
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -27,10 +25,18 @@ public class Role {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Role(Long id, String name) {
+	public Category(String id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
+	}
+	public Category() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", name=" + name + "]";
 	}
 	@Override
 	public int hashCode() {
@@ -47,21 +53,13 @@ public class Role {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Role other = (Role) obj;
+		Category other = (Category) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-	public Role() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-	@Override
-	public String toString() {
-		return "Role [id=" + id + ", name=" + name + "]";
 	}
 	
 }
