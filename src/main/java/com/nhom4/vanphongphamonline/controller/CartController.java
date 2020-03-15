@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -28,6 +29,7 @@ import org.springframework.web.server.WebSession;
 import com.nhom4.vanphongphamonline.model.OrderDetail;
 import com.nhom4.vanphongphamonline.model.Order;
 import com.nhom4.vanphongphamonline.model.Product;
+import com.nhom4.vanphongphamonline.repository.CustomerRepository;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
 import com.nhom4.vanphongphamonline.validator.OrderValidator;
 
@@ -39,10 +41,12 @@ public class CartController {
 	List<OrderDetail> list; //list để add chi tiet hoa đơn khi thêm
 	@Autowired
 	OrderValidator orderValidator; // valid hoá đơn
+	@Autowired
+	CustomerRepository customerRepository;
 	double total = 0; // tính tổng tiền của hoá đơn
 	@ResponseBody
 	@PostMapping(value = "/api/v1/cart/add")
-	public ResponseEntity<ServiceStatus> saveOrder(HttpServletRequest request, @RequestBody OrderDetail orderDetail, BindingResult bindingResult) {
+	public ResponseEntity<ServiceStatus> saveOrder(HttpServletRequest request, @RequestBody OrderDetail orderDetail, @RequestParam String username, BindingResult bindingResult) {
 		HttpSession session = request.getSession(); // lấy current session
 		Order orderSession = (Order) session.getAttribute("order"); // lấy thuộc tính mang tên order
 		// check ------------------------------
@@ -91,7 +95,7 @@ public class CartController {
 			orderSession.setTotalMoney(orderDetail.getUnitPrice());
 			orderSession.setListOrderDetail(list);
 		}
-		
+		orderSession.setCustomer(customerRepository.findByUsername(username));
 		session.setAttribute("order", orderSession);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm thành con vào giỏ hàng"), HttpStatus.OK);
 	}
