@@ -66,14 +66,6 @@ public class ProductController {
 		}
 		return new ResponseEntity<ServiceStatus>( new ServiceStatus(0, "Danh sách sản phẩm", list), HttpStatus.OK);
 	}
-//	Tim kiem text search
-	@ResponseBody
-	@GetMapping(value = "/api/v1/admin/product/search")
-	public ResponseEntity<List<Product>> getAllProductByName(@RequestParam String name) {
-		List<Product> list = null;
-		list = productRepository.findByProductName(name);
-		return new ResponseEntity<List<Product>>(list, HttpStatus.OK);
-	}
 	@ResponseBody
 	@GetMapping(value = "/api/v1/product/detail")
 	public ResponseEntity<ServiceStatus> getProductById(@RequestParam String id) {
@@ -126,6 +118,16 @@ public class ProductController {
 	@GetMapping(value = "/api/v1/product/page") // phân trang
 	public ResponseEntity<ServiceStatus> getProductPageByIndex(@RequestParam int index) {
 		Page<Product> page = productRepository.findAll(PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
+		if(page == null) {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Không có sản phẩm"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
+	}
+	//	Tim kiem text search
+	@ResponseBody
+	@GetMapping(value = "/api/v1/product/search") // phân trang
+	public ResponseEntity<ServiceStatus> search(@RequestParam int index, @RequestParam String keyword) {
+		Page<Product> page = productRepository.findByTextSearch(keyword, PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
 		if(page == null) {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Không có sản phẩm"), HttpStatus.OK);
 		}

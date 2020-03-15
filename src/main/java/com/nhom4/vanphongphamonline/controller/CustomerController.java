@@ -39,7 +39,7 @@ import com.nhom4.vanphongphamonline.model.Product;
 import com.nhom4.vanphongphamonline.model.Account;
 import com.nhom4.vanphongphamonline.repository.CustomerRepository;
 import com.nhom4.vanphongphamonline.repository.RoleRepository;
-import com.nhom4.vanphongphamonline.services.CustomTaiKhoanDetails;
+import com.nhom4.vanphongphamonline.services.CustomAccountDetails;
 import com.nhom4.vanphongphamonline.services.SecurityService;
 import com.nhom4.vanphongphamonline.services.SecurityServiceImpl;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
@@ -121,7 +121,7 @@ public class CustomerController {
 	               )
 	       );
 	 	 // tự động generate token
-        String jwt = tokenProvider.generateToken((CustomTaiKhoanDetails) authentication.getPrincipal());
+        String jwt = tokenProvider.generateToken((CustomAccountDetails) authentication.getPrincipal());
         
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng nhập thành công", jwt), HttpStatus.OK);
 	}

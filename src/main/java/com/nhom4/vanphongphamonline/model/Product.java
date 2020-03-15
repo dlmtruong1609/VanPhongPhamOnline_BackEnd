@@ -14,18 +14,22 @@ public class Product {
 	@GeneratedValue
 	@Id
 	private String id;
+	@Indexed
 	@Field
 	private String name;
+	@Indexed
 	@Field
 	private String description;
 	@Field
 	private double price;
 	@Field
 	private int inventory;
+	@Indexed
 	@Field
 	private Supplier supplier;
 	@DBRef // có quan hệ, nếu chỉ là nhúng vô ko có id thì dùng field như bth
 	private Image image;
+	@Indexed
 	@DBRef // có quan hệ, nếu chỉ là nhúng vô ko có id thì dùng field như bth
 	private Category category;
 	public String getId() {

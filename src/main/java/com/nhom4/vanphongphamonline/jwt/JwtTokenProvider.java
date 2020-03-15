@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
-import com.nhom4.vanphongphamonline.services.CustomTaiKhoanDetails;
+import com.nhom4.vanphongphamonline.services.CustomAccountDetails;
 import com.nhom4.vanphongphamonline.services.AccountDetailsServiceImpl;
 
 import io.jsonwebtoken.Claims;
@@ -22,12 +22,12 @@ public class JwtTokenProvider {
     private final long JWT_EXPIRATION = 36000000; // set thời gian token sống
 
     // Tạo ra jwt từ thông tin user
-    public String generateToken(CustomTaiKhoanDetails customTaiKhoanDetails) {
+    public String generateToken(CustomAccountDetails customAccountDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
         // Tạo chuỗi json web token từ username của user.
         return Jwts.builder()
-                   .setSubject(customTaiKhoanDetails.getUsername())
+                   .setSubject(customAccountDetails.getUsername())
                    .setIssuedAt(now)
                    .setExpiration(expiryDate)
                    .signWith(SignatureAlgorithm.HS512, JWT_SECRET)

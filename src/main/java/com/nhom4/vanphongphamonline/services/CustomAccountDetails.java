@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 import com.nhom4.vanphongphamonline.model.Customer;
 import com.nhom4.vanphongphamonline.model.Role;
 import com.nhom4.vanphongphamonline.model.Account;
-public class CustomTaiKhoanDetails implements UserDetails {
+public class CustomAccountDetails implements UserDetails {
 	private Customer customer;
 	
-	public CustomTaiKhoanDetails(Customer customer) {
+	public CustomAccountDetails(Customer customer) {
 		// TODO Auto-generated constructor stub
 		this.customer = customer;
 	}
