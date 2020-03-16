@@ -1,16 +1,13 @@
 package com.nhom4.vanphongphamonline.controller;
 
-import java.awt.PageAttributes.MediaType;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.mongodb.core.query.TextCriteria;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.model.Product;
-import com.nhom4.vanphongphamonline.repository.OrderDetailRepository;
 import com.nhom4.vanphongphamonline.repository.ProductRepository;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
 import com.nhom4.vanphongphamonline.validator.ProductValidator;
@@ -119,17 +115,37 @@ public class ProductController {
 	public ResponseEntity<ServiceStatus> getProductPageByIndex(@RequestParam int index) {
 		Page<Product> page = productRepository.findAll(PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
 		if(page == null) {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Không có sản phẩm"), HttpStatus.OK);
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm"), HttpStatus.OK);
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
 	}
-	//	Tim kiem text search
-	@ResponseBody
-	@GetMapping(value = "/api/v1/product/search") // phân trang
+	//	Tim kiem text search, tạo index trước
+	@ResponseBody //// db.product.ensureIndex({ name: "text", description : "text", category : "text" });
+	@GetMapping(value = "/api/v1/product/search") // seacrh có phân trang
 	public ResponseEntity<ServiceStatus> search(@RequestParam int index, @RequestParam String keyword) {
 		Page<Product> page = productRepository.findByTextSearch(keyword, PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
 		if(page == null) {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Không có sản phẩm"), HttpStatus.OK);
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/api/v1/product/asc") // sắp xếp có phân trang tăng dần hoặc a - z
+	public ResponseEntity<ServiceStatus> sortFromAToZ(@RequestParam int index, @RequestParam String fieldSort) {
+		Page<Product> page = productRepository.findAll(PageRequest.of(index, 12, Sort.by(Sort.Direction.ASC, fieldSort))); // 1 page có 12 sản phẩm
+		if(page == null) {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/api/v1/product/desc") // sắp xếp có phân trang giảm dần hoặc z-a
+	public ResponseEntity<ServiceStatus> sortFromZToA(@RequestParam int index, @RequestParam String fieldSort) {
+		Page<Product> page = productRepository.findAll(PageRequest.of(index, 12, Sort.by(Sort.Direction.DESC, fieldSort))); // 1 page có 12 sản phẩm
+		if(page == null) {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm"), HttpStatus.OK);
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
 	}

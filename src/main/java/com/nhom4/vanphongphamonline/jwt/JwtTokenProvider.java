@@ -53,7 +53,7 @@ public class JwtTokenProvider {
     }
     //valid token
     public boolean validateToken(String authToken) {
-    	if(authToken != null) {
+    	if(authToken != null && Jwts.parser().setSigningKey(JWT_SECRET).isSigned(authToken)) {
             try {
                 Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);
                 return true;
