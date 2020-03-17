@@ -13,5 +13,6 @@ public interface ProductRepository extends MongoRepository<Product, String>{
 	@Query("{'$text': {'$search':?0}}") // cần create index trước 
 	public Page<Product> findByTextSearch(String keyword, Pageable pageable);
 	
+	public Page<Product> findByCategory_Id(Pageable pageable, String id);
 	
 }

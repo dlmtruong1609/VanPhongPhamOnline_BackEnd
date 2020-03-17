@@ -13,13 +13,10 @@ import org.springframework.validation.Validator;
 import com.nhom4.vanphongphamonline.model.Customer;
 import com.nhom4.vanphongphamonline.model.Account;
 import com.nhom4.vanphongphamonline.repository.CustomerRepository;
-import com.nhom4.vanphongphamonline.services.SecurityServiceImpl;
 @Component
 public class AccountValidator implements Validator{ 
 	@Autowired
 	private CustomerRepository customerRepository;
-	@Autowired
-	SecurityServiceImpl securityServiceImpl;
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Override
@@ -47,7 +44,7 @@ public class AccountValidator implements Validator{
 				if(matcher.matches()!=true) {
 					errors.rejectValue("email", "Email không đúng định dạng", "5");
 				}
-				if(customerRepository.findByEmail(account.getEmail()) != null) {
+				if(customerRepository.findByAccount_Email(account.getEmail()) != null) {
 					errors.rejectValue("email", "Email này đã được đăng ký", "7");
 				}
 			}
@@ -56,7 +53,7 @@ public class AccountValidator implements Validator{
 				if (account.getUsername().length() < 6 || account.getUsername().length() > 32) {
 		            errors.rejectValue("username", "Tên tài khoản phải lớn hơn 6 hoặc bé hơn 32 kí tự", "1");
 		        }
-		        if (customerRepository.findByUsername(account.getUsername()) != null) {
+		        if (customerRepository.findByAccount_Username(account.getUsername()) != null) {
 		            errors.rejectValue("username", "Tên tài khoản đã tồn tại", "2");
 		        }
 			}
@@ -82,7 +79,7 @@ public class AccountValidator implements Validator{
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "Tên tài khoản không được bỏ trống", "3");
 			Customer khachHangExistWithUsername = new Customer();
 	        if(account.getUsername()!=null) {
-	        	khachHangExistWithUsername = customerRepository.findByUsername(account.getUsername());
+	        	khachHangExistWithUsername = customerRepository.findByAccount_Username(account.getUsername());
 	            if (khachHangExistWithUsername == null) {
 	                errors.rejectValue("username", "Sai tên tài khoản hoặc mật khẩu", "1");
 	            }

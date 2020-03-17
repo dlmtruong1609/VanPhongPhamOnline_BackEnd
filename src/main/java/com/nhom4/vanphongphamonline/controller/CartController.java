@@ -95,7 +95,7 @@ public class CartController {
 			orderSession.setTotalMoney(orderDetail.getUnitPrice());
 			orderSession.setListOrderDetail(list);
 		}
-		orderSession.setCustomer(customerRepository.findByUsername(username));
+		orderSession.setCustomer(customerRepository.findByAccount_Username(username));
 		session.setAttribute("order", orderSession);
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm thành con vào giỏ hàng"), HttpStatus.OK);
 	}

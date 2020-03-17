@@ -1,11 +1,8 @@
 package com.nhom4.vanphongphamonline.controller;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,34 +11,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.jwt.JwtTokenProvider;
 import com.nhom4.vanphongphamonline.model.Customer;
 import com.nhom4.vanphongphamonline.model.Role;
-import com.nhom4.vanphongphamonline.model.Product;
 import com.nhom4.vanphongphamonline.model.Account;
 import com.nhom4.vanphongphamonline.repository.CustomerRepository;
 import com.nhom4.vanphongphamonline.repository.RoleRepository;
 import com.nhom4.vanphongphamonline.services.CustomAccountDetails;
-import com.nhom4.vanphongphamonline.services.SecurityService;
-import com.nhom4.vanphongphamonline.services.SecurityServiceImpl;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
 import com.nhom4.vanphongphamonline.validator.CustomerValidator;
 import com.nhom4.vanphongphamonline.validator.AccountValidator;
@@ -127,7 +115,7 @@ public class CustomerController {
 	}
 	// kiểm tra có phải là role admin hay ko?
 	private boolean hasRoleAdmin() {
-		Customer customer = customerRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		Customer customer = customerRepository.findByAccount_Username(SecurityContextHolder.getContext().getAuthentication().getName());
         for (Role role : customer.getAccount().getRoles()){
         	if(role.getName().equals("ADMIN")) {
         		return true;
@@ -155,7 +143,7 @@ public class CustomerController {
 		// lấy username từ context (biến chung của project) để so sánh
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || hasRoleAdmin()) {
 			try {
-				Customer customerUpdated = customerRepository.findByUsername(username);
+				Customer customerUpdated = customerRepository.findByAccount_Username(username);
 				customerUpdated.setName(customer.getName());
 				customerUpdated.setPhone(customer.getPhone());
 				customerUpdated.setIdentityCard(customer.getIdentityCard());
@@ -177,7 +165,7 @@ public class CustomerController {
 		Customer customer = null;
 		// lấy username từ context (biến chung của project) để so sánh
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || hasRoleAdmin()) {
-			customer = customerRepository.findByUsername(username);
+			customer = customerRepository.findByAccount_Username(username);
 		} else {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không đúng tài khoản", null), HttpStatus.OK);
 		}

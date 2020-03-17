@@ -8,20 +8,21 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 @Document
 public class Account {
 	@GeneratedValue
 	@Id
 	private String id;
-	@Field
+	
 	private String username;
-	@Field
+
 	private String password;
-	@Field
+
 	private String passwordConfirm;
-	@Field
+
 	private String email;
-	@DBRef // vì danh sách hiển thị nhiều nên dùng dbref để hạn chế hiển thị thông tin quá dài khi show ra
+	@DBRef
 	private Set<Role> roles;
 	public String getId() {
 		return id;

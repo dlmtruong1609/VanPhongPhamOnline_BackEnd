@@ -7,12 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 
 public class OrderDetail {
-	@Field
 	private Product product;
-	@Field
+	
 	private double unitPrice;
-	@Field
+	
 	private int quantity;
+	
 	public Product getProduct() {
 		return product;
 	}

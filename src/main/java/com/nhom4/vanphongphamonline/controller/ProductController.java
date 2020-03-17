@@ -150,4 +150,14 @@ public class ProductController {
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
 	}
 	
+	@ResponseBody
+	@GetMapping(value = "/api/v1/product/category") // sắp xếp có phân trang giảm dần hoặc z-a
+	public ResponseEntity<ServiceStatus> searchByCategory(@RequestParam int index, @RequestParam String id) {
+		Page<Product> page = productRepository.findByCategory_Id(PageRequest.of(index, 12), id); // 1 page có 12 sản phẩm
+		if(page == null) {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
+	}
+	
 }

@@ -5,9 +5,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Address {
 	private String city;
+	
 	private String district;
+	
 	private String ward;
+	
 	private String town;
+	
 	private String street;
 	public String getCity() {
 		return city;

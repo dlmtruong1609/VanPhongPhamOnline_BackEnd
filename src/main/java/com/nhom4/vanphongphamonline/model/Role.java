@@ -6,12 +6,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 @Document("role")
 public class Role {
 	@Id
 	private Long id;
-	@Field
+	
 	private String name;
 //	@DBRef
 //	private Set<TaiKhoan> taiKhoans;

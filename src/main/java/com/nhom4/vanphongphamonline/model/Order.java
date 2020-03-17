@@ -11,6 +11,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Document
@@ -19,17 +20,11 @@ public class Order {
 	@Id
 	private String id;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm a")
-	@Field
 	private Date billDate;
-	@Field
 	private double totalMoney;
-	@Field
 	private List<OrderDetail> listOrderDetail;
-	@Field
 	private Customer customer;
-	@Field
 	private Address address;
-	@Field
 	private String note;
 	@Field
 	private String payMethod;

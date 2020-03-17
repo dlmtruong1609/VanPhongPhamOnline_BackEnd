@@ -80,7 +80,7 @@ public class OrderController {
 	public ResponseEntity<ServiceStatus> getAllOrder(@RequestParam String username) {
 		List<Order> list = null;
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
-			list = orderRepository.getAllOrderByUsername(username);
+			list = orderRepository.getAllOrderByCustomer_Account_Username(username);
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách hoá đơn", list), HttpStatus.OK);
 	}

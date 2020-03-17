@@ -10,24 +10,23 @@ import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.format.annotation.DateTimeFormat;
 @Document
 public class Customer {
 	@GeneratedValue
 	@Id
 	private String id;
-	@Field
+
 	private String name;
-	@Field
+
 	private Address address;
-	@Field
+
 	private String phone;
-	@Field
+
 	private String identityCard;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@Field
 	private Date birthday;
-	@Field
 	private Account account;
 	public String getId() {
 		return id;
