@@ -37,8 +37,6 @@ import com.nhom4.vanphongphamonline.validator.AccountValidator;
 public class CustomerController {
 	@Autowired
 	private CustomerRepository customerRepository;
-	@Autowired
-	private EmailController emailController;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -80,8 +78,6 @@ public class CustomerController {
 		Customer customer = new Customer();
 		customer.setAccount(account);
 		customerRepository.insert(customer);
-		// gửi email s khi đăng ký
-//		emailController.sendEmail(taiKhoan.getEmail(), "ANANAS Đăng ký", "Chào mừng đến với kênh mua sắm trực tiếp của văn phòng phẩm ANANAS");
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng ký thành công"), HttpStatus.OK);
 	}
 	@ResponseBody
