@@ -2,6 +2,7 @@ package com.nhom4.vanphongphamonline.model;
 
 import javax.persistence.GeneratedValue;
 
+import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.index.TextIndexed;
@@ -26,10 +27,23 @@ public class Product {
 	
 	private Supplier supplier;
 	
-	private Image image;
+	private String urlImage;
 	
 	private Category category;
 	
+	
+	public String getUrlImage() {
+		return urlImage;
+	}
+	public void setUrlImage(String urlImage) {
+		this.urlImage = urlImage;
+	}
+	public Category getCategory() {
+		return category;
+	}
+	public void setCategory(Category category) {
+		this.category = category;
+	}
 	public String getId() {
 		return id;
 	}
@@ -66,20 +80,15 @@ public class Product {
 	public void setSupplier(Supplier supplier) {
 		this.supplier = supplier;
 	}
-	public Image getImage() {
-		return image;
-	}
-	public void setImage(Image image) {
-		this.image = image;
-	}
 	public Category getCaterogy() {
 		return category;
 	}
 	public void setCaterogy(Category category) {
 		this.category = category;
 	}
+	
 	public Product(String id, String name, String description, double price, int inventory, Supplier supplier,
-			Image image, Category category) {
+			String urlImage, Category category) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -87,25 +96,12 @@ public class Product {
 		this.price = price;
 		this.inventory = inventory;
 		this.supplier = supplier;
-		this.image = image;
+		this.urlImage = urlImage;
 		this.category = category;
 	}
 	public Product() {
 		super();
 		// TODO Auto-generated constructor stub
-	}
-	@Override
-	public String toString() {
-		return "Product [id=" + id + ", name=" + name + ", description=" + description + ", price=" + price
-				+ ", inventory=" + inventory + ", supplier=" + supplier + ", image=" + image + ", category=" + category
-				+ "]";
-	}
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
 	}
 	@Override
 	public boolean equals(Object obj) {
