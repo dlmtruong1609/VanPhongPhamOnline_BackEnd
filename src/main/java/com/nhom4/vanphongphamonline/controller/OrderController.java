@@ -25,9 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.model.Order;
+import com.nhom4.vanphongphamonline.model.Product;
 import com.nhom4.vanphongphamonline.model.Customer;
 import com.nhom4.vanphongphamonline.repository.OrderDetailRepository;
 import com.nhom4.vanphongphamonline.repository.OrderRepository;
+import com.nhom4.vanphongphamonline.repository.ProductRepository;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
 import com.nhom4.vanphongphamonline.validator.OrderValidator;
 
@@ -37,6 +39,8 @@ public class OrderController {
 	private OrderRepository orderRepository;
 	@Autowired
 	private OrderValidator orderValidator;
+	@Autowired
+	private ProductRepository productRepository;
 	@Autowired
 	public OrderController(OrderRepository orderRepository) {
 		this.orderRepository = orderRepository;
@@ -58,7 +62,21 @@ public class OrderController {
 			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
 	        }
 		//--------------------------------------------------
-	      
+		// kiểm tra inventory
+		for (int i = 0; i < order.getListOrderDetail().size(); i++) {
+	    	Optional<Product> product = productRepository.findById(order.getListOrderDetail().get(i).getProduct().getId());
+	    	int inventory = product.get().getInventory();
+	    	int quantity = order.getListOrderDetail().get(i).getQuantity(); // số lượng đặt mua
+	    	System.out.println(inventory < quantity);
+	    	System.out.println(inventory);
+	    	System.out.println(quantity);
+	    	if(inventory < quantity) {
+	    		return new ResponseEntity<ServiceStatus>(new ServiceStatus(4, "Sản phẩm " + product.get().getName() + " chỉ còn " + product.get().getInventory() + " sản phẩm"), HttpStatus.OK);
+	    	} else {
+	    		product.get().setInventory(inventory - quantity);
+	    		productRepository.save(product.get());
+	    	}
+		} // ------------------------------
 		order.setBillDate(new Date());
 		orderRepository.insert(order);
 		HttpSession session = request.getSession();

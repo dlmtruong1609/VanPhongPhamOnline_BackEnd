@@ -25,8 +25,10 @@ public class Customer {
 	private String phone;
 
 	private String identityCard;
+	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date birthday;
+	
 	private Account account;
 	public String getId() {
 		return id;

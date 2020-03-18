@@ -10,6 +10,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Base64.Encoder;
 import java.util.List;
 
 import org.bson.BsonBinarySubType;
@@ -55,6 +56,6 @@ public class ImageController {
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Lấy hình ảnh", image.getImg()), HttpStatus.OK);
 //		trả về hình ảnh
 //		Encoder encoder = Base64.getEncoder();
-//		return encoder.encodeToString(hinhAnh.getImg().getData());
+//		return encoder.encodeToString(image.getImg().getData());
 	}
 }
