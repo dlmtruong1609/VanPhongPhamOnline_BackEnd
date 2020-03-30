@@ -81,5 +81,14 @@ public class CategoryController {
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
 	}
+	@ResponseBody
+	@GetMapping(value = "/api/v1/category/list")
+	public ResponseEntity<ServiceStatus> getAllCategory() {
+		List<Category> list = categoryRepository.findAll();
+		if(list == null) {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có category"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách category", list), HttpStatus.OK);
+	}
 
 }
