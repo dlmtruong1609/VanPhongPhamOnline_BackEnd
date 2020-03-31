@@ -70,7 +70,14 @@ public class CategoryController {
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
 	}
-	
+	@ResponseBody
+	@GetMapping(value = "/api/v1/category/detail")
+	public ResponseEntity<ServiceStatus> getCategoryById(@RequestParam String id) {
+		if(categoryRepository.findById(id) == null) {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Sản phẩm không tìm thấy"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Tìm thành công", categoryRepository.findById(id)), HttpStatus.OK);
+	}
 	//	Tim kiem text search, tạo index trước
 	@ResponseBody //// db.category.ensureIndex({ name: "text"});
 	@GetMapping(value = "/api/v1/category/search") // seacrh có phân trang

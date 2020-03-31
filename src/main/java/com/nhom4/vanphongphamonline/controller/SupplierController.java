@@ -74,7 +74,14 @@ public class SupplierController {
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật nhà cung cấp thành công sản phẩm thành công"), HttpStatus.OK);
 	}
-	
+	@ResponseBody
+	@GetMapping(value = "/api/v1/supplier/detail")
+	public ResponseEntity<ServiceStatus> getSupplierById(@RequestParam String id) {
+		if(supplierRepository.findById(id) == null) {
+			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Sản phẩm không tìm thấy"), HttpStatus.OK);
+		}
+		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Tìm thành công", supplierRepository.findById(id)), HttpStatus.OK);
+	}
 	@ResponseBody
 	@GetMapping(value = "/api/v1/supplier/page") // phân trang
 	public ResponseEntity<ServiceStatus> getSupplierPageByIndex(@RequestParam int index) {
