@@ -9,3 +9,5 @@ rồi chạy các lệnh bên dưới
 mongoimport --db BanHangOnlineDB --collection category --file category.json --jsonArray
 mongoimport --db BanHangOnlineDB --collection supplier --file supplier.json --jsonArray
 mongoimport --db BanHangOnlineDB --collection product --file product.json --jsonArray
+import address
+mongoimport --db VanPhongPhamOnlineDB --collection city --file tinh_tp.json

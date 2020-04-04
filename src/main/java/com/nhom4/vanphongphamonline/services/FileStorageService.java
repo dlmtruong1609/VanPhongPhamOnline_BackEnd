@@ -1,4 +1,6 @@
 package com.nhom4.vanphongphamonline.services;
+import org.bson.BsonBinarySubType;
+import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -7,6 +9,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nhom4.vanphongphamonline.config.FileStorage;
+import com.nhom4.vanphongphamonline.model.FileData;
+import com.nhom4.vanphongphamonline.repository.FileDataRepository;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -14,10 +18,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 
 @Service
 public class FileStorageService {
 	private final Path fileStorageLocation;
+	@Autowired
+    private FileDataRepository fileDataRepository;
 
     @Autowired
     public FileStorageService(FileStorage fileStorage) {
@@ -30,27 +37,24 @@ public class FileStorageService {
             ex.printStackTrace();
         }
     }
-
-    public String storeFile(MultipartFile file) {
+    // lưu local thì đổi File Data thành String
+    public FileData storeFile(MultipartFile file) throws IOException {
         // Viết chuẩn tên tệp
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
-        try {
-            // Kiểm tra file có chứa kí tự
-            if(fileName.contains("..")) {
-                return null;
-            }
-
-            // Copy file to the target location (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        // Kiểm tra file có chứa kí tự
+        if(fileName.contains("..")) {
+            return null;
         }
-        return fileName;
-    }
 
+        // dùng cho local, lấy tên của file đã có copy file này và thay thế vào folder của file
+//            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+//            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+        FileData fileData = new FileData(fileName, file.getContentType(), new Binary(BsonBinarySubType.BINARY, file.getBytes()));
+        return fileDataRepository.insert(fileData);
+    }
+    // load từ local
     public Resource loadFileAsResource(String fileName) {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
@@ -62,5 +66,9 @@ public class FileStorageService {
             ex.printStackTrace();
         }
         return null;
+    }
+    //load từ db
+    public FileData getFile(String id) {
+        return fileDataRepository.findById(id).get();
     }
 }

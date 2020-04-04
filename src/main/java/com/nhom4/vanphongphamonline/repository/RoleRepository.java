@@ -7,6 +7,6 @@ import com.nhom4.vanphongphamonline.model.Role;
 
 import antlr.collections.List;
 
-public interface RoleRepository extends MongoRepository<Role, Long> {
+public interface RoleRepository extends MongoRepository<Role, String> {
 	public java.util.List<Role> findByName(String name);
 }
