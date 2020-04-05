@@ -44,7 +44,7 @@ public class FileController {
     @GetMapping("/api/v1/file/{id}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String id, HttpServletRequest request) {
     	FileData fileData = fileStorageService.getFile(id);
-
+    	if(fileData == null) return null;
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(fileData.getType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileData.getName() + "\"")

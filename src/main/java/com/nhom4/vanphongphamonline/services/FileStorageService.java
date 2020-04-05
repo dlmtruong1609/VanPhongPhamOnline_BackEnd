@@ -69,6 +69,9 @@ public class FileStorageService {
     }
     //load từ db
     public FileData getFile(String id) {
-        return fileDataRepository.findById(id).get();
+        if(fileDataRepository.findById(id).equals("Optional.empty")) {
+        	return fileDataRepository.findById(id).get();
+        }
+        return null;
     }
 }
