@@ -25,11 +25,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.jwt.JwtTokenProvider;
 import com.nhom4.vanphongphamonline.model.Customer;
-import com.nhom4.vanphongphamonline.model.Role;
 import com.nhom4.vanphongphamonline.model.Account;
 import com.nhom4.vanphongphamonline.repository.CustomerRepository;
 import com.nhom4.vanphongphamonline.repository.RoleRepository;
 import com.nhom4.vanphongphamonline.services.CustomAccountDetails;
+import com.nhom4.vanphongphamonline.services.CustomerService;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
 import com.nhom4.vanphongphamonline.validator.CustomerValidator;
 import com.nhom4.vanphongphamonline.validator.AccountValidator;
@@ -37,6 +37,8 @@ import com.nhom4.vanphongphamonline.validator.AccountValidator;
 public class CustomerController {
 	@Autowired
 	private CustomerRepository customerRepository;
+	@Autowired
+	private CustomerService customerService;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -74,7 +76,7 @@ public class CustomerController {
 	   // mã hoá mật khẩu
 	    account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
 	    account.setPasswordConfirm(bCryptPasswordEncoder.encode(account.getPasswordConfirm()));
-	    account.setRoles(new HashSet<>(roleRepository.findByName("MEMBER")));
+	    account.setRoles(new HashSet<>(roleRepository.findByName("ADMIN")));
 		Customer customer = new Customer();
 		customer.setAccount(account);
 		customerRepository.insert(customer);
@@ -109,16 +111,7 @@ public class CustomerController {
         
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng nhập thành công", jwt), HttpStatus.OK);
 	}
-	// kiểm tra có phải là role admin hay ko?
-	private boolean hasRoleAdmin() {
-		Customer customer = customerRepository.findByAccount_Username(SecurityContextHolder.getContext().getAuthentication().getName());
-        for (Role role : customer.getAccount().getRoles()){
-        	if(role.getName().equals("ADMIN")) {
-        		return true;
-        	}
-        }
-        return false;
-	}
+
 	@ResponseBody
 	@PostMapping(value = "/api/v1/customer/update")
 	public ResponseEntity<ServiceStatus> updateCustomerByUsername(@RequestBody Customer customer, @RequestParam String username, BindingResult bindingResult) {
@@ -137,7 +130,7 @@ public class CustomerController {
 		}
 		//---------------------------------------
 		// lấy username từ context (biến chung của project) để so sánh
-		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || hasRoleAdmin()) {
+		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || customerService.hasRoleAdmin()) {
 			try {
 				Customer customerUpdated = customerRepository.findByAccount_Username(username);
 				customerUpdated.setName(customer.getName());
@@ -160,7 +153,7 @@ public class CustomerController {
 	public ResponseEntity<ServiceStatus> getCustomerByUsername(@RequestParam String username) {
 		Customer customer = null;
 		// lấy username từ context (biến chung của project) để so sánh
-		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || hasRoleAdmin()) {
+		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || customerService.hasRoleAdmin()) {
 			customer = customerRepository.findByAccount_Username(username);
 		} else {
 			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không đúng tài khoản", null), HttpStatus.OK);

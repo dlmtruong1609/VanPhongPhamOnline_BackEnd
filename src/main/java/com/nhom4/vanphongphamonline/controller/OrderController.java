@@ -26,10 +26,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.model.Order;
 import com.nhom4.vanphongphamonline.model.Product;
+import com.nhom4.vanphongphamonline.model.Role;
 import com.nhom4.vanphongphamonline.model.Customer;
+import com.nhom4.vanphongphamonline.repository.CustomerRepository;
 import com.nhom4.vanphongphamonline.repository.OrderDetailRepository;
 import com.nhom4.vanphongphamonline.repository.OrderRepository;
 import com.nhom4.vanphongphamonline.repository.ProductRepository;
+import com.nhom4.vanphongphamonline.services.CustomerService;
 import com.nhom4.vanphongphamonline.services.ServiceStatus;
 import com.nhom4.vanphongphamonline.validator.OrderValidator;
 
@@ -45,6 +48,8 @@ public class OrderController {
 	public OrderController(OrderRepository orderRepository) {
 		this.orderRepository = orderRepository;
 	}
+	@Autowired
+	private CustomerService customerService;
 	@ResponseBody
 	@PostMapping(value = "/api/v1/order/pay") // sử dụng khi thanh toán ko dùng để add vào giỏ hàng
 	public ResponseEntity<ServiceStatus> createOrder(@RequestBody Order order, BindingResult bindingResult, HttpServletRequest request) throws ParseException {
@@ -92,12 +97,11 @@ public class OrderController {
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Chi tiết hoá đơn", order), HttpStatus.OK);
 	}
-	
 	@ResponseBody
 	@GetMapping(value = "/api/v1/order/list")
 	public ResponseEntity<ServiceStatus> getAllOrder(@RequestParam String username) {
 		List<Order> list = null;
-		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
+		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || customerService.hasRoleAdmin()) {
 			list = orderRepository.getAllOrderByCustomer_Account_Username(username);
 		}
 		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách hoá đơn", list), HttpStatus.OK);

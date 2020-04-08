@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -69,9 +70,10 @@ public class FileStorageService {
     }
     //load từ db
     public FileData getFile(String id) {
-        if(fileDataRepository.findById(id).equals("Optional.empty")) {
-        	return fileDataRepository.findById(id).get();
-        }
-        return null;
+    	try {
+    		return fileDataRepository.findById(id).get();
+		} catch (NoSuchElementException e) {
+			 return null;
+		}
     }
 }
