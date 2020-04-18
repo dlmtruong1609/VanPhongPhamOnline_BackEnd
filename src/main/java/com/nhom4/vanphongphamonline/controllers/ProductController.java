@@ -155,8 +155,8 @@ public class ProductController {
 	
 	@ResponseBody
 	@GetMapping(value = "/api/v1/product/category") // sắp xếp có phân trang giảm dần hoặc z-a
-	public ResponseEntity<CustomResponse> searchByCategory(@RequestParam int index, @RequestParam String id) {
-		Page<Product> page = productRepository.findByCategory_Id(PageRequest.of(index, 12), id); // 1 page có 12 sản phẩm
+	public ResponseEntity<CustomResponse> searchByCategory(@RequestParam int index, @RequestParam String name) {
+		Page<Product> page = productRepository.findByCategory_Name(PageRequest.of(index, 12), name); // 1 page có 12 sản phẩm
 		if(page == null) {
 			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Không có sản phẩm", null), HttpStatus.OK);
 		}
