@@ -76,7 +76,7 @@ public class CustomerController {
 	   // mã hoá mật khẩu
 	    account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
 	    account.setPasswordConfirm(bCryptPasswordEncoder.encode(account.getPasswordConfirm()));
-	    account.setRoles(new HashSet<>(roleRepository.findByName("MEMBER")));
+	    account.setRoles(new HashSet<>(roleRepository.findByName("ADMIN")));
 		Customer customer = new Customer();
 		customer.setAccount(account);
 		customerRepository.insert(customer);
