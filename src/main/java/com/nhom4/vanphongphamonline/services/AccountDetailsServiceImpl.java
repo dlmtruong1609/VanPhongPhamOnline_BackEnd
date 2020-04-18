@@ -11,10 +11,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.nhom4.vanphongphamonline.model.Customer;
-import com.nhom4.vanphongphamonline.model.Role;
-import com.nhom4.vanphongphamonline.model.Account;
-import com.nhom4.vanphongphamonline.repository.CustomerRepository;
+import com.nhom4.vanphongphamonline.models.Account;
+import com.nhom4.vanphongphamonline.models.Customer;
+import com.nhom4.vanphongphamonline.models.Role;
+import com.nhom4.vanphongphamonline.repositories.CustomerRepository;
 @Service
 public class AccountDetailsServiceImpl implements UserDetailsService {
 	@Autowired

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nhom4.vanphongphamonline.model.FileData;
-import com.nhom4.vanphongphamonline.repository.FileDataRepository;
+import com.nhom4.vanphongphamonline.models.FileData;
+import com.nhom4.vanphongphamonline.repositories.FileDataRepository;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

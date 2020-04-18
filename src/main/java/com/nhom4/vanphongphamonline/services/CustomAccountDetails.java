@@ -6,8 +6,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.nhom4.vanphongphamonline.model.Customer;
-import com.nhom4.vanphongphamonline.model.Role;
+import com.nhom4.vanphongphamonline.models.Customer;
+import com.nhom4.vanphongphamonline.models.Role;
 public class CustomAccountDetails implements UserDetails {
 	private Customer customer;
 	

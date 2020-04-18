@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.nhom4.vanphongphamonline.model.Customer;
-import com.nhom4.vanphongphamonline.model.Role;
-import com.nhom4.vanphongphamonline.repository.CustomerRepository;
+import com.nhom4.vanphongphamonline.models.Customer;
+import com.nhom4.vanphongphamonline.models.Role;
+import com.nhom4.vanphongphamonline.repositories.CustomerRepository;
 @Service
 public class CustomerService {
 	@Autowired
