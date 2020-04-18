@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 public class CORSFilter implements Filter {
 
     // Danh sách domain cho phép truy cập server, có thể ghi thêm
-    private final List<String> allowedOrigins = Arrays.asList("http://localhost:3000", "https://vanphongphamonlinevn.herokuapp.com"); 
+    private final List<String> allowedOrigins = Arrays.asList("http://localhost:3000", "https://vpponline.now.sh"); 
 
     public void destroy() {
 

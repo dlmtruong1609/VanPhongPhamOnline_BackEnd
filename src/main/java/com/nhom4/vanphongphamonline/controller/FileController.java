@@ -37,11 +37,11 @@ public class FileController {
               .path(fileData.getId())
               .toUriString();
 
-      return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Upload thành công", fileDownloadUri), HttpStatus.OK);
+      return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Upload thành công", fileDownloadUri + ".png"), HttpStatus.OK);
   }
 
 
-    @GetMapping("/api/v1/file/{id}")
+    @GetMapping("/api/v1/file/{id}.png")
     public ResponseEntity<Resource> downloadFile(@PathVariable String id, HttpServletRequest request) {
     	FileData fileData = fileStorageService.getFile(id);
     	System.out.println(fileData);
