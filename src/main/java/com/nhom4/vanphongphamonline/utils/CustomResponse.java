@@ -1,10 +1,10 @@
-package com.nhom4.vanphongphamonline.services;
+package com.nhom4.vanphongphamonline.utils;
 
 import java.util.List;
 
 import com.nhom4.vanphongphamonline.model.Order;
 // cấu hình chung khi trả về response
-public class ServiceStatus {
+public class CustomResponse {
 	private int code;
 	private String message;
 	private Object result;
@@ -28,18 +28,13 @@ public class ServiceStatus {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public ServiceStatus(int code, String message) {
-		super();
-		this.code = code;
-		this.message = message;
-	}
-	public ServiceStatus(int code, String message, Object result) {
+	public CustomResponse(int code, String message, Object result) {
 		super();
 		this.code = code;
 		this.message = message;
 		this.result = result;
 	}
-	public ServiceStatus() {
+	public CustomResponse() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

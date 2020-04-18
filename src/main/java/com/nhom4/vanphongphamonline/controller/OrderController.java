@@ -33,7 +33,7 @@ import com.nhom4.vanphongphamonline.repository.OrderDetailRepository;
 import com.nhom4.vanphongphamonline.repository.OrderRepository;
 import com.nhom4.vanphongphamonline.repository.ProductRepository;
 import com.nhom4.vanphongphamonline.services.CustomerService;
-import com.nhom4.vanphongphamonline.services.ServiceStatus;
+import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validator.OrderValidator;
 
 @Controller
@@ -52,7 +52,7 @@ public class OrderController {
 	private CustomerService customerService;
 	@ResponseBody
 	@PostMapping(value = "/api/v1/order/pay") // sử dụng khi thanh toán ko dùng để add vào giỏ hàng
-	public ResponseEntity<ServiceStatus> createOrder(@RequestBody Order order, BindingResult bindingResult, HttpServletRequest request) throws ParseException {
+	public ResponseEntity<CustomResponse> createOrder(@RequestBody Order order, BindingResult bindingResult, HttpServletRequest request) throws ParseException {
 		// check ---------------------------------------
 		orderValidator.validate(order, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -62,9 +62,9 @@ public class OrderController {
 				        fieldError = (FieldError) object;
 				    }
 				}
-				   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
+				   CustomResponse serviceStatusError = new CustomResponse(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()), null);
 			   
-			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
+			   return new ResponseEntity<CustomResponse>(serviceStatusError, HttpStatus.OK);
 	        }
 		//--------------------------------------------------
 		// kiểm tra inventory
@@ -76,7 +76,7 @@ public class OrderController {
 	    	System.out.println(inventory);
 	    	System.out.println(quantity);
 	    	if(inventory < quantity) {
-	    		return new ResponseEntity<ServiceStatus>(new ServiceStatus(4, "Sản phẩm " + product.get().getName() + " chỉ còn " + product.get().getInventory() + " sản phẩm"), HttpStatus.OK);
+	    		return new ResponseEntity<CustomResponse>(new CustomResponse(4, "Sản phẩm " + product.get().getName() + " chỉ còn " + product.get().getInventory() + " sản phẩm", null), HttpStatus.OK);
 	    	} else {
 	    		product.get().setInventory(inventory - quantity);
 	    		productRepository.save(product.get());
@@ -86,24 +86,24 @@ public class OrderController {
 		orderRepository.insert(order);
 		HttpSession session = request.getSession();
 		session.invalidate();
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thanh toán thành công"), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thanh toán thành công", null), HttpStatus.OK);
 	}
 	@ResponseBody
 	@GetMapping(value = "/api/v1/order/detail")
-	public ResponseEntity<ServiceStatus> getOrderById(@RequestParam String id, @RequestParam String username) {
+	public ResponseEntity<CustomResponse> getOrderById(@RequestParam String id, @RequestParam String username) {
 		Optional<Order> order = null;
-		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username)) {
+		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || customerService.hasRoleAdmin()) {
 			order = orderRepository.findById(id);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Chi tiết hoá đơn", order), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Chi tiết hoá đơn", order), HttpStatus.OK);
 	}
 	@ResponseBody
 	@GetMapping(value = "/api/v1/order/list")
-	public ResponseEntity<ServiceStatus> getAllOrder(@RequestParam String username) {
+	public ResponseEntity<CustomResponse> getAllOrder(@RequestParam String username) {
 		List<Order> list = null;
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || customerService.hasRoleAdmin()) {
 			list = orderRepository.getAllOrderByCustomer_Account_Username(username);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách hoá đơn", list), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Danh sách hoá đơn", list), HttpStatus.OK);
 	}
 }

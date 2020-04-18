@@ -1,4 +1,4 @@
-package com.nhom4.vanphongphamonline.utils;
+package com.nhom4.vanphongphamonline.model;
 
 public class EmailContent {
 	private String emailTo;

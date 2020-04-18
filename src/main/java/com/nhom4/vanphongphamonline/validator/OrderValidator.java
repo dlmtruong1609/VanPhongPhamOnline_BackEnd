@@ -8,9 +8,9 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.nhom4.vanphongphamonline.model.OrderDetail;
+import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.model.Order;
 import com.nhom4.vanphongphamonline.model.Account;
-import com.nhom4.vanphongphamonline.services.ServiceStatus;
 @Component
 public class OrderValidator implements Validator{
 

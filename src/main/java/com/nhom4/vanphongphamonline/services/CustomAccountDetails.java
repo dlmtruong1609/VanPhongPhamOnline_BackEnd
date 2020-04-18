@@ -2,18 +2,12 @@ package com.nhom4.vanphongphamonline.services;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.nhom4.vanphongphamonline.model.Customer;
 import com.nhom4.vanphongphamonline.model.Role;
-import com.nhom4.vanphongphamonline.model.Account;
 public class CustomAccountDetails implements UserDetails {
 	private Customer customer;
 	

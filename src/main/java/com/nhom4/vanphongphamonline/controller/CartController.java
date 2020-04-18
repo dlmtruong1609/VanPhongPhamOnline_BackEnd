@@ -30,7 +30,7 @@ import com.nhom4.vanphongphamonline.model.OrderDetail;
 import com.nhom4.vanphongphamonline.model.Order;
 import com.nhom4.vanphongphamonline.model.Product;
 import com.nhom4.vanphongphamonline.repository.CustomerRepository;
-import com.nhom4.vanphongphamonline.services.ServiceStatus;
+import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validator.OrderValidator;
 
 @Controller
@@ -46,7 +46,7 @@ public class CartController {
 	double total = 0; // tính tổng tiền của hoá đơn
 	@ResponseBody
 	@PostMapping(value = "/api/v1/cart/add")
-	public ResponseEntity<ServiceStatus> saveOrder(HttpServletRequest request, @RequestBody OrderDetail orderDetail, @RequestParam String username, BindingResult bindingResult) {
+	public ResponseEntity<CustomResponse> saveOrder(HttpServletRequest request, @RequestBody OrderDetail orderDetail, @RequestParam String username, BindingResult bindingResult) {
 		HttpSession session = request.getSession(); // lấy current session
 		Order orderSession = (Order) session.getAttribute("order"); // lấy thuộc tính mang tên order
 		// check ------------------------------
@@ -58,9 +58,9 @@ public class CartController {
 			        fieldError = (FieldError) object;
 			    }
 			}
-			   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
+			   CustomResponse serviceStatusError = new CustomResponse(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()), null);
 		   
-		   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
+		   return new ResponseEntity<CustomResponse>(serviceStatusError, HttpStatus.OK);
         }
 //		-------------------------------------
 		list = new ArrayList<OrderDetail>();
@@ -70,7 +70,7 @@ public class CartController {
 				OrderDetail cthd = orderSession.getListOrderDetail().get(i);
 				if(cthd.getProduct().getId().equals(orderDetail.getProduct().getId())) {
 					if((cthd.getQuantity() + orderDetail.getQuantity()) > cthd.getProduct().getInventory()) {
-						return new ResponseEntity<ServiceStatus>(new ServiceStatus(5, "Số lượng đặt vượt quá số lượng trong kho, vui lòng xem lại giỏ hàng"), HttpStatus.OK);
+						return new ResponseEntity<CustomResponse>(new CustomResponse(5, "Số lượng đặt vượt quá số lượng trong kho, vui lòng xem lại giỏ hàng", null), HttpStatus.OK);
 					}
 					cthd.setQuantity(cthd.getQuantity() + orderDetail.getQuantity()); // tính số lượng
 					cthd.setUnitPrice(cthd.getUnitPrice() + orderDetail.getUnitPrice()); // tính đơn giá
@@ -97,12 +97,12 @@ public class CartController {
 		}
 		orderSession.setCustomer(customerRepository.findByAccount_Username(username));
 		session.setAttribute("order", orderSession);
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm thành con vào giỏ hàng"), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thêm thành con vào giỏ hàng", null), HttpStatus.OK);
 	}
 
 	@ResponseBody
 	@PostMapping(value = "/api/v1/cart/update") // id cua sanpham, action la tang hoac giam
-	public ResponseEntity<ServiceStatus> updateOrder(@RequestBody Order order, HttpServletRequest request, BindingResult bindingResult) {
+	public ResponseEntity<CustomResponse> updateOrder(@RequestBody Order order, HttpServletRequest request, BindingResult bindingResult) {
 		HttpSession session = request.getSession();
 		for (int i = 0; i < order.getListOrderDetail().size(); i++) {
 			OrderDetail orderDetail = order.getListOrderDetail().get(i);
@@ -116,30 +116,30 @@ public class CartController {
 				        fieldError = (FieldError) object;
 				    }
 				}
-				   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
+				   CustomResponse serviceStatusError = new CustomResponse(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()), null);
 			   
-			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
+			   return new ResponseEntity<CustomResponse>(serviceStatusError, HttpStatus.OK);
 	        }
 			//-------------------------------
 		}
 		order.setTotalMoney(total);
 		total = 0;
 		session.setAttribute("order", order);
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật thành công", session.getAttribute("order")), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Cập nhật thành công", session.getAttribute("order")), HttpStatus.OK);
 	}
 
 	@ResponseBody
 	@GetMapping(value = "/api/v1/cart/data")
-	public ResponseEntity<ServiceStatus> getOrderInfo(HttpServletRequest request) {
+	public ResponseEntity<CustomResponse> getOrderInfo(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		if(session.getAttribute("order") == null) {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm trong giỏ hàng", ""), HttpStatus.OK);
+			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Không có sản phẩm trong giỏ hàng", ""), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", session.getAttribute("order")), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thành công", session.getAttribute("order")), HttpStatus.OK);
 	}
 	@ResponseBody
 	@PostMapping(value = "/api/v1/cart/delete") // id la ma san pham
-	public ResponseEntity<ServiceStatus> removeOrder(@RequestParam String id, HttpServletRequest request) {
+	public ResponseEntity<CustomResponse> removeOrder(@RequestParam String id, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		Order order = (Order) session.getAttribute("order");
 		if(order.getListOrderDetail() != null) {
@@ -150,9 +150,9 @@ public class CartController {
 				}
 			}
 		} else {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có sản phẩm trong giỏ hàng", ""), HttpStatus.OK);
+			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Không có sản phẩm trong giỏ hàng", ""), HttpStatus.OK);
 		}
 		session.setAttribute("order", order);
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", session.getAttribute("order")), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thành công", session.getAttribute("order")), HttpStatus.OK);
 	}
 }

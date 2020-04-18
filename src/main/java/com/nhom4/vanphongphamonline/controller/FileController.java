@@ -15,7 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.nhom4.vanphongphamonline.model.FileData;
 import com.nhom4.vanphongphamonline.services.FileStorageService;
-import com.nhom4.vanphongphamonline.services.ServiceStatus;
+import com.nhom4.vanphongphamonline.utils.CustomResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class FileController {
     @Autowired
     private FileStorageService fileStorageService;
   @PostMapping("/api/v1/file/uploadFile")
-  public ResponseEntity<ServiceStatus> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+  public ResponseEntity<CustomResponse> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
       FileData fileData = fileStorageService.storeFile(file);
 
       String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -37,7 +37,7 @@ public class FileController {
               .path(fileData.getId())
               .toUriString();
 
-      return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Upload thành công", fileDownloadUri), HttpStatus.OK);
+      return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Upload thành công", fileDownloadUri), HttpStatus.OK);
   }
 
 

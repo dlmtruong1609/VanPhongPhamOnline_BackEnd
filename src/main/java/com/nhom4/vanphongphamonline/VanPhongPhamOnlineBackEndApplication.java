@@ -13,11 +13,7 @@ import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
-import com.nhom4.vanphongphamonline.config.FileStorage;
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
-@EnableConfigurationProperties({
-	FileStorage.class
-})
 @SpringBootApplication
 public class VanPhongPhamOnlineBackEndApplication {
 

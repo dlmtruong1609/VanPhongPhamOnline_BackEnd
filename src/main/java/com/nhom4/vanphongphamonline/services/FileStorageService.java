@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nhom4.vanphongphamonline.config.FileStorage;
 import com.nhom4.vanphongphamonline.model.FileData;
 import com.nhom4.vanphongphamonline.repository.FileDataRepository;
 
@@ -23,21 +22,10 @@ import java.util.Optional;
 
 @Service
 public class FileStorageService {
-	private final Path fileStorageLocation;
 	@Autowired
     private FileDataRepository fileDataRepository;
 
-    @Autowired
-    public FileStorageService(FileStorage fileStorage) {
-        this.fileStorageLocation = Paths.get(fileStorage.getUploadDir())
-                .toAbsolutePath().normalize();
 
-        try {
-            Files.createDirectories(this.fileStorageLocation);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
     // lưu local thì đổi File Data thành String
     public FileData storeFile(MultipartFile file) throws IOException {
         // Viết chuẩn tên tệp
@@ -54,19 +42,6 @@ public class FileStorageService {
 
         FileData fileData = new FileData(fileName, file.getContentType(), new Binary(BsonBinarySubType.BINARY, file.getBytes()));
         return fileDataRepository.insert(fileData);
-    }
-    // load từ local
-    public Resource loadFileAsResource(String fileName) {
-        try {
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists()) {
-                return resource;
-            }
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-        }
-        return null;
     }
     //load từ db
     public FileData getFile(String id) {

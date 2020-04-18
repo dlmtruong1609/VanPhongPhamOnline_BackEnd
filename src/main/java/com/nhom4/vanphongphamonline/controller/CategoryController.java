@@ -19,7 +19,7 @@ import com.nhom4.vanphongphamonline.model.Product;
 import com.nhom4.vanphongphamonline.model.Supplier;
 import com.nhom4.vanphongphamonline.repository.CategoryRepository;
 import com.nhom4.vanphongphamonline.repository.OrderRepository;
-import com.nhom4.vanphongphamonline.services.ServiceStatus;
+import com.nhom4.vanphongphamonline.utils.CustomResponse;
 
 @Controller
 public class CategoryController {
@@ -32,70 +32,70 @@ public class CategoryController {
 	}
 	@ResponseBody
 	@PostMapping(value = "/api/v1/admin/category/add")
-	public ResponseEntity<ServiceStatus> addCategory(@RequestBody Category category) { // chưa bắt valid
+	public ResponseEntity<CustomResponse> addCategory(@RequestBody Category category) { // chưa bắt valid
 		categoryRepository.insert(category);
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thêm loại sản phẩm thành công"), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thêm loại sản phẩm thành công", null), HttpStatus.OK);
 		
 	}
 
 	@ResponseBody
 	@PostMapping(value = "/api/v1/admin/category/delete")
-	public ResponseEntity<ServiceStatus> deleteCategoryById(@RequestParam String id) {
+	public ResponseEntity<CustomResponse> deleteCategoryById(@RequestParam String id) {
 		if(categoryRepository.findById(id).isPresent()!=false) {
 			categoryRepository.deleteById(id);
 		} else {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Loại sản phẩm không tồn tại"), HttpStatus.OK);
+			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Loại sản phẩm không tồn tại", null), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Xoá loại sản phẩm thành công", categoryRepository.findAll()), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Xoá loại sản phẩm thành công", categoryRepository.findAll()), HttpStatus.OK);
 	}
 	@ResponseBody
 	@PostMapping(value = "/api/v1/admin/category/update")
-	public ResponseEntity<ServiceStatus> updateCategoryById(@RequestParam String id, @RequestBody Category category) { // chưa kiểm tra valid
+	public ResponseEntity<CustomResponse> updateCategoryById(@RequestParam String id, @RequestBody Category category) { // chưa kiểm tra valid
 		if(categoryRepository.findById(id).isPresent()!=false) {
 			Category categoryUpdated = categoryRepository.findById(id).get();
 			categoryUpdated.setName(category.getName());
 			categoryRepository.save(categoryUpdated);
 		} else {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Loại sản phẩm không tồn tại"), HttpStatus.OK);
+			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Loại sản phẩm không tồn tại", null), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật loại sản phẩm thành công sản phẩm thành công"), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Cập nhật loại sản phẩm thành công sản phẩm thành công", null), HttpStatus.OK);
 	}
 	
 	@ResponseBody
 	@GetMapping(value = "/api/v1/category/page") // phân trang
-	public ResponseEntity<ServiceStatus> getCategoryPageByIndex(@RequestParam int index) {
+	public ResponseEntity<CustomResponse> getCategoryPageByIndex(@RequestParam int index) {
 		Page<Category> page = categoryRepository.findAll(PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
 		if(page == null) {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có loại sản phẩm nào"), HttpStatus.OK);
+			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Không có loại sản phẩm nào", null), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
 	@ResponseBody
 	@GetMapping(value = "/api/v1/category/detail")
-	public ResponseEntity<ServiceStatus> getCategoryById(@RequestParam String id) {
+	public ResponseEntity<CustomResponse> getCategoryById(@RequestParam String id) {
 		if(categoryRepository.findById(id) == null) {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Sản phẩm không tìm thấy"), HttpStatus.OK);
+			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Sản phẩm không tìm thấy", null), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Tìm thành công", categoryRepository.findById(id)), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Tìm thành công", categoryRepository.findById(id)), HttpStatus.OK);
 	}
 	//	Tim kiem text search, tạo index trước
 	@ResponseBody //// db.category.ensureIndex({ name: "text"});
 	@GetMapping(value = "/api/v1/category/search") // seacrh có phân trang
-	public ResponseEntity<ServiceStatus> search(@RequestParam int index, @RequestParam String keyword) {
+	public ResponseEntity<CustomResponse> search(@RequestParam int index, @RequestParam String keyword) {
 		Page<Category> page = categoryRepository.findByTextSearch(keyword, PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
 		if(page == null) {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có loại sản phẩm"), HttpStatus.OK);
+			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Không có loại sản phẩm", null), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Trang " + index, page), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
 	@ResponseBody
 	@GetMapping(value = "/api/v1/category/list")
-	public ResponseEntity<ServiceStatus> getAllCategory() {
+	public ResponseEntity<CustomResponse> getAllCategory() {
 		List<Category> list = categoryRepository.findAll();
 		if(list == null) {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không có category"), HttpStatus.OK);
+			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Không có category", null), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Danh sách category", list), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Danh sách category", list), HttpStatus.OK);
 	}
 
 }

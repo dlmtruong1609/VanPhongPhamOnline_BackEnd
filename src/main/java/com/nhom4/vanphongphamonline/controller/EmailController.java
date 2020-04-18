@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.nhom4.vanphongphamonline.model.Account;
-import com.nhom4.vanphongphamonline.services.ServiceStatus;
-import com.nhom4.vanphongphamonline.utils.EmailContent;
+import com.nhom4.vanphongphamonline.model.EmailContent;
+import com.nhom4.vanphongphamonline.utils.CustomResponse;
  
 @Controller
 public class EmailController {
@@ -23,7 +23,7 @@ public class EmailController {
     public JavaMailSender emailSender;
     @ResponseBody
     @PostMapping(value = "/api/v1/email/send")
-    public ResponseEntity<ServiceStatus> sendEmail(@RequestBody EmailContent emailContent) {
+    public ResponseEntity<CustomResponse> sendEmail(@RequestBody EmailContent emailContent) {
  
         SimpleMailMessage message = new SimpleMailMessage();
          
@@ -33,7 +33,7 @@ public class EmailController {
  
         // Gửi thông tin!
         this.emailSender.send(message);
-        return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Gửi thành công"), HttpStatus.OK);
+        return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Gửi thành công", null), HttpStatus.OK);
     }
  
 }

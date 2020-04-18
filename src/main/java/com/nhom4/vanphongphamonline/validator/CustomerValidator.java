@@ -9,7 +9,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.nhom4.vanphongphamonline.model.Customer;
-import com.nhom4.vanphongphamonline.services.ServiceStatus;
+import com.nhom4.vanphongphamonline.utils.CustomResponse;
 @Component
 public class CustomerValidator implements Validator{
 

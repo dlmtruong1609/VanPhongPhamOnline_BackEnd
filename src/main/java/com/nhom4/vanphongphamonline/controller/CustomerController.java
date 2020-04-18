@@ -30,7 +30,7 @@ import com.nhom4.vanphongphamonline.repository.CustomerRepository;
 import com.nhom4.vanphongphamonline.repository.RoleRepository;
 import com.nhom4.vanphongphamonline.services.CustomAccountDetails;
 import com.nhom4.vanphongphamonline.services.CustomerService;
-import com.nhom4.vanphongphamonline.services.ServiceStatus;
+import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validator.CustomerValidator;
 import com.nhom4.vanphongphamonline.validator.AccountValidator;
 @Controller
@@ -58,7 +58,7 @@ public class CustomerController {
 	}
 	@ResponseBody
 	@PostMapping(value = "/api/v1/register", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
-	public ResponseEntity<ServiceStatus> createUser(@RequestBody Account account, BindingResult bindingResult) {
+	public ResponseEntity<CustomResponse> createUser(@RequestBody Account account, BindingResult bindingResult) {
 		// check -----------------------------
 		accountValidator.validateFormRegister(account, bindingResult);
 	   if (bindingResult.hasErrors()) {
@@ -68,9 +68,9 @@ public class CustomerController {
 			        fieldError = (FieldError) object;
 			    }
 			}
-			   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
+			   CustomResponse serviceStatusError = new CustomResponse(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()), null);
 		   
-		   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
+		   return new ResponseEntity<CustomResponse>(serviceStatusError, HttpStatus.OK);
         }
 	   // ---------------------------------------
 	   // mã hoá mật khẩu
@@ -80,11 +80,11 @@ public class CustomerController {
 		Customer customer = new Customer();
 		customer.setAccount(account);
 		customerRepository.insert(customer);
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng ký thành công"), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Đăng ký thành công", null), HttpStatus.OK);
 	}
 	@ResponseBody
 	@PostMapping(value = "/api/v1/login", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
-	public ResponseEntity<ServiceStatus> login(@RequestBody Account account, BindingResult bindingResult) {
+	public ResponseEntity<CustomResponse> login(@RequestBody Account account, BindingResult bindingResult) {
 		// check ----------------------------------------
 		accountValidator.validateFormLogin(account, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -94,9 +94,9 @@ public class CustomerController {
 				        fieldError = (FieldError) object;
 				    }
 				}
-			   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
+			   CustomResponse serviceStatusError = new CustomResponse(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()), null);
 			   
-			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
+			   return new ResponseEntity<CustomResponse>(serviceStatusError, HttpStatus.OK);
         }
 		//----------------------------------------------------
 		// Xác nhận tài khoản mật khẩu
@@ -109,12 +109,12 @@ public class CustomerController {
 	 	 // tự động generate token
         String jwt = tokenProvider.generateToken((CustomAccountDetails) authentication.getPrincipal());
         
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Đăng nhập thành công", jwt), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Đăng nhập thành công", jwt), HttpStatus.OK);
 	}
 
 	@ResponseBody
 	@PostMapping(value = "/api/v1/customer/update")
-	public ResponseEntity<ServiceStatus> updateCustomerByUsername(@RequestBody Customer customer, @RequestParam String username, BindingResult bindingResult) {
+	public ResponseEntity<CustomResponse> updateCustomerByUsername(@RequestBody Customer customer, @RequestParam String username, BindingResult bindingResult) {
 		// check ---------------------------
 		customerValidator.validate(customer, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -124,9 +124,9 @@ public class CustomerController {
 				        fieldError = (FieldError) object;
 				    }
 				}
-			   ServiceStatus serviceStatusError = new ServiceStatus(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()));
+			   CustomResponse serviceStatusError = new CustomResponse(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()), null);
 			   
-			   return new ResponseEntity<ServiceStatus>(serviceStatusError, HttpStatus.OK);
+			   return new ResponseEntity<CustomResponse>(serviceStatusError, HttpStatus.OK);
 		}
 		//---------------------------------------
 		// lấy username từ context (biến chung của project) để so sánh
@@ -144,30 +144,30 @@ public class CustomerController {
 				e.printStackTrace();
 			}
 		} else {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(2, "Lỗi truy cập"), HttpStatus.OK);
+			return new ResponseEntity<CustomResponse>(new CustomResponse(2, "Lỗi truy cập", null), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Cập nhật thông tin khách hàng thành công"), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Cập nhật thông tin khách hàng thành công", null), HttpStatus.OK);
 	}
 	@ResponseBody
 	@GetMapping(value = "/api/v1/customer/detail")
-	public ResponseEntity<ServiceStatus> getCustomerByUsername(@RequestParam String username) {
+	public ResponseEntity<CustomResponse> getCustomerByUsername(@RequestParam String username) {
 		Customer customer = null;
 		// lấy username từ context (biến chung của project) để so sánh
 		if(SecurityContextHolder.getContext().getAuthentication().getName().equals(username) || customerService.hasRoleAdmin()) {
 			customer = customerRepository.findByAccount_Username(username);
 		} else {
-			return new ResponseEntity<ServiceStatus>(new ServiceStatus(1, "Không đúng tài khoản", null), HttpStatus.OK);
+			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Không đúng tài khoản", null), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Thành công", customer), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thành công", customer), HttpStatus.OK);
 	}
 	@ResponseBody
 	@GetMapping(value = "/api/v1/admin/customer/list")
-	public ResponseEntity<ServiceStatus> getAllCustomer() {
+	public ResponseEntity<CustomResponse> getAllCustomer() {
 		List<Customer> list = null;
 		list = customerRepository.findAll();
 		if(list == null) {
-			return new ResponseEntity<ServiceStatus>( new ServiceStatus(1, "Không có sản phẩm nào tồn tại"), HttpStatus.OK);
+			return new ResponseEntity<CustomResponse>( new CustomResponse(1, "Không có sản phẩm nào tồn tại", null), HttpStatus.OK);
 		}
-		return new ResponseEntity<ServiceStatus>( new ServiceStatus(0, "Danh sách khách hàng", list), HttpStatus.OK);
+		return new ResponseEntity<CustomResponse>( new CustomResponse(0, "Danh sách khách hàng", list), HttpStatus.OK);
 	}
 }
