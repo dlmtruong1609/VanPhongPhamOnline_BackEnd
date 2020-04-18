@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@Document
+@Document("orders")
 public class Order {
 	@GeneratedValue
 	@Id
