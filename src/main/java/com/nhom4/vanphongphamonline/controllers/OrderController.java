@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.nhom4.vanphongphamonline.models.Customer;
 import com.nhom4.vanphongphamonline.models.Order;
@@ -36,7 +37,7 @@ import com.nhom4.vanphongphamonline.services.CustomerService;
 import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validators.OrderValidator;
 
-@Controller
+@RestController
 public class OrderController {
 	@Autowired
 	private OrderRepository orderRepository;
@@ -50,7 +51,6 @@ public class OrderController {
 	}
 	@Autowired
 	private CustomerService customerService;
-	@ResponseBody
 	@PostMapping(value = "/api/v1/order/pay") // sử dụng khi thanh toán ko dùng để add vào giỏ hàng
 	public ResponseEntity<CustomResponse> createOrder(@RequestBody Order order, BindingResult bindingResult, HttpServletRequest request) throws ParseException {
 		// check ---------------------------------------
@@ -88,7 +88,6 @@ public class OrderController {
 		session.invalidate();
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thanh toán thành công", null), HttpStatus.OK);
 	}
-	@ResponseBody
 	@GetMapping(value = "/api/v1/order/detail")
 	public ResponseEntity<CustomResponse> getOrderById(@RequestParam String id, @RequestParam String username) {
 		Optional<Order> order = null;
@@ -97,7 +96,6 @@ public class OrderController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Chi tiết hoá đơn", order), HttpStatus.OK);
 	}
-	@ResponseBody
 	@GetMapping(value = "/api/v1/order/list")
 	public ResponseEntity<CustomResponse> getAllOrder(@RequestParam String username) {
 		List<Order> list = null;

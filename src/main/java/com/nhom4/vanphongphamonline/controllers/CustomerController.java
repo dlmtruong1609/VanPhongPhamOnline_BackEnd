@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.nhom4.vanphongphamonline.jwt.JwtTokenProvider;
 import com.nhom4.vanphongphamonline.models.Account;
 import com.nhom4.vanphongphamonline.models.Customer;
+import com.nhom4.vanphongphamonline.models.EmailContent;
 import com.nhom4.vanphongphamonline.repositories.CustomerRepository;
 import com.nhom4.vanphongphamonline.repositories.RoleRepository;
 import com.nhom4.vanphongphamonline.services.CustomAccountDetails;
@@ -33,10 +35,12 @@ import com.nhom4.vanphongphamonline.services.CustomerService;
 import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validators.AccountValidator;
 import com.nhom4.vanphongphamonline.validators.CustomerValidator;
-@Controller
+@RestController
 public class CustomerController {
 	@Autowired
 	private CustomerRepository customerRepository;
+	@Autowired
+	private EmailController emailController;
 	@Autowired
 	private CustomerService customerService;
     @Autowired
@@ -56,7 +60,6 @@ public class CustomerController {
 		this.customerRepository = customerRepository;
 		// TODO Auto-generated constructor stub
 	}
-	@ResponseBody
 	@PostMapping(value = "/api/v1/register", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
 	public ResponseEntity<CustomResponse> createUser(@RequestBody Account account, BindingResult bindingResult) {
 		// check -----------------------------
@@ -80,9 +83,9 @@ public class CustomerController {
 		Customer customer = new Customer();
 		customer.setAccount(account);
 		customerRepository.insert(customer);
+		emailController.sendEmail(new EmailContent(customer.getAccount().getEmail(), "ANANAS Đăng ký", "Chào mừng đến với kênh mua sắm trực tiếp của văn phòng phẩm ANANAS"));
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Đăng ký thành công", null), HttpStatus.OK);
 	}
-	@ResponseBody
 	@PostMapping(value = "/api/v1/login", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
 	public ResponseEntity<CustomResponse> login(@RequestBody Account account, BindingResult bindingResult) {
 		// check ----------------------------------------
@@ -112,7 +115,6 @@ public class CustomerController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Đăng nhập thành công", jwt), HttpStatus.OK);
 	}
 
-	@ResponseBody
 	@PostMapping(value = "/api/v1/customer/update")
 	public ResponseEntity<CustomResponse> updateCustomerByUsername(@RequestBody Customer customer, @RequestParam String username, BindingResult bindingResult) {
 		// check ---------------------------
@@ -148,7 +150,6 @@ public class CustomerController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Cập nhật thông tin khách hàng thành công", null), HttpStatus.OK);
 	}
-	@ResponseBody
 	@GetMapping(value = "/api/v1/customer/detail")
 	public ResponseEntity<CustomResponse> getCustomerByUsername(@RequestParam String username) {
 		Customer customer = null;
@@ -160,7 +161,6 @@ public class CustomerController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thành công", customer), HttpStatus.OK);
 	}
-	@ResponseBody
 	@GetMapping(value = "/api/v1/admin/customer/list")
 	public ResponseEntity<CustomResponse> getAllCustomer() {
 		List<Customer> list = null;

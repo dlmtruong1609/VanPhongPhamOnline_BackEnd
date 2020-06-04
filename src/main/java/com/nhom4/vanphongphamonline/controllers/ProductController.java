@@ -16,12 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.nhom4.vanphongphamonline.models.Product;
 import com.nhom4.vanphongphamonline.repositories.ProductRepository;
 import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validators.ProductValidator;
-@Controller
+@RestController
 public class ProductController {
 	@Autowired
 	private ProductRepository productRepository;
@@ -31,7 +32,7 @@ public class ProductController {
 	public ProductController(ProductRepository productRepository) {
 		this.productRepository = productRepository;
 	}
-	@ResponseBody
+	
 	@PostMapping(value = "/api/v1/admin/product/add")
 	public ResponseEntity<CustomResponse> addProduct(@RequestBody Product product, BindingResult bindingResult) {
 		// check --------------------------------------
@@ -52,7 +53,7 @@ public class ProductController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thêm sản phẩm thành công", null), HttpStatus.OK);
 		
 	}
-	@ResponseBody
+	
 	@GetMapping(value = "/api/v1/product/list")
 	public ResponseEntity<CustomResponse> getAllProduct() {
 		List<Product> list = null;
@@ -62,7 +63,7 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>( new CustomResponse(0, "Danh sách sản phẩm", list), HttpStatus.OK);
 	}
-	@ResponseBody
+	
 	@GetMapping(value = "/api/v1/product/detail")
 	public ResponseEntity<CustomResponse> getProductById(@RequestParam String id) {
 		if(productRepository.findById(id) == null) {
@@ -70,7 +71,7 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Tìm thành công", productRepository.findById(id)), HttpStatus.OK);
 	}
-	@ResponseBody
+	
 	@PostMapping(value = "/api/v1/admin/product/delete")
 	public ResponseEntity<CustomResponse> deleteProductById(@RequestParam String id) {
 		if(productRepository.findById(id).isPresent()!=false) {
@@ -80,7 +81,7 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Xoá sản phẩm thành công", productRepository.findAll()), HttpStatus.OK);
 	}
-	@ResponseBody
+
 	@PostMapping(value = "/api/v1/admin/product/update")
 	public ResponseEntity<CustomResponse> updateProductById(@RequestParam String id, @RequestBody Product product, BindingResult bindingResult) {
 		if(productRepository.findById(id).isPresent()!=false) {
@@ -113,7 +114,6 @@ public class ProductController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Cập nhật sản phẩm thành công sản phẩm thành công", null), HttpStatus.OK);
 	}
 	
-	@ResponseBody
 	@GetMapping(value = "/api/v1/product/page") // phân trang
 	public ResponseEntity<CustomResponse> getProductPageByIndex(@RequestParam int index) {
 		Page<Product> page = productRepository.findAll(PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
@@ -123,7 +123,7 @@ public class ProductController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
 	//	Tim kiem text search, tạo index trước
-	@ResponseBody //// db.product.ensureIndex({ name: "text", description : "text", category : "text" });
+	//// db.product.ensureIndex({ name: "text", description : "text", category : "text" });
 	@GetMapping(value = "/api/v1/product/search") // seacrh có phân trang
 	public ResponseEntity<CustomResponse> search(@RequestParam int index, @RequestParam String keyword) {
 		Page<Product> page = productRepository.findByTextSearch(keyword, PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
@@ -133,7 +133,6 @@ public class ProductController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
 	
-	@ResponseBody
 	@GetMapping(value = "/api/v1/product/asc") // sắp xếp có phân trang tăng dần hoặc a - z
 	public ResponseEntity<CustomResponse> sortFromAToZ(@RequestParam int index, @RequestParam String fieldSort) {
 		Page<Product> page = productRepository.findAll(PageRequest.of(index, 12, Sort.by(Sort.Direction.ASC, fieldSort))); // 1 page có 12 sản phẩm
@@ -143,7 +142,6 @@ public class ProductController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
 	
-	@ResponseBody
 	@GetMapping(value = "/api/v1/product/desc") // sắp xếp có phân trang giảm dần hoặc z-a
 	public ResponseEntity<CustomResponse> sortFromZToA(@RequestParam int index, @RequestParam String fieldSort) {
 		Page<Product> page = productRepository.findAll(PageRequest.of(index, 12, Sort.by(Sort.Direction.DESC, fieldSort))); // 1 page có 12 sản phẩm
@@ -153,7 +151,6 @@ public class ProductController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
 	
-	@ResponseBody
 	@GetMapping(value = "/api/v1/product/category") // sắp xếp có phân trang giảm dần hoặc z-a
 	public ResponseEntity<CustomResponse> searchByCategory(@RequestParam int index, @RequestParam String name) {
 		Page<Product> page = productRepository.findByCategory_Name(PageRequest.of(index, 12), name); // 1 page có 12 sản phẩm
