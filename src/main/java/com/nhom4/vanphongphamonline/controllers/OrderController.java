@@ -49,7 +49,7 @@ public class OrderController {
 	public OrderController(OrderRepository orderRepository) {
 		this.orderRepository = orderRepository;
 	}
-	@Autowired
+
 	private CustomerService customerService;
 	@PostMapping(value = "/api/v1/order/pay") // sử dụng khi thanh toán ko dùng để add vào giỏ hàng
 	public ResponseEntity<CustomResponse> createOrder(@RequestBody Order order, BindingResult bindingResult, HttpServletRequest request) throws ParseException {

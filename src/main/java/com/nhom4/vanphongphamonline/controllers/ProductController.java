@@ -5,10 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.nhom4.vanphongphamonline.models.Product;
 import com.nhom4.vanphongphamonline.repositories.ProductRepository;
@@ -26,7 +29,7 @@ import com.nhom4.vanphongphamonline.validators.ProductValidator;
 public class ProductController {
 	@Autowired
 	private ProductRepository productRepository;
-	@Autowired 
+	@Autowired
 	private ProductValidator productValidator;
 	@Autowired
 	public ProductController(ProductRepository productRepository) {
@@ -63,7 +66,12 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>( new CustomResponse(0, "Danh sách sản phẩm", list), HttpStatus.OK);
 	}
-	
+	@GetMapping(value = "/admin/product")
+	public ModelAndView index(Model model, @RequestParam String index) {
+		Page<Product> page = productRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
+		model.addAttribute("listProduct", page.getContent());
+		return new ModelAndView("ProductAdmin");
+	}
 	@GetMapping(value = "/api/v1/product/detail")
 	public ResponseEntity<CustomResponse> getProductById(@RequestParam String id) {
 		if(productRepository.findById(id) == null) {
@@ -73,13 +81,13 @@ public class ProductController {
 	}
 	
 	@PostMapping(value = "/api/v1/admin/product/delete")
-	public ResponseEntity<CustomResponse> deleteProductById(@RequestParam String id) {
+	public String deleteProductById(@RequestParam String id, Model model) {
 		if(productRepository.findById(id).isPresent()!=false) {
 			productRepository.deleteById(id);
-		} else {
-			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Sản phẩm không tồn tại", null), HttpStatus.OK);
 		}
-		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Xoá sản phẩm thành công", productRepository.findAll()), HttpStatus.OK);
+		Page<Product> page = productRepository.findAll(PageRequest.of(0, 12));
+		model.addAttribute("listProduct", page.getContent());
+		return "redirect:/admin?index=0";
 	}
 
 	@PostMapping(value = "/api/v1/admin/product/update")
@@ -123,7 +131,7 @@ public class ProductController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
 	//	Tim kiem text search, tạo index trước
-	//// db.product.ensureIndex({ name: "text", description : "text", category : "text" });
+	//// db.products.ensureIndex({ name: "text", description : "text", category : "text" });
 	@GetMapping(value = "/api/v1/product/search") // seacrh có phân trang
 	public ResponseEntity<CustomResponse> search(@RequestParam int index, @RequestParam String keyword) {
 		Page<Product> page = productRepository.findByTextSearch(keyword, PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
@@ -132,7 +140,13 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
-	
+	@GetMapping(value = "/api/v1/admin/product/search")
+	public ModelAndView adminSearch(@RequestParam String keyword, Model model) {
+		List<Product> list = productRepository.findByTextSearch(keyword);
+		System.out.println(list);
+		model.addAttribute("listProduct",list);
+		return new ModelAndView("ProductAdmin");
+	}
 	@GetMapping(value = "/api/v1/product/asc") // sắp xếp có phân trang tăng dần hoặc a - z
 	public ResponseEntity<CustomResponse> sortFromAToZ(@RequestParam int index, @RequestParam String fieldSort) {
 		Page<Product> page = productRepository.findAll(PageRequest.of(index, 12, Sort.by(Sort.Direction.ASC, fieldSort))); // 1 page có 12 sản phẩm

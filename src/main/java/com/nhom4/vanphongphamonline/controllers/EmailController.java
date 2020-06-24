@@ -20,8 +20,7 @@ import com.nhom4.vanphongphamonline.utils.CustomResponse;
  
 @RestController
 public class EmailController {
- 
-    @Autowired
+	@Autowired
     public JavaMailSender emailSender;
     
     @Async

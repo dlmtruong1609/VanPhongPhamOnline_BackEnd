@@ -27,15 +27,12 @@ import com.nhom4.vanphongphamonline.validators.OrderValidator;
 
 @RestController
 public class CartController {
-//	Tự động tạo ID bắt dầu từ 0
-//	@Autowired
-//	private static AtomicInteger ID_GENERATOR = new AtomicInteger(0);
-	List<OrderDetail> list; //list để add chi tiet hoa đơn khi thêm
+	private List<OrderDetail> list; //list để add chi tiet hoa đơn khi thêm
 	@Autowired
-	OrderValidator orderValidator; // valid hoá đơn
+	private OrderValidator orderValidator; // valid hoá đơn
 	@Autowired
-	CustomerRepository customerRepository;
-	double total = 0; // tính tổng tiền của hoá đơn
+	private CustomerRepository customerRepository;
+	private double total = 0; // tính tổng tiền của hoá đơn
 	@PostMapping(value = "/api/v1/cart/add")
 	public ResponseEntity<CustomResponse> saveOrder(HttpServletRequest request, @RequestBody OrderDetail orderDetail, @RequestParam String username, BindingResult bindingResult) {
 		HttpSession session = request.getSession(); // lấy current session

@@ -5,6 +5,8 @@ import java.util.List;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +26,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.nhom4.vanphongphamonline.jwt.JwtTokenProvider;
 import com.nhom4.vanphongphamonline.models.Account;
 import com.nhom4.vanphongphamonline.models.Customer;
 import com.nhom4.vanphongphamonline.models.EmailContent;
+import com.nhom4.vanphongphamonline.models.Product;
 import com.nhom4.vanphongphamonline.repositories.CustomerRepository;
 import com.nhom4.vanphongphamonline.repositories.RoleRepository;
 import com.nhom4.vanphongphamonline.services.CustomAccountDetails;
@@ -43,18 +48,18 @@ public class CustomerController {
 	private EmailController emailController;
 	@Autowired
 	private CustomerService customerService;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    private AccountValidator accountValidator;
-    @Autowired
-    private CustomerValidator customerValidator;
-    @Autowired
-    private JwtTokenProvider tokenProvider;
-    @Autowired
-    AuthenticationManager authenticationManager;
+	@Autowired
+	private RoleRepository roleRepository;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	private AccountValidator accountValidator;
+	@Autowired
+	private CustomerValidator customerValidator;
+	@Autowired
+	private JwtTokenProvider tokenProvider;
+	@Autowired
+	private AuthenticationManager authenticationManager;
 	@Autowired
 	public CustomerController(CustomerRepository customerRepository) {
 		this.customerRepository = customerRepository;
@@ -114,7 +119,14 @@ public class CustomerController {
         
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Đăng nhập thành công", jwt), HttpStatus.OK);
 	}
-
+	
+	@GetMapping(value = "/admin/customer")
+	public ModelAndView index(Model model, @RequestParam String index) {
+		Page<Customer> page = customerRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
+		model.addAttribute("listCustomer", page.getContent());
+		return new ModelAndView("UserAdmin");
+	}
+	
 	@PostMapping(value = "/api/v1/customer/update")
 	public ResponseEntity<CustomResponse> updateCustomerByUsername(@RequestBody Customer customer, @RequestParam String username, BindingResult bindingResult) {
 		// check ---------------------------

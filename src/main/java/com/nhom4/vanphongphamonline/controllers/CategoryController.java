@@ -26,7 +26,6 @@ import com.nhom4.vanphongphamonline.utils.CustomResponse;
 public class CategoryController {
 	@Autowired
 	private CategoryRepository categoryRepository;
-	
 	@Autowired
 	public CategoryController(CategoryRepository categoryRepository) {
 		this.categoryRepository = categoryRepository;

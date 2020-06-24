@@ -27,6 +27,7 @@ import com.nhom4.vanphongphamonline.utils.CustomResponse;
 
 @RestController
 public class SupplierController {
+	@Autowired
 	private SupplierRepository supplierRepository;
 	@Autowired
 	public SupplierController(SupplierRepository supplierRepository) {
