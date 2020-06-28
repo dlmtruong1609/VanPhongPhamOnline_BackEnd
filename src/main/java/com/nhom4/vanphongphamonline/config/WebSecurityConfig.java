@@ -68,6 +68,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/sendEmail").permitAll()
                 .antMatchers("/api/v1/admin/*").hasRole("ADMIN")
                 .antMatchers("/admin/*").permitAll()
+                .antMatchers("/admin/product/*").permitAll()
+                .antMatchers("/admin/customer/*").permitAll()
                 .antMatchers("/assets/js/plugins/*").permitAll()
                 .antMatchers("/assets/js/core/*").permitAll()
                 .antMatchers("/assets/js/*").permitAll()

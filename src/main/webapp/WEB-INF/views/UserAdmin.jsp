@@ -53,33 +53,35 @@ form.navbar-form {
         Tip 2: you can also add an image using data-image tag
     -->
 			<div class="logo">
-				<a href="http://www.creative-tim.com"
-					class="simple-text logo-normal"> Creative Tim </a>
+				<a href="http://localhost:3000/trangchu"
+					class="simple-text logo-normal"> Ananas Admin </a>
 			</div>
-			<div class="sidebar-wrapper">
+				<div class="sidebar-wrapper">
 				<ul class="nav">
 					<li class="nav-item  "><a class="nav-link"
 						href="./dashboard.html"> <i class="material-icons">dashboard</i>
 							<p>Dashboard</p>
 					</a></li>
-					<li class="nav-item"><a class="nav-link"
+					<li class="nav-item "><a class="nav-link"
 						href="/admin/product?index=0"> <i class="material-icons">content_paste</i>
 							<p>Quản lý sản phẩm</p>
 					</a></li>
-					<li class="nav-item active"><a class="nav-link" href="/admin/customer?index=0">
-							<i class="material-icons">person</i>
+					<li class="nav-item active"><a class="nav-link"
+						href="/admin/customer?index=0"> <i class="material-icons">person</i>
 							<p>Quản lý khách hàng</p>
 					</a></li>
 					<li class="nav-item "><a class="nav-link"
-						href="./typography.html"> <i class="material-icons">library_books</i>
+						href="/admin/order?index=0"> <i class="material-icons">library_books</i>
 							<p>Quản lý đơn hàng</p>
 					</a></li>
-					<li class="nav-item "><a class="nav-link" href="./map.html">
-							<i class="material-icons">location_ons</i>
+					<li class="nav-item "><a class="nav-link"
+						href="/admin/category?index=0"> <i class="fa fa-sort"
+							aria-hidden="true"></i>
 							<p>Quản lý loại sản phẩm</p>
 					</a></li>
-					<li class="nav-item "><a class="nav-link" href="./map.html">
-							<i class="material-icons">location_ons</i>
+					<li class="nav-item"><a class="nav-link"
+						href="/admin/supplier?index=0"> <i class="fa fa-university"
+							aria-hidden="true"></i>
 							<p>Quản lý nhà cung cấp</p>
 					</a></li>
 				</ul>
@@ -125,7 +127,7 @@ form.navbar-form {
 								<div class="card-header card-header-primary">
 									<h4 class="card-title ">Quản lý khách hàng</h4>
 									<p class="card-category">Thêm, xoá, sửa, tìm kiếm tại đây</p>
-									<button class="btn-custom btn btn-warning" style="top: 10px"><span class="h4 pr-2">+</span> Thêm khách hàng</button>
+									<a href=""><button class="btn-custom btn btn-warning" style="top: 10px"><span class="h4 pr-2">+</span> Thêm khách hàng</button></a>
 								</div>
 								<div class="card-body">
 									<div class="table-responsive">
@@ -133,8 +135,7 @@ form.navbar-form {
 											<thead class=" text-primary">
 												<th>STT</th>
 												<th>Tên</th>
-												<th>Số điện thoại</th>
-												<th>Chứng minh nhân dân</th>
+												<th>Tài khoản </th>
 												<th>Chi tiết</th>
 												<th>Cập nhật</th>
 											</thead>
@@ -143,12 +144,13 @@ form.navbar-form {
 													<tr>
 														<td>${loop.index }</td>
 														<td>${c.name }</td>
-														<td>${c.phone }</td>
-														<td>${c.identityCard }</td>
+														<td>${c.account.username }</td>
 														<td><a href="">Xem chi tiết</a></td>
 														<td class="text-primary form-inline">
-															<button class="btn btn-primary">Cập nhật</button> 
-															<form action="/api/v1/admin/customer/delete?id=${c.id }" method="post"><input class="btn btn-danger" type="submit" value="Xoá"/></form>
+															<a class="btn btn-primary">Cập nhật</a> 
+															<form action="/api/v1/admin/customer/delete?id=${c.id }" method="post">
+															<input class="btn btn-danger" type="submit" value="Xoá"/>
+															</form>
 														</td>
 													</tr>
 												</c:forEach>

@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.nhom4.vanphongphamonline.models.Category;
 import com.nhom4.vanphongphamonline.models.Product;
@@ -100,5 +102,11 @@ public class SupplierController {
 			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Không có nhà cung cấp", null), HttpStatus.OK);
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
+	}
+	@GetMapping(value = "/admin/supplier")
+	public ModelAndView index(Model model, @RequestParam String index) {
+		Page<Supplier> page = supplierRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
+		model.addAttribute("listSupplier", page.getContent());
+		return new ModelAndView("Supplier");
 	}
 }

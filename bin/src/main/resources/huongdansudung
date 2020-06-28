@@ -1,0 +1,13 @@
+Insert role
+db.role.insert({_id: "123", name: "MEMBER"})
+db.role.insert({_id: "234", name: "ADMIN"})
+ - Import json resource/data/product
+mở cmd
+copy 3 file json đến đường dẫn khi mở cmd ra sẽ thấy
+rồi chạy các lệnh bên dưới
+
+mongoimport --db BanHangOnlineDB --collection categories --file category.json --jsonArray
+mongoimport --db BanHangOnlineDB --collection suppliers --file supplier.json --jsonArray
+mongoimport --db BanHangOnlineDB --collection products --file product.json --jsonArray
+import address
+mongoimport --db VanPhongPhamOnlineDB --collection city --file tinh_tp.json

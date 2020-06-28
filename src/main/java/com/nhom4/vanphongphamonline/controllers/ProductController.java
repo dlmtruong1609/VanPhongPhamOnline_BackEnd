@@ -21,14 +21,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nhom4.vanphongphamonline.models.Category;
 import com.nhom4.vanphongphamonline.models.Product;
+import com.nhom4.vanphongphamonline.models.Supplier;
+import com.nhom4.vanphongphamonline.repositories.CategoryRepository;
 import com.nhom4.vanphongphamonline.repositories.ProductRepository;
+import com.nhom4.vanphongphamonline.repositories.SupplierRepository;
 import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validators.ProductValidator;
 @RestController
 public class ProductController {
 	@Autowired
 	private ProductRepository productRepository;
+	@Autowired
+	private SupplierRepository supplierRepository;
+	@Autowired
+	private CategoryRepository categoryRepository;
 	@Autowired
 	private ProductValidator productValidator;
 	@Autowired
@@ -66,12 +74,22 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>( new CustomResponse(0, "Danh sách sản phẩm", list), HttpStatus.OK);
 	}
+	//Sring mvc 
 	@GetMapping(value = "/admin/product")
 	public ModelAndView index(Model model, @RequestParam String index) {
 		Page<Product> page = productRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
 		model.addAttribute("listProduct", page.getContent());
 		return new ModelAndView("ProductAdmin");
 	}
+	@GetMapping(value = "/admin/product/add")
+	public ModelAndView addProduct(Model model) {
+		List<Supplier> listsupplier = supplierRepository.findAll();
+		List<Category> listcategory = categoryRepository.findAll();
+		model.addAttribute("listsupplier", listsupplier);
+		model.addAttribute("listcategory",listcategory);
+		return new ModelAndView("AddProduct");
+	}
+	//
 	@GetMapping(value = "/api/v1/product/detail")
 	public ResponseEntity<CustomResponse> getProductById(@RequestParam String id) {
 		if(productRepository.findById(id) == null) {
@@ -87,7 +105,7 @@ public class ProductController {
 		}
 		Page<Product> page = productRepository.findAll(PageRequest.of(0, 12));
 		model.addAttribute("listProduct", page.getContent());
-		return "redirect:/admin?index=0";
+		return "redirect:/admin/product?index=0";
 	}
 
 	@PostMapping(value = "/api/v1/admin/product/update")
