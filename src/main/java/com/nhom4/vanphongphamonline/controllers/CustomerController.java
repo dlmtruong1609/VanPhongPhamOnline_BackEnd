@@ -3,6 +3,8 @@ package com.nhom4.vanphongphamonline.controllers;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,9 +23,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 //import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,13 +89,14 @@ public class CustomerController {
 	   // mã hoá mật khẩu
 	    account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
 	    account.setPasswordConfirm(bCryptPasswordEncoder.encode(account.getPasswordConfirm()));
-	    account.setRoles(new HashSet<>(roleRepository.findByName("ADMIN")));
+	    account.setRoles(new HashSet<>(roleRepository.findByName("MEMBER")));
 		Customer customer = new Customer();
 		customer.setAccount(account);
 		customerRepository.insert(customer);
 		emailController.sendEmail(new EmailContent(customer.getAccount().getEmail(), "ANANAS Đăng ký", "Chào mừng đến với kênh mua sắm trực tiếp của văn phòng phẩm ANANAS"));
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Đăng ký thành công", null), HttpStatus.OK);
 	}
+
 	@PostMapping(value = "/api/v1/login", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
 	public ResponseEntity<CustomResponse> login(@RequestBody Account account, BindingResult bindingResult) {
 		// check ----------------------------------------
@@ -120,11 +126,23 @@ public class CustomerController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Đăng nhập thành công", jwt), HttpStatus.OK);
 	}
 	
+	@PostMapping(value = "/api/v1/loginAdmin", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
+	public ModelAndView loginAdmin1(@RequestBody @ModelAttribute("account") Account account, BindingResult bindingResult, HttpServletRequest request) {
+		// check ----------------------------------------
+		HttpSession session = request.getSession();
+		session.setAttribute("username", account.getUsername());
+		return new ModelAndView("redirect:/admin/product?index=0");
+	}
 	@GetMapping(value = "/admin/customer")
 	public ModelAndView index(Model model, @RequestParam String index) {
 		Page<Customer> page = customerRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
 		model.addAttribute("listCustomer", page.getContent());
 		return new ModelAndView("UserAdmin");
+	}
+	boolean hasRoleAdmin = false;
+	@GetMapping(value = "/admin/login")
+	public ModelAndView loginAdmin(Model model, HttpServletRequest req) {
+		return new ModelAndView("Login");
 	}
 	
 	@PostMapping(value = "/api/v1/customer/update")

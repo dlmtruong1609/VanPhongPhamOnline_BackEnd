@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -124,6 +126,8 @@ public class ProductController {
 	
 	@GetMapping(value = "/api/v1/product/page") // phân trang
 	public ResponseEntity<CustomResponse> getProductPageByIndex(@RequestParam int index) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		System.out.println(auth.getAuthorities());
 		Page<Product> page = productRepository.findAll(PageRequest.of(index, 12)); // 1 page có 12 sản phẩm
 		if(page == null) {
 			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Không có sản phẩm", null), HttpStatus.OK);
