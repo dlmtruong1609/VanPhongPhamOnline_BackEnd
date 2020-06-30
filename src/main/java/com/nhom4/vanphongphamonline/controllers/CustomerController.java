@@ -140,7 +140,7 @@ public class CustomerController {
 		return new ModelAndView("UserAdmin");
 	}
 	boolean hasRoleAdmin = false;
-	@GetMapping(value = "/admin/login")
+	@GetMapping(value = "/login")
 	public ModelAndView loginAdmin(Model model, HttpServletRequest req) {
 		return new ModelAndView("Login");
 	}

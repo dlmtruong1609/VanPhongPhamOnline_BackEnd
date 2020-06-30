@@ -73,21 +73,21 @@ public class WebSecurityConfigAdmin extends WebSecurityConfigurerAdapter {
     }
     @Autowired
     private AccountDetailsServiceImpl taiKhoanDetailsServiceImpl;
-    int i = 0;
 //	 danh sách các đường dẫn cho phép các loại role nào truy cập, nếu ko có mặc định là có token mới được truy cập
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    	http
+    	http.csrf().disable()
             .authorizeRequests()
-                .antMatchers("/admin/*").authenticated()
-                .and().formLogin().loginPage("/admin/login")
-                .permitAll().defaultSuccessUrl("/admin/product?index=0").and().logout().and().addFilterBefore(new Filter() {
+                .antMatchers("/admin/*").hasRole("ADMIN")
+                .and().formLogin().loginPage("/login")
+                .permitAll().defaultSuccessUrl("/admin/product?index=0").and().addFilterBefore(new Filter() {
 					
 					@Override
 					public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 							throws IOException, ServletException {
 						// TODO Auto-generated method stub
 						HttpSession session = ((HttpServletRequest)request).getSession();
+						System.out.println(session.getAttribute("username") + "user");
 						if(session.getAttribute("username") != null) {
 							UserDetails userDetails = taiKhoanDetailsServiceImpl.loadUserByUsername(session.getAttribute("username").toString());
 			                if(userDetails != null) {
@@ -97,8 +97,6 @@ public class WebSecurityConfigAdmin extends WebSecurityConfigurerAdapter {
 			                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
 
 			                    SecurityContextHolder.getContext().setAuthentication(authentication);
-			                } else {
-			                	request.getRequestDispatcher("/login");
 			                }	
 						}
 					

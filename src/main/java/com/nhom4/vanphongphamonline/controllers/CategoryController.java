@@ -8,12 +8,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.nhom4.vanphongphamonline.models.Category;
 import com.nhom4.vanphongphamonline.models.Product;
@@ -36,7 +38,12 @@ public class CategoryController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thêm loại sản phẩm thành công", null), HttpStatus.OK);
 		
 	}
-
+	@GetMapping(value = "/admin/category")
+	public ModelAndView index(Model model, @RequestParam String index) {
+		Page<Category> page = categoryRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
+		model.addAttribute("listCategory", page.getContent());
+		return new ModelAndView("Category");
+	}
 	@PostMapping(value = "/api/v1/admin/category/delete")
 	public ResponseEntity<CustomResponse> deleteCategoryById(@RequestParam String id) {
 		if(categoryRepository.findById(id).isPresent()!=false) {

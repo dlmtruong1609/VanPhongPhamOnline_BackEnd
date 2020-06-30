@@ -2771,7 +2771,6 @@ select.form-control-lg:not([size]):not([multiple]),
 
   .form-inline .form-control {
     display: inline-block;
-    width: auto;
     vertical-align: middle;
   }
 

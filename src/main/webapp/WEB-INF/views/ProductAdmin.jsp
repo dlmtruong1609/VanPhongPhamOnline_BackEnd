@@ -33,12 +33,13 @@ The above copyright notice and this permission notice shall be included in all c
 <link href="/assets/demo/demo.css" rel="stylesheet" />
 <style type="text/css">
 .btn-custom {
-    float: right;
-    position: absolute;
-    right: 10%;
+	float: right;
+	position: absolute;
+	right: 10%;
 }
+
 form.navbar-form {
-    margin-right: 10%;
+	margin-right: 10%;
 }
 </style>
 </head>
@@ -54,7 +55,7 @@ form.navbar-form {
     -->
 			<div class="logo">
 				<a href="http://www.creative-tim.com"
-					class="simple-text logo-normal"> Creative Tim </a>
+					class="simple-text logo-normal">Ananas Admin</a>
 			</div>
 			<div class="sidebar-wrapper">
 				<ul class="nav">
@@ -66,20 +67,22 @@ form.navbar-form {
 						href="/admin/product?index=0"> <i class="material-icons">content_paste</i>
 							<p>Quản lý sản phẩm</p>
 					</a></li>
-					<li class="nav-item "><a class="nav-link" href="/admin/customer?index=0">
-							<i class="material-icons">person</i>
+					<li class="nav-item "><a class="nav-link"
+						href="/admin/customer?index=0"> <i class="material-icons">person</i>
 							<p>Quản lý khách hàng</p>
 					</a></li>
 					<li class="nav-item "><a class="nav-link"
-						href="./typography.html"> <i class="material-icons">library_books</i>
+						href="/admin/order?index=0"> <i class="material-icons">library_books</i>
 							<p>Quản lý đơn hàng</p>
 					</a></li>
-					<li class="nav-item "><a class="nav-link" href="./map.html">
-							<i class="material-icons">location_ons</i>
+					<li class="nav-item "><a class="nav-link"
+						href="/admin/category?index=0"> <i class="fa fa-sort"
+							aria-hidden="true"></i>
 							<p>Quản lý loại sản phẩm</p>
 					</a></li>
-					<li class="nav-item "><a class="nav-link" href="./map.html">
-							<i class="material-icons">location_ons</i>
+					<li class="nav-item "><a class="nav-link"
+						href="/admin/supplier?index=0"> <i class="fa fa-university"
+							aria-hidden="true"></i>
 							<p>Quản lý nhà cung cấp</p>
 					</a></li>
 				</ul>
@@ -102,7 +105,8 @@ form.navbar-form {
 							class="navbar-toggler-icon icon-bar"></span>
 					</button>
 					<div class="collapse navbar-collapse justify-content-end">
-						<form class="navbar-form" action="/api/v1/admin/product/search" method="get">
+						<form class="navbar-form" action="/api/v1/admin/product/search"
+							method="get">
 							<div class="input-group no-border">
 								<input type="text" name="keyword" value="" class="form-control"
 									placeholder="Search...">
@@ -120,13 +124,128 @@ form.navbar-form {
 			<div class="content">
 				<div class="container-fluid">
 					<div class="row">
+						<div class="text-center">
+							<div class="alert alert-success" <c:if test="${param.message == null}">hidden</c:if> role="alert">
+							  <%= request.getParameter("message") %>
+							</div>
+						</div>
 						<div class="col-md-12">
 							<div class="card">
 								<div class="card-header card-header-primary">
 									<h4 class="card-title ">Quản lý sản phẩm</h4>
 									<p class="card-category">Thêm, xoá, sửa, tìm kiếm tại đây</p>
-									<button class="btn-custom btn btn-warning" style="top: 10px"><span class="h4 pr-2">+</span> Thêm sản phẩm</button>
+									<button class="btn-custom btn btn-warning" style="top: 10px"
+										data-toggle="modal" data-target="#addModal">
+										<span class="h4 pr-2">+</span> Thêm sản phẩm
+									</button>
 								</div>
+								<form class="modal fade bd-example-modal-lg" id="addModal"
+									action="/admin/product/add" method="post" tabindex="-1"
+									role="dialog" aria-labelledby="exampleModalLabel"
+									aria-hidden="true" modelAttribute="product">
+									<div class="modal-dialog modal-lg" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="exampleModalLabel">Modal
+													title</h5>
+												<button type="button" class="close" data-dismiss="modal"
+													aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body">
+												<div class="md-form form">
+													<div class="input-group mb-3">
+														<div class="input-group-prepend">
+															<label class="input-group-text" for="inputGroupSelect01">Chọn
+																loại sản phẩm</label>
+														</div>
+														<select name="category" class="custom-select"
+															id="inputGroupSelect01">
+															<c:forEach var="c" items="${categories }">
+																<option value="${c.id }" selected>${c.name }</option>
+															</c:forEach>
+														</select>
+													</div>
+												</div>
+												<div class="row mt-3">
+													<div class="col-lg-4">
+														<p>
+															<strong>Tên sản phẩm</strong>
+														</p>
+														<input type="text" class="md-text form-control"
+															name="name" placeholder="Nhập tên sản phẩm">
+													</div>
+													<div class="col-lg-4">
+														<p>
+															<strong>Số Lượng</strong>
+														</p>
+														<div class="md-form form">
+															<input type="text" name="inventory" required=""
+																class="md-text form-control"
+																placeholder="Nhập số lượng sản phẩm">
+														</div>
+													</div>
+													<div class="col-lg-4">
+														<p>
+															<strong>Giá</strong>
+														</p>
+														<div class="md-form form">
+															<input ype="text" name="price" required=""
+																class="md-text form-control"
+																placeholder="Nhập giá sản phẩm">
+														</div>
+													</div>
+												</div>
+												<div class="mt-3 ">
+													<p>
+														<strong>Mô tả sản phẩm</strong>
+													</p>
+													<div class="md-form form">
+														<textarea name="description" class="md-text form-control"
+															placeholder="Nhập mô tả sản phẩm"></textarea>
+													</div>
+												</div>
+												<div class="row">
+													<div class="mt-3 col-sm-6 col-lg-6 col-md-6">
+														<p>
+															<strong>Nhà cung cấp</strong>
+														</p>
+														<div class="md-form form">
+															<select name="supplier" class="md-text form-control">
+																<c:forEach var="supplier" items="${suppliers }">
+																	<option selected value="${supplier.id }">${supplier.name }</option>
+																</c:forEach>
+															</select>
+														</div>
+													</div>
+													<div class="mt-3 row col-sm-6 col-lg-6 col-md-6">
+														<div class="col-lg-4">
+															<p>
+																<strong>Hình Ảnh</strong>
+															</p>
+															<div class="md-form form">
+																<input class="md-text form-control" id="fileUploader"
+																	type="file" name="fileUploader" accept="image/*"
+																	style="display: none;"><label
+																	class="form-control" for="fileUploader"
+																	style="margin-top: 21px;">Chọn</label>
+															</div>
+														</div>
+														<div class="col-lg-6">
+															<img style="width: 200px; height: 200px;">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary"
+													data-dismiss="modal">Đóng</button>
+												<button type="submit" class="btn btn-primary">Thêm</button>
+											</div>
+										</div>
+									</div>
+								</form>
 								<div class="card-body">
 									<div class="table-responsive">
 										<table class="table">
@@ -143,10 +262,226 @@ form.navbar-form {
 														<td>${loop.index }</td>
 														<td>${p.name }</td>
 														<td>${p.price }</td>
-														<td><a href="">Xem chi tiết</a></td>
+														<td>
+															<a href="" data-toggle="modal"
+																data-target="#detailModal${p.id }">Xem chi tiết</a>
+															<form class="modal fade bd-example-modal-lg"
+															id="detailModal${p.id }"tabindex="-1" role="dialog"
+															aria-labelledby="exampleModalLabel" aria-hidden="true"
+															modelAttribute="product">
+															<div class=" modal-dialog modal-lg" role="document">
+																<div class="modal-content">
+																	<div class="modal-header">
+																		<h5 class="modal-title" id="exampleModalLabel">Cập nhật sản phẩm</h5>
+																		<button type="button" class="close"
+																			data-dismiss="modal" aria-label="Close">
+																			<span aria-hidden="true">&times;</span>
+																		</button>
+																	</div>
+																	<div class="modal-body">
+																		<div class="md-form form">
+																			<div class="input-group mb-3">
+																				<div class="input-group-prepend">
+																					<label class="input-group-text"
+																						for="inputGroupSelect01">Chọn loại sản
+																						phẩm</label>
+																				</div>
+																				<select disabled name="category" class="custom-select"
+																					id="inputGroupSelect01${p.id }">
+																					<c:forEach var="c" items="${categories }">
+																						<option value="${c.id }" ${c.id == p.category.id ? 'selected' : '' }>${c.name}</option>
+																					</c:forEach>
+																				</select>
+																			</div>
+																		</div>
+																		<div class="row mt-3">
+																			<div class="col-lg-4">
+																				<p>
+																					<strong>Tên sản phẩm</strong>
+																				</p>
+																				<input type="hidden" name="id" value="${p.id }"/>
+																				<input type="text" class="md-text form-control"
+																					name="name" disabled value="${p.name }" placeholder="Nhập tên sản phẩm">
+																			</div>
+																			<div class="col-lg-4">
+																				<p>
+																					<strong>Số Lượng</strong>
+																				</p>
+																				<div class="md-form form">
+																					<input type="text" value="${p.inventory }" name="inventory" required=""
+																						class="md-text form-control"
+																						placeholder="Nhập số lượng sản phẩm" disabled>
+																				</div>
+																			</div>
+																			<div class="col-lg-4">
+																				<p>
+																					<strong>Giá</strong>
+																				</p>
+																					<input type="text" value="${p.price }" name="price" required=""
+																						class="md-text form-control"
+																						placeholder="Nhập giá sản phẩm" disabled>
+																			</div>
+																		</div>
+																		<div class="mt-3 ">
+																			<p>
+																				<strong>Mô tả sản phẩm</strong>
+																			</p>
+																			<div class="md-form form">
+																				<textarea name="description"
+																					class="md-text form-control"
+																					placeholder="Nhập mô tả sản phẩm" disabled>${p.description }</textarea>
+																			</div>
+																		</div>
+																		<div class="row">
+																			<div class="mt-3 col-sm-6 col-lg-6 col-md-6">
+																				<p>
+																					<strong>Nhà cung cấp</strong>
+																				</p>
+																				<div class="md-form form">
+																					<select name="supplier" disabled
+																						class="md-text form-control">
+																						<c:forEach var="supplier" items="${suppliers }">
+																							<option ${supplier.id == p.supplier.id ? 'selected' : '' } value="${supplier.id }">${supplier.name }</option>
+																						</c:forEach>
+																					</select>
+																				</div>
+																			</div>
+																			<div class="mt-3 row col-sm-6 col-lg-6 col-md-6">
+																				<div class="col-lg-4">
+																					<p>
+																						<strong>Hình Ảnh</strong>
+																					</p>
+																				</div>
+																				<div class="col-lg-6">
+																					<img src="${p.urlImage}" style="width: 200px; height: 200px;">
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="modal-footer">
+																		<button type="button" class="btn btn-secondary"
+																			data-dismiss="modal">Đóng</button>
+																	</div>
+																</div>
+															</div>
+														</form>
+														</td>
 														<td class="text-primary form-inline">
-															<button class="btn btn-primary">Cập nhật</button> 
-															<form action="/api/v1/admin/product/delete?id=${p.id }" method="post"><input class="btn btn-danger" type="submit" value="Xoá"/></form>
+															<button class="btn btn-primary" data-toggle="modal"
+																data-target="#updateModal${p.id }">Cập nhật</button>
+																<form class="modal fade bd-example-modal-lg"
+															id="updateModal${p.id }" action="/admin/product/update"
+															method="post" tabindex="-1" role="dialog"
+															aria-labelledby="exampleModalLabel" aria-hidden="true"
+															modelAttribute="product">
+															<div class=" modal-dialog modal-lg" role="document">
+																<div class="modal-content">
+																	<div class="modal-header">
+																		<h5 class="modal-title" id="exampleModalLabel">Cập nhật sản phẩm</h5>
+																		<button type="button" class="close"
+																			data-dismiss="modal" aria-label="Close">
+																			<span aria-hidden="true">&times;</span>
+																		</button>
+																	</div>
+																	<div class="modal-body">
+																		<div class="md-form form">
+																			<div class="input-group mb-3">
+																				<div class="input-group-prepend">
+																					<label class="input-group-text"
+																						for="inputGroupSelect01">Chọn loại sản
+																						phẩm</label>
+																				</div>
+																				<select name="category" class="custom-select"
+																					id="inputGroupSelect01${p.id }">
+																					<c:forEach var="c" items="${categories }">
+																						<option value="${c.id }" ${c.id == p.category.id ? 'selected' : '' }>${c.name}</option>
+																					</c:forEach>
+																				</select>
+																			</div>
+																		</div>
+																		<div class="row mt-3">
+																			<div class="col-lg-4">
+																				<p>
+																					<strong>Tên sản phẩm</strong>
+																				</p>
+																				<input type="hidden" name="id" value="${p.id }"/>
+																				<input type="text" class="md-text form-control"
+																					name="name" value="${p.name }" placeholder="Nhập tên sản phẩm">
+																			</div>
+																			<div class="col-lg-4">
+																				<p>
+																					<strong>Số Lượng</strong>
+																				</p>
+																				<div class="md-form form">
+																					<input type="text" value="${p.inventory }" name="inventory" required=""
+																						class="md-text form-control"
+																						placeholder="Nhập số lượng sản phẩm">
+																				</div>
+																			</div>
+																			<div class="col-lg-4">
+																				<p>
+																					<strong>Giá</strong>
+																				</p>
+																					<input type="text" value="${p.price }" name="price" required=""
+																						class="md-text form-control"
+																						placeholder="Nhập giá sản phẩm">
+																			</div>
+																		</div>
+																		<div class="mt-3 ">
+																			<p>
+																				<strong>Mô tả sản phẩm</strong>
+																			</p>
+																			<div class="md-form form">
+																				<textarea name="description"
+																					class="md-text form-control"
+																					placeholder="Nhập mô tả sản phẩm">${p.description }</textarea>
+																			</div>
+																		</div>
+																		<div class="row">
+																			<div class="mt-3 col-sm-6 col-lg-6 col-md-6">
+																				<p>
+																					<strong>Nhà cung cấp</strong>
+																				</p>
+																				<div class="md-form form">
+																					<select name="supplier"
+																						class="md-text form-control">
+																						<c:forEach var="supplier" items="${suppliers }">
+																							<option ${supplier.id == p.supplier.id ? 'selected' : '' } value="${supplier.id }">${supplier.name }</option>
+																						</c:forEach>
+																					</select>
+																				</div>
+																			</div>
+																			<div class="mt-3 row col-sm-6 col-lg-6 col-md-6">
+																				<div class="col-lg-4">
+																					<p>
+																						<strong>Hình Ảnh</strong>
+																					</p>
+																					<div class="md-form form">
+																						<input class="md-text form-control"
+																							id="fileUploader" type="file" name="fileUploader"
+																							accept="image/*" style="display: none;"><label
+																							class="form-control" for="fileUploader"
+																							style="margin-top: 21px;">Chọn</label>
+																					</div>
+																				</div>
+																				<div class="col-lg-6">
+																					<img src="${p.urlImage}" style="width: 200px; height: 200px;">
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="modal-footer">
+																		<button type="button" class="btn btn-secondary"
+																			data-dismiss="modal">Đóng</button>
+																		<button type="submit" class="btn btn-primary">Cập nhật</button>
+																	</div>
+																</div>
+															</div>
+														</form>
+															<form action="/admin/product/delete" method="get">
+																<input class="btn btn-danger" type="submit" value="Xoá" />
+																<input type="hidden" name="id" value="${p.id }">
+															</form>
 														</td>
 													</tr>
 												</c:forEach>
@@ -156,224 +491,397 @@ form.navbar-form {
 								</div>
 							</div>
 						</div>
-		</div>
-	</div>
-	<!--   Core JS Files   -->
-	<script src="/assets/js/core/jquery.min.js"></script>
-	<script src="/assets/js/core/popper.min.js"></script>
-	<script src="/assets/js/core/bootstrap-material-design.min.js"></script>
-	<script src="/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-	<!-- Plugin for the momentJs  -->
-	<script src="/assets/js/plugins/moment.min.js"></script>
-	<!--  Plugin for Sweet Alert -->
-	<script src="/assets/js/plugins/sweetalert2.js"></script>
-	<!-- Forms Validations Plugin -->
-	<script src="/assets/js/plugins/jquery.validate.min.js"></script>
-	<!-- Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
-	<script src="/assets/js/plugins/jquery.bootstrap-wizard.js"></script>
-	<!--	Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select -->
-	<script src="/assets/js/plugins/bootstrap-selectpicker.js"></script>
-	<!--  Plugin for the DateTimePicker, full documentation here: https://eonasdan.github.io/bootstrap-datetimepicker/ -->
-	<script src="/assets/js/plugins/bootstrap-datetimepicker.min.js"></script>
-	<!--  DataTables.net Plugin, full documentation here: https://datatables.net/  -->
-	<script src="/assets/js/plugins/jquery.dataTables.min.js"></script>
-	<!--	Plugin for Tags, full documentation here: https://github.com/bootstrap-tagsinput/bootstrap-tagsinputs  -->
-	<script src="/assets/js/plugins/bootstrap-tagsinput.js"></script>
-	<!-- Plugin for Fileupload, full documentation here: http://www.jasny.net/bootstrap/javascript/#fileinput -->
-	<script src="/assets/js/plugins/jasny-bootstrap.min.js"></script>
-	<!--  Full Calendar Plugin, full documentation here: https://github.com/fullcalendar/fullcalendar    -->
-	<script src="/assets/js/plugins/fullcalendar.min.js"></script>
-	<!-- Vector Map plugin, full documentation here: http://jvectormap.com/documentation/ -->
-	<script src="/assets/js/plugins/jquery-jvectormap.js"></script>
-	<!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
-	<script src="/assets/js/plugins/nouislider.min.js"></script>
-	<!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert -->
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
-	<!-- Library for adding dinamically elements -->
-	<script src="/assets/js/plugins/arrive.min.js"></script>
-	<!--  Google Maps Plugin    -->
-	<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
-	<!-- Chartist JS -->
-	<script src="/assets/js/plugins/chartist.min.js"></script>
-	<!--  Notifications Plugin    -->
-	<script src="/assets/js/plugins/bootstrap-notify.js"></script>
-	<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-	<script src="/assets/js/material-dashboard.js?v=2.1.2"
-		type="text/javascript"></script>
-	<!-- Material Dashboard DEMO methods, don't include it in your project! -->
-	<script src="/assets/demo/demo.js"></script>
-	<script>
-    $(document).ready(function() {
-      $().ready(function() {
-        $sidebar = $('.sidebar');
+					</div>
+				</div>
+				<!--   Core JS Files   -->
+				<script src="/assets/js/core/jquery.min.js"></script>
+				<script src="/assets/js/core/popper.min.js"></script>
+				<script src="/assets/js/core/bootstrap-material-design.min.js"></script>
+				<script src="/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+				<!-- Plugin for the momentJs  -->
+				<script src="/assets/js/plugins/moment.min.js"></script>
+				<!--  Plugin for Sweet Alert -->
+				<script src="/assets/js/plugins/sweetalert2.js"></script>
+				<!-- Forms Validations Plugin -->
+				<script src="/assets/js/plugins/jquery.validate.min.js"></script>
+				<!-- Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
+				<script src="/assets/js/plugins/jquery.bootstrap-wizard.js"></script>
+				<!--	Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select -->
+				<script src="/assets/js/plugins/bootstrap-selectpicker.js"></script>
+				<!--  Plugin for the DateTimePicker, full documentation here: https://eonasdan.github.io/bootstrap-datetimepicker/ -->
+				<script src="/assets/js/plugins/bootstrap-datetimepicker.min.js"></script>
+				<!--  DataTables.net Plugin, full documentation here: https://datatables.net/  -->
+				<script src="/assets/js/plugins/jquery.dataTables.min.js"></script>
+				<!--	Plugin for Tags, full documentation here: https://github.com/bootstrap-tagsinput/bootstrap-tagsinputs  -->
+				<script src="/assets/js/plugins/bootstrap-tagsinput.js"></script>
+				<!-- Plugin for Fileupload, full documentation here: http://www.jasny.net/bootstrap/javascript/#fileinput -->
+				<script src="/assets/js/plugins/jasny-bootstrap.min.js"></script>
+				<!--  Full Calendar Plugin, full documentation here: https://github.com/fullcalendar/fullcalendar    -->
+				<script src="/assets/js/plugins/fullcalendar.min.js"></script>
+				<!-- Vector Map plugin, full documentation here: http://jvectormap.com/documentation/ -->
+				<script src="/assets/js/plugins/jquery-jvectormap.js"></script>
+				<!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+				<script src="/assets/js/plugins/nouislider.min.js"></script>
+				<!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert -->
+				<script
+					src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
+				<!-- Library for adding dinamically elements -->
+				<script src="/assets/js/plugins/arrive.min.js"></script>
+				<!--  Google Maps Plugin    -->
+				<script
+					src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+				<!-- Chartist JS -->
+				<script src="/assets/js/plugins/chartist.min.js"></script>
+				<!--  Notifications Plugin    -->
+				<script src="/assets/js/plugins/bootstrap-notify.js"></script>
+				<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+				<script src="/assets/js/material-dashboard.js?v=2.1.2"
+					type="text/javascript"></script>
+				<!-- Material Dashboard DEMO methods, don't include it in your project! -->
+				<script src="/assets/demo/demo.js"></script>
+				<script>
+					$(document)
+							.ready(
+									function() {
+										$()
+												.ready(
+														function() {
+															$sidebar = $('.sidebar');
 
-        $sidebar_img_container = $sidebar.find('.sidebar-background');
+															$sidebar_img_container = $sidebar
+																	.find('.sidebar-background');
 
-        $full_page = $('.full-page');
+															$full_page = $('.full-page');
 
-        $sidebar_responsive = $('body > .navbar-collapse');
+															$sidebar_responsive = $('body > .navbar-collapse');
 
-        window_width = $(window).width();
+															window_width = $(
+																	window)
+																	.width();
 
-        fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+															fixed_plugin_open = $(
+																	'.sidebar .sidebar-wrapper .nav li.active a p')
+																	.html();
 
-        if (window_width > 767 && fixed_plugin_open == 'Dashboard') {
-          if ($('.fixed-plugin .dropdown').hasClass('show-dropdown')) {
-            $('.fixed-plugin .dropdown').addClass('open');
-          }
+															if (window_width > 767
+																	&& fixed_plugin_open == 'Dashboard') {
+																if ($(
+																		'.fixed-plugin .dropdown')
+																		.hasClass(
+																				'show-dropdown')) {
+																	$(
+																			'.fixed-plugin .dropdown')
+																			.addClass(
+																					'open');
+																}
 
-        }
+															}
 
-        $('.fixed-plugin a').click(function(event) {
-          // Alex if we click on switch, stop propagation of the event, so the dropdown will not be hide, otherwise we set the  section active
-          if ($(this).hasClass('switch-trigger')) {
-            if (event.stopPropagation) {
-              event.stopPropagation();
-            } else if (window.event) {
-              window.event.cancelBubble = true;
-            }
-          }
-        });
+															$('.fixed-plugin a')
+																	.click(
+																			function(
+																					event) {
+																				// Alex if we click on switch, stop propagation of the event, so the dropdown will not be hide, otherwise we set the  section active
+																				if ($(
+																						this)
+																						.hasClass(
+																								'switch-trigger')) {
+																					if (event.stopPropagation) {
+																						event
+																								.stopPropagation();
+																					} else if (window.event) {
+																						window.event.cancelBubble = true;
+																					}
+																				}
+																			});
 
-        $('.fixed-plugin .active-color span').click(function() {
-          $full_page_background = $('.full-page-background');
+															$(
+																	'.fixed-plugin .active-color span')
+																	.click(
+																			function() {
+																				$full_page_background = $('.full-page-background');
 
-          $(this).siblings().removeClass('active');
-          $(this).addClass('active');
+																				$(
+																						this)
+																						.siblings()
+																						.removeClass(
+																								'active');
+																				$(
+																						this)
+																						.addClass(
+																								'active');
 
-          var new_color = $(this).data('color');
+																				var new_color = $(
+																						this)
+																						.data(
+																								'color');
 
-          if ($sidebar.length != 0) {
-            $sidebar.attr('data-color', new_color);
-          }
+																				if ($sidebar.length != 0) {
+																					$sidebar
+																							.attr(
+																									'data-color',
+																									new_color);
+																				}
 
-          if ($full_page.length != 0) {
-            $full_page.attr('filter-color', new_color);
-          }
+																				if ($full_page.length != 0) {
+																					$full_page
+																							.attr(
+																									'filter-color',
+																									new_color);
+																				}
 
-          if ($sidebar_responsive.length != 0) {
-            $sidebar_responsive.attr('data-color', new_color);
-          }
-        });
+																				if ($sidebar_responsive.length != 0) {
+																					$sidebar_responsive
+																							.attr(
+																									'data-color',
+																									new_color);
+																				}
+																			});
 
-        $('.fixed-plugin .background-color .badge').click(function() {
-          $(this).siblings().removeClass('active');
-          $(this).addClass('active');
+															$(
+																	'.fixed-plugin .background-color .badge')
+																	.click(
+																			function() {
+																				$(
+																						this)
+																						.siblings()
+																						.removeClass(
+																								'active');
+																				$(
+																						this)
+																						.addClass(
+																								'active');
 
-          var new_color = $(this).data('background-color');
+																				var new_color = $(
+																						this)
+																						.data(
+																								'background-color');
 
-          if ($sidebar.length != 0) {
-            $sidebar.attr('data-background-color', new_color);
-          }
-        });
+																				if ($sidebar.length != 0) {
+																					$sidebar
+																							.attr(
+																									'data-background-color',
+																									new_color);
+																				}
+																			});
 
-        $('.fixed-plugin .img-holder').click(function() {
-          $full_page_background = $('.full-page-background');
+															$(
+																	'.fixed-plugin .img-holder')
+																	.click(
+																			function() {
+																				$full_page_background = $('.full-page-background');
 
-          $(this).parent('li').siblings().removeClass('active');
-          $(this).parent('li').addClass('active');
+																				$(
+																						this)
+																						.parent(
+																								'li')
+																						.siblings()
+																						.removeClass(
+																								'active');
+																				$(
+																						this)
+																						.parent(
+																								'li')
+																						.addClass(
+																								'active');
 
+																				var new_image = $(
+																						this)
+																						.find(
+																								"img")
+																						.attr(
+																								'src');
 
-          var new_image = $(this).find("img").attr('src');
+																				if ($sidebar_img_container.length != 0
+																						&& $('.switch-sidebar-image input:checked').length != 0) {
+																					$sidebar_img_container
+																							.fadeOut(
+																									'fast',
+																									function() {
+																										$sidebar_img_container
+																												.css(
+																														'background-image',
+																														'url("'
+																																+ new_image
+																																+ '")');
+																										$sidebar_img_container
+																												.fadeIn('fast');
+																									});
+																				}
 
-          if ($sidebar_img_container.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
-            $sidebar_img_container.fadeOut('fast', function() {
-              $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
-              $sidebar_img_container.fadeIn('fast');
-            });
-          }
+																				if ($full_page_background.length != 0
+																						&& $('.switch-sidebar-image input:checked').length != 0) {
+																					var new_image_full_page = $(
+																							'.fixed-plugin li.active .img-holder')
+																							.find(
+																									'img')
+																							.data(
+																									'src');
 
-          if ($full_page_background.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
-            var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+																					$full_page_background
+																							.fadeOut(
+																									'fast',
+																									function() {
+																										$full_page_background
+																												.css(
+																														'background-image',
+																														'url("'
+																																+ new_image_full_page
+																																+ '")');
+																										$full_page_background
+																												.fadeIn('fast');
+																									});
+																				}
 
-            $full_page_background.fadeOut('fast', function() {
-              $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
-              $full_page_background.fadeIn('fast');
-            });
-          }
+																				if ($('.switch-sidebar-image input:checked').length == 0) {
+																					var new_image = $(
+																							'.fixed-plugin li.active .img-holder')
+																							.find(
+																									"img")
+																							.attr(
+																									'src');
+																					var new_image_full_page = $(
+																							'.fixed-plugin li.active .img-holder')
+																							.find(
+																									'img')
+																							.data(
+																									'src');
 
-          if ($('.switch-sidebar-image input:checked').length == 0) {
-            var new_image = $('.fixed-plugin li.active .img-holder').find("img").attr('src');
-            var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+																					$sidebar_img_container
+																							.css(
+																									'background-image',
+																									'url("'
+																											+ new_image
+																											+ '")');
+																					$full_page_background
+																							.css(
+																									'background-image',
+																									'url("'
+																											+ new_image_full_page
+																											+ '")');
+																				}
 
-            $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
-            $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
-          }
+																				if ($sidebar_responsive.length != 0) {
+																					$sidebar_responsive
+																							.css(
+																									'background-image',
+																									'url("'
+																											+ new_image
+																											+ '")');
+																				}
+																			});
+															$('.show').click(function () {
+																$('.modal-dialog').removeClass("d-none");
+															})
 
-          if ($sidebar_responsive.length != 0) {
-            $sidebar_responsive.css('background-image', 'url("' + new_image + '")');
-          }
-        });
+															$(
+																	'.switch-sidebar-image input')
+																	.change(
+																			function() {
+																				$full_page_background = $('.full-page-background');
 
-        $('.switch-sidebar-image input').change(function() {
-          $full_page_background = $('.full-page-background');
+																				$input = $(this);
 
-          $input = $(this);
+																				if ($input
+																						.is(':checked')) {
+																					if ($sidebar_img_container.length != 0) {
+																						$sidebar_img_container
+																								.fadeIn('fast');
+																						$sidebar
+																								.attr(
+																										'data-image',
+																										'#');
+																					}
 
-          if ($input.is(':checked')) {
-            if ($sidebar_img_container.length != 0) {
-              $sidebar_img_container.fadeIn('fast');
-              $sidebar.attr('data-image', '#');
-            }
+																					if ($full_page_background.length != 0) {
+																						$full_page_background
+																								.fadeIn('fast');
+																						$full_page
+																								.attr(
+																										'data-image',
+																										'#');
+																					}
 
-            if ($full_page_background.length != 0) {
-              $full_page_background.fadeIn('fast');
-              $full_page.attr('data-image', '#');
-            }
+																					background_image = true;
+																				} else {
+																					if ($sidebar_img_container.length != 0) {
+																						$sidebar
+																								.removeAttr('data-image');
+																						$sidebar_img_container
+																								.fadeOut('fast');
+																					}
 
-            background_image = true;
-          } else {
-            if ($sidebar_img_container.length != 0) {
-              $sidebar.removeAttr('data-image');
-              $sidebar_img_container.fadeOut('fast');
-            }
+																					if ($full_page_background.length != 0) {
+																						$full_page
+																								.removeAttr(
+																										'data-image',
+																										'#');
+																						$full_page_background
+																								.fadeOut('fast');
+																					}
 
-            if ($full_page_background.length != 0) {
-              $full_page.removeAttr('data-image', '#');
-              $full_page_background.fadeOut('fast');
-            }
+																					background_image = false;
+																				}
+																			});
 
-            background_image = false;
-          }
-        });
+															$(
+																	'.switch-sidebar-mini input')
+																	.change(
+																			function() {
+																				$body = $('body');
 
-        $('.switch-sidebar-mini input').change(function() {
-          $body = $('body');
+																				$input = $(this);
 
-          $input = $(this);
+																				if (md.misc.sidebar_mini_active == true) {
+																					$(
+																							'body')
+																							.removeClass(
+																									'sidebar-mini');
+																					md.misc.sidebar_mini_active = false;
 
-          if (md.misc.sidebar_mini_active == true) {
-            $('body').removeClass('sidebar-mini');
-            md.misc.sidebar_mini_active = false;
+																					$(
+																							'.sidebar .sidebar-wrapper, .main-panel')
+																							.perfectScrollbar();
 
-            $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar();
+																				} else {
 
-          } else {
+																					$(
+																							'.sidebar .sidebar-wrapper, .main-panel')
+																							.perfectScrollbar(
+																									'destroy');
 
-            $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar('destroy');
+																					setTimeout(
+																							function() {
+																								$(
+																										'body')
+																										.addClass(
+																												'sidebar-mini');
 
-            setTimeout(function() {
-              $('body').addClass('sidebar-mini');
+																								md.misc.sidebar_mini_active = true;
+																							},
+																							300);
+																				}
 
-              md.misc.sidebar_mini_active = true;
-            }, 300);
-          }
+																				// we simulate the window Resize so the charts will get updated in realtime.
+																				var simulateWindowResize = setInterval(
+																						function() {
+																							window
+																									.dispatchEvent(new Event(
+																											'resize'));
+																						},
+																						180);
 
-          // we simulate the window Resize so the charts will get updated in realtime.
-          var simulateWindowResize = setInterval(function() {
-            window.dispatchEvent(new Event('resize'));
-          }, 180);
+																				// we stop the simulation of Window Resize after the animations are completed
+																				setTimeout(
+																						function() {
+																							clearInterval(simulateWindowResize);
+																						},
+																						1000);
 
-          // we stop the simulation of Window Resize after the animations are completed
-          setTimeout(function() {
-            clearInterval(simulateWindowResize);
-          }, 1000);
-
-        });
-      });
-    });
-  </script>
+																			});
+														});
+									});
+				</script>
 </body>
 
 </html>

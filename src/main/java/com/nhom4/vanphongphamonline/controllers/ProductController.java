@@ -16,15 +16,21 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nhom4.vanphongphamonline.models.Category;
 import com.nhom4.vanphongphamonline.models.Product;
+import com.nhom4.vanphongphamonline.models.Supplier;
+import com.nhom4.vanphongphamonline.repositories.CategoryRepository;
 import com.nhom4.vanphongphamonline.repositories.ProductRepository;
+import com.nhom4.vanphongphamonline.repositories.SupplierRepository;
 import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validators.ProductValidator;
 @RestController
@@ -32,33 +38,37 @@ public class ProductController {
 	@Autowired
 	private ProductRepository productRepository;
 	@Autowired
+	private SupplierRepository supplierRepository;
+	@Autowired
+	private CategoryRepository categoryRepository;
+	@Autowired
 	private ProductValidator productValidator;
 	@Autowired
 	public ProductController(ProductRepository productRepository) {
 		this.productRepository = productRepository;
 	}
-	
-	@PostMapping(value = "/api/v1/admin/product/add")
-	public ResponseEntity<CustomResponse> addProduct(@RequestBody Product product, BindingResult bindingResult) {
+
+	@PostMapping(value = "/admin/product/add")
+	public ModelAndView addProduct(@ModelAttribute("product") Product product, BindingResult bindingResult) {
 		// check --------------------------------------
 		productValidator.productValidation(product, bindingResult);
+		String message = "Thêm thành công";
 		if (bindingResult.hasErrors()) {
-			   FieldError fieldError = null;
-			   for (Object object : bindingResult.getAllErrors()) {
-				    if(object instanceof FieldError) {
-				        fieldError = (FieldError) object;
-				    }
+			FieldError fieldError = null;
+			for (Object object : bindingResult.getAllErrors()) {
+				if(object instanceof FieldError) {
+					fieldError = (FieldError) object;
 				}
-				   CustomResponse serviceStatusError = new CustomResponse(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()), null);
-			   
-			   return new ResponseEntity<CustomResponse>(serviceStatusError, HttpStatus.OK);
-	        }
+			}
+			message = "Field: " + fieldError.getField() + " - Lỗi: " + fieldError.getCode();
+			return new ModelAndView("redirect:/admin/product?index=0", "message", message);
+		}
 		//--------------------------------------------------------
 		productRepository.insert(product);
-		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thêm sản phẩm thành công", null), HttpStatus.OK);
-		
+		return new ModelAndView("redirect:/admin/product?index=0", "message", message);
+
 	}
-	
+
 	@GetMapping(value = "/api/v1/product/list")
 	public ResponseEntity<CustomResponse> getAllProduct() {
 		List<Product> list = null;
@@ -68,12 +78,19 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>( new CustomResponse(0, "Danh sách sản phẩm", list), HttpStatus.OK);
 	}
+	//Sring mvc 
 	@GetMapping(value = "/admin/product")
 	public ModelAndView index(Model model, @RequestParam String index) {
 		Page<Product> page = productRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
+		List<Category> categories = categoryRepository.findAll();
+		List<Supplier> suppliers = supplierRepository.findAll();
+	
 		model.addAttribute("listProduct", page.getContent());
+		model.addAttribute("categories", categories);
+		model.addAttribute("suppliers", suppliers);
 		return new ModelAndView("ProductAdmin");
 	}
+	//
 	@GetMapping(value = "/api/v1/product/detail")
 	public ResponseEntity<CustomResponse> getProductById(@RequestParam String id) {
 		if(productRepository.findById(id) == null) {
@@ -81,35 +98,35 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Tìm thành công", productRepository.findById(id)), HttpStatus.OK);
 	}
-	
-	@PostMapping(value = "/api/v1/admin/product/delete")
-	public String deleteProductById(@RequestParam String id, Model model) {
+
+	@GetMapping(value = "/admin/product/delete")
+	public ModelAndView deleteProductById(@RequestParam String id, Model model) {
 		if(productRepository.findById(id).isPresent()!=false) {
 			productRepository.deleteById(id);
 		}
 		Page<Product> page = productRepository.findAll(PageRequest.of(0, 12));
 		model.addAttribute("listProduct", page.getContent());
-		return "redirect:/admin?index=0";
+		return new ModelAndView("redirect:/admin/product?index=0");
 	}
-
-	@PostMapping(value = "/api/v1/admin/product/update")
-	public ResponseEntity<CustomResponse> updateProductById(@RequestParam String id, @RequestBody Product product, BindingResult bindingResult) {
-		if(productRepository.findById(id).isPresent()!=false) {
+	@PostMapping(value = "/admin/product/update")
+	public ModelAndView updateProductById(@ModelAttribute("product") Product product, BindingResult bindingResult) {
+		String message = "Thêm thành công";
+		if(productRepository.findById(product.getId()).isPresent()!=false) {
 			// check ---------------------------------
 			productValidator.productValidation(product, bindingResult);
 			if (bindingResult.hasErrors()) {
-			   FieldError fieldError = null;
-			   for (Object object : bindingResult.getAllErrors()) {
-				    if(object instanceof FieldError) {
-				        fieldError = (FieldError) object;
-				    }
+				FieldError fieldError = null;
+				for (Object object : bindingResult.getAllErrors()) {
+					if(object instanceof FieldError) {
+						fieldError = (FieldError) object;
+					}
 				}
-				   CustomResponse serviceStatusError = new CustomResponse(Integer.parseInt(fieldError.getDefaultMessage()), String.valueOf(fieldError.getCode()), null);
-			   
-			   return new ResponseEntity<CustomResponse>(serviceStatusError, HttpStatus.OK);
-	        } 
+				message = "Field: " + fieldError.getField() + " - Lỗi: " + fieldError.getCode();
+				return new ModelAndView("redirect:/admin/product?index=0", "message", message);
+
+			} 
 			// ----------------------------------------------
-			Product productUpdated = productRepository.findById(id).get();
+			Product productUpdated = productRepository.findById(product.getId()).get();
 			productUpdated.setName(product.getName());
 			productUpdated.setPrice(product.getPrice());
 			productUpdated.setDescription(product.getDescription());
@@ -119,11 +136,11 @@ public class ProductController {
 			productUpdated.setCategory(product.getCategory());
 			productRepository.save(productUpdated);
 		} else {
-			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Sản phẩm không tồn tại", null), HttpStatus.OK);
+			return new ModelAndView("redirect:/admin/product?index=0", "message", "Sản phẩm không tồn tại");
 		}
-		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Cập nhật sản phẩm thành công sản phẩm thành công", null), HttpStatus.OK);
+		return new ModelAndView("redirect:/admin/product?index=0");
 	}
-	
+
 	@GetMapping(value = "/api/v1/product/page") // phân trang
 	public ResponseEntity<CustomResponse> getProductPageByIndex(@RequestParam int index) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -159,7 +176,7 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/api/v1/product/desc") // sắp xếp có phân trang giảm dần hoặc z-a
 	public ResponseEntity<CustomResponse> sortFromZToA(@RequestParam int index, @RequestParam String fieldSort) {
 		Page<Product> page = productRepository.findAll(PageRequest.of(index, 12, Sort.by(Sort.Direction.DESC, fieldSort))); // 1 page có 12 sản phẩm
@@ -168,7 +185,7 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/api/v1/product/category") // sắp xếp có phân trang giảm dần hoặc z-a
 	public ResponseEntity<CustomResponse> searchByCategory(@RequestParam int index, @RequestParam String name) {
 		Page<Product> page = productRepository.findByCategory_Name(PageRequest.of(index, 12), name); // 1 page có 12 sản phẩm
@@ -177,5 +194,5 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
-	
+
 }
