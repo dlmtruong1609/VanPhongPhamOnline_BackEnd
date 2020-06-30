@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,10 +38,30 @@ public class SupplierController {
 		// TODO Auto-generated constructor stub
 	}
 	@PostMapping(value = "/api/v1/admin/supplier/add")
-	public ResponseEntity<CustomResponse> addSupplier(@RequestBody Supplier supplier) { // chưa bắt valid
+	public ModelAndView addSupplier( Supplier supplier) { // chưa bắt valid
 		supplierRepository.insert(supplier);
-		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thêm nhà cung cấp thành công", null), HttpStatus.OK);
-		
+		return new ModelAndView("redirect:/admin/supplier?index=0");
+	}
+	@GetMapping(value = "/api/v1/admin/supplier/search")
+	public ModelAndView adminSearch( @RequestParam String keyword, Model model) {
+		List<Supplier> list = supplierRepository.findByText(keyword);
+		model.addAttribute("listSupplier",list);
+		return new ModelAndView("Supplier");
+	}
+	@GetMapping(value = "/admin/supplier")
+	public ModelAndView index(Model model, @RequestParam String index) {
+		Page<Supplier> page = supplierRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
+		model.addAttribute("listSupplier", page.getContent());
+		return new ModelAndView("Supplier");
+	}
+	@PostMapping(value = "/api/v1/admin/supplier/delete")
+	public ModelAndView deleteSupplierById(@RequestParam String id) {
+		if(supplierRepository.findById(id).isPresent()!=false) {
+			supplierRepository.deleteById(id);
+		} else {
+		return new ModelAndView("redirect:/admin/supplier?index=0");
+		}
+		return new ModelAndView("redirect:/admin/supplier?index=0");
 	}
 	@GetMapping(value = "/api/v1/supplier/list")
 	public ResponseEntity<CustomResponse> getAllSupplier() {
@@ -52,18 +73,8 @@ public class SupplierController {
 		return new ResponseEntity<CustomResponse>( new CustomResponse(0, "Danh sách nhà cung cấp", list), HttpStatus.OK);
 	}
 	
-	@PostMapping(value = "/api/v1/admin/supplier/delete")
-	public ResponseEntity<CustomResponse> deleteSupplierById(@RequestParam String id) {
-		if(supplierRepository.findById(id).isPresent()!=false) {
-			supplierRepository.deleteById(id);
-		} else {
-			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Nhà cung cấp không tồn tại", null), HttpStatus.OK);
-		}
-		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Xoá nhà cung cấp thành công", supplierRepository.findAll()), HttpStatus.OK);
-	}
-
 	@PostMapping(value = "/api/v1/admin/supplier/update")
-	public ResponseEntity<CustomResponse> updateProductById(@RequestParam String id, @RequestBody Supplier supplier) { // chưa kiểm tra valid
+	public ModelAndView updateSupplierById(@RequestParam String id,  Supplier supplier) { // chưa kiểm tra valid
 		if(supplierRepository.findById(id).isPresent()!=false) {
 			Supplier supplierUpdated = supplierRepository.findById(id).get();
 			supplierUpdated.setName(supplier.getName());
@@ -71,9 +82,9 @@ public class SupplierController {
 
 			supplierRepository.save(supplierUpdated);
 		} else {
-			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Nhà cung cấp không tồn tại", null), HttpStatus.OK);
+			return new ModelAndView("redirect:/admin/supplier?index=0", "message", " không tồn tại");
 		}
-		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Cập nhật nhà cung cấp thành công sản phẩm thành công", null), HttpStatus.OK);
+		return new ModelAndView("redirect:/admin/supplier?index=0");
 	}
 
 	@GetMapping(value = "/api/v1/supplier/detail")
@@ -102,11 +113,5 @@ public class SupplierController {
 			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Không có nhà cung cấp", null), HttpStatus.OK);
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
-	}
-	@GetMapping(value = "/admin/supplier")
-	public ModelAndView index(Model model, @RequestParam String index) {
-		Page<Supplier> page = supplierRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
-		model.addAttribute("listSupplier", page.getContent());
-		return new ModelAndView("Supplier");
 	}
 }

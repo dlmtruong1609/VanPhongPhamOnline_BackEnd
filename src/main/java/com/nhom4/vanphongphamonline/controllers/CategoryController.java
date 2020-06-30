@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,9 +34,9 @@ public class CategoryController {
 		this.categoryRepository = categoryRepository;
 	}
 	@PostMapping(value = "/api/v1/admin/category/add")
-	public ResponseEntity<CustomResponse> addCategory(@RequestBody Category category) { // chưa bắt valid
+	public ModelAndView addCategory(Category category) { // chưa bắt valid
 		categoryRepository.insert(category);
-		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thêm loại sản phẩm thành công", null), HttpStatus.OK);
+		return new ModelAndView("redirect:/admin/category?index=0");
 		
 	}
 	@GetMapping(value = "/admin/category")
@@ -45,24 +46,30 @@ public class CategoryController {
 		return new ModelAndView("Category");
 	}
 	@PostMapping(value = "/api/v1/admin/category/delete")
-	public ResponseEntity<CustomResponse> deleteCategoryById(@RequestParam String id) {
+	public ModelAndView deleteCategoryById(@RequestParam String id) {
 		if(categoryRepository.findById(id).isPresent()!=false) {
 			categoryRepository.deleteById(id);
 		} else {
-			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Loại sản phẩm không tồn tại", null), HttpStatus.OK);
+			return new ModelAndView("redirect:/admin/category?index=0");
 		}
-		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Xoá loại sản phẩm thành công", categoryRepository.findAll()), HttpStatus.OK);
+		return new ModelAndView("redirect:/admin/category?index=0");
+	}
+	@GetMapping(value = "/api/v1/admin/category/search")
+	public ModelAndView adminSearch( @RequestParam String keyword, Model model) {
+		List<Category> list = categoryRepository.findByText(keyword);
+		model.addAttribute("listSupplier",list);
+		return new ModelAndView("Supplier");
 	}
 	@PostMapping(value = "/api/v1/admin/category/update")
-	public ResponseEntity<CustomResponse> updateCategoryById(@RequestParam String id, @RequestBody Category category) { // chưa kiểm tra valid
+	public ModelAndView updateCategoryById(@RequestParam String id, Category category) { // chưa kiểm tra valid
 		if(categoryRepository.findById(id).isPresent()!=false) {
 			Category categoryUpdated = categoryRepository.findById(id).get();
 			categoryUpdated.setName(category.getName());
 			categoryRepository.save(categoryUpdated);
 		} else {
-			return new ResponseEntity<CustomResponse>(new CustomResponse(1, "Loại sản phẩm không tồn tại", null), HttpStatus.OK);
+			return new ModelAndView("redirect:/admin/category?index=0");
 		}
-		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Cập nhật loại sản phẩm thành công sản phẩm thành công", null), HttpStatus.OK);
+		return new ModelAndView("redirect:/admin/category?index=0");
 	}
 	
 	@GetMapping(value = "/api/v1/category/page") // phân trang

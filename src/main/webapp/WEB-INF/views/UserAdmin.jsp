@@ -127,7 +127,6 @@ form.navbar-form {
 								<div class="card-header card-header-primary">
 									<h4 class="card-title ">Quản lý khách hàng</h4>
 									<p class="card-category">Thêm, xoá, sửa, tìm kiếm tại đây</p>
-									<a href=""><button class="btn-custom btn btn-warning" style="top: 10px"><span class="h4 pr-2">+</span> Thêm khách hàng</button></a>
 								</div>
 								<div class="card-body">
 									<div class="table-responsive">
@@ -142,12 +141,14 @@ form.navbar-form {
 											<tbody>
 												<c:forEach var="c" items="${listCustomer }" varStatus="loop">
 													<tr>
-														<td>${loop.index }</td>
+														<td>${loop.index +1 }</td>
 														<td>${c.name }</td>
 														<td>${c.account.username }</td>
-														<td><a href="">Xem chi tiết</a></td>
+														<td><a href="">Xem chi tiết</a>
+														
+														</td>
 														<td class="text-primary form-inline">
-															<a class="btn btn-primary">Cập nhật</a> 
+															<button class="btn btn-primary">Cập nhật</button> 
 															<form action="/api/v1/admin/customer/delete?id=${c.id }" method="post">
 															<input class="btn btn-danger" type="submit" value="Xoá"/>
 															</form>

@@ -125,8 +125,9 @@ form.navbar-form {
 				<div class="container-fluid">
 					<div class="row">
 						<div class="text-center">
-							<div class="alert alert-success" <c:if test="${param.message == null}">hidden</c:if> role="alert">
-							  <%= request.getParameter("message") %>
+							<div class="alert alert-success"
+								<c:if test="${param.message == null}">hidden</c:if> role="alert">
+								<%=request.getParameter("message")%>
 							</div>
 						</div>
 						<div class="col-md-12">
@@ -262,222 +263,237 @@ form.navbar-form {
 														<td>${loop.index }</td>
 														<td>${p.name }</td>
 														<td>${p.price }</td>
-														<td>
-															<a href="" data-toggle="modal"
-																data-target="#detailModal${p.id }">Xem chi tiết</a>
+														<td><a href="" data-toggle="modal"
+															data-target="#detailModal${p.id }">Xem chi tiết</a>
 															<form class="modal fade bd-example-modal-lg"
-															id="detailModal${p.id }"tabindex="-1" role="dialog"
-															aria-labelledby="exampleModalLabel" aria-hidden="true"
-															modelAttribute="product">
-															<div class=" modal-dialog modal-lg" role="document">
-																<div class="modal-content">
-																	<div class="modal-header">
-																		<h5 class="modal-title" id="exampleModalLabel">Cập nhật sản phẩm</h5>
-																		<button type="button" class="close"
-																			data-dismiss="modal" aria-label="Close">
-																			<span aria-hidden="true">&times;</span>
-																		</button>
-																	</div>
-																	<div class="modal-body">
-																		<div class="md-form form">
-																			<div class="input-group mb-3">
-																				<div class="input-group-prepend">
-																					<label class="input-group-text"
-																						for="inputGroupSelect01">Chọn loại sản
-																						phẩm</label>
-																				</div>
-																				<select disabled name="category" class="custom-select"
-																					id="inputGroupSelect01${p.id }">
-																					<c:forEach var="c" items="${categories }">
-																						<option value="${c.id }" ${c.id == p.category.id ? 'selected' : '' }>${c.name}</option>
-																					</c:forEach>
-																				</select>
-																			</div>
+																id="detailModal${p.id }" tabindex="-1" role="dialog"
+																aria-labelledby="exampleModalLabel" aria-hidden="true"
+																modelAttribute="product">
+																<div class=" modal-dialog modal-lg" role="document">
+																	<div class="modal-content">
+																		<div class="modal-header">
+																			<h5 class="modal-title" id="exampleModalLabel">Cập
+																				nhật sản phẩm</h5>
+																			<button type="button" class="close"
+																				data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																			</button>
 																		</div>
-																		<div class="row mt-3">
-																			<div class="col-lg-4">
-																				<p>
-																					<strong>Tên sản phẩm</strong>
-																				</p>
-																				<input type="hidden" name="id" value="${p.id }"/>
-																				<input type="text" class="md-text form-control"
-																					name="name" disabled value="${p.name }" placeholder="Nhập tên sản phẩm">
-																			</div>
-																			<div class="col-lg-4">
-																				<p>
-																					<strong>Số Lượng</strong>
-																				</p>
-																				<div class="md-form form">
-																					<input type="text" value="${p.inventory }" name="inventory" required=""
-																						class="md-text form-control"
-																						placeholder="Nhập số lượng sản phẩm" disabled>
-																				</div>
-																			</div>
-																			<div class="col-lg-4">
-																				<p>
-																					<strong>Giá</strong>
-																				</p>
-																					<input type="text" value="${p.price }" name="price" required=""
-																						class="md-text form-control"
-																						placeholder="Nhập giá sản phẩm" disabled>
-																			</div>
-																		</div>
-																		<div class="mt-3 ">
-																			<p>
-																				<strong>Mô tả sản phẩm</strong>
-																			</p>
+																		<div class="modal-body">
 																			<div class="md-form form">
-																				<textarea name="description"
-																					class="md-text form-control"
-																					placeholder="Nhập mô tả sản phẩm" disabled>${p.description }</textarea>
-																			</div>
-																		</div>
-																		<div class="row">
-																			<div class="mt-3 col-sm-6 col-lg-6 col-md-6">
-																				<p>
-																					<strong>Nhà cung cấp</strong>
-																				</p>
-																				<div class="md-form form">
-																					<select name="supplier" disabled
-																						class="md-text form-control">
-																						<c:forEach var="supplier" items="${suppliers }">
-																							<option ${supplier.id == p.supplier.id ? 'selected' : '' } value="${supplier.id }">${supplier.name }</option>
+																				<div class="input-group mb-3">
+																					<div class="input-group-prepend">
+																						<label class="input-group-text"
+																							for="inputGroupSelect01">Chọn loại sản
+																							phẩm</label>
+																					</div>
+																					<select disabled name="category"
+																						class="custom-select"
+																						id="inputGroupSelect01${p.id }">
+																						<c:forEach var="c" items="${categories }">
+																							<option value="${c.id }"
+																								${c.id == p.category.id ? 'selected' : '' }>${c.name}</option>
 																						</c:forEach>
 																					</select>
 																				</div>
 																			</div>
-																			<div class="mt-3 row col-sm-6 col-lg-6 col-md-6">
+																			<div class="row mt-3">
 																				<div class="col-lg-4">
 																					<p>
-																						<strong>Hình Ảnh</strong>
+																						<strong>Tên sản phẩm</strong>
 																					</p>
+																					<input type="hidden" name="id" value="${p.id }" />
+																					<input type="text" class="md-text form-control"
+																						name="name" disabled value="${p.name }"
+																						placeholder="Nhập tên sản phẩm">
 																				</div>
-																				<div class="col-lg-6">
-																					<img src="${p.urlImage}" style="width: 200px; height: 200px;">
+																				<div class="col-lg-4">
+																					<p>
+																						<strong>Số Lượng</strong>
+																					</p>
+																					<div class="md-form form">
+																						<input type="text" value="${p.inventory }"
+																							name="inventory" required=""
+																							class="md-text form-control"
+																							placeholder="Nhập số lượng sản phẩm" disabled>
+																					</div>
+																				</div>
+																				<div class="col-lg-4">
+																					<p>
+																						<strong>Giá</strong>
+																					</p>
+																					<input type="text" value="${p.price }" name="price"
+																						required="" class="md-text form-control"
+																						placeholder="Nhập giá sản phẩm" disabled>
+																				</div>
+																			</div>
+																			<div class="mt-3 ">
+																				<p>
+																					<strong>Mô tả sản phẩm</strong>
+																				</p>
+																				<div class="md-form form">
+																					<textarea name="description"
+																						class="md-text form-control"
+																						placeholder="Nhập mô tả sản phẩm" disabled>${p.description }</textarea>
+																				</div>
+																			</div>
+																			<div class="row">
+																				<div class="mt-3 col-sm-6 col-lg-6 col-md-6">
+																					<p>
+																						<strong>Nhà cung cấp</strong>
+																					</p>
+																					<div class="md-form form">
+																						<select name="supplier" disabled
+																							class="md-text form-control">
+																							<c:forEach var="supplier" items="${suppliers }">
+																								<option
+																									${supplier.id == p.supplier.id ? 'selected' : '' }
+																									value="${supplier.id }">${supplier.name }</option>
+																							</c:forEach>
+																						</select>
+																					</div>
+																				</div>
+																				<div class="mt-3 row col-sm-6 col-lg-6 col-md-6">
+																					<div class="col-lg-4">
+																						<p>
+																							<strong>Hình Ảnh</strong>
+																						</p>
+																					</div>
+																					<div class="col-lg-6">
+																						<img src="${p.urlImage}"
+																							style="width: 200px; height: 200px;">
+																					</div>
 																				</div>
 																			</div>
 																		</div>
-																	</div>
-																	<div class="modal-footer">
-																		<button type="button" class="btn btn-secondary"
-																			data-dismiss="modal">Đóng</button>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary"
+																				data-dismiss="modal">Đóng</button>
+																		</div>
 																	</div>
 																</div>
-															</div>
-														</form>
-														</td>
+															</form></td>
 														<td class="text-primary form-inline">
 															<button class="btn btn-primary" data-toggle="modal"
 																data-target="#updateModal${p.id }">Cập nhật</button>
-																<form class="modal fade bd-example-modal-lg"
-															id="updateModal${p.id }" action="/admin/product/update"
-															method="post" tabindex="-1" role="dialog"
-															aria-labelledby="exampleModalLabel" aria-hidden="true"
-															modelAttribute="product">
-															<div class=" modal-dialog modal-lg" role="document">
-																<div class="modal-content">
-																	<div class="modal-header">
-																		<h5 class="modal-title" id="exampleModalLabel">Cập nhật sản phẩm</h5>
-																		<button type="button" class="close"
-																			data-dismiss="modal" aria-label="Close">
-																			<span aria-hidden="true">&times;</span>
-																		</button>
-																	</div>
-																	<div class="modal-body">
-																		<div class="md-form form">
-																			<div class="input-group mb-3">
-																				<div class="input-group-prepend">
-																					<label class="input-group-text"
-																						for="inputGroupSelect01">Chọn loại sản
-																						phẩm</label>
-																				</div>
-																				<select name="category" class="custom-select"
-																					id="inputGroupSelect01${p.id }">
-																					<c:forEach var="c" items="${categories }">
-																						<option value="${c.id }" ${c.id == p.category.id ? 'selected' : '' }>${c.name}</option>
-																					</c:forEach>
-																				</select>
-																			</div>
+															<form class="modal fade bd-example-modal-lg"
+																id="updateModal${p.id }" action="/admin/product/update"
+																method="post" tabindex="-1" role="dialog"
+																aria-labelledby="exampleModalLabel" aria-hidden="true"
+																modelAttribute="product">
+																<div class=" modal-dialog modal-lg" role="document">
+																	<div class="modal-content">
+																		<div class="modal-header">
+																			<h5 class="modal-title" id="exampleModalLabel">Cập
+																				nhật sản phẩm</h5>
+																			<button type="button" class="close"
+																				data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																			</button>
 																		</div>
-																		<div class="row mt-3">
-																			<div class="col-lg-4">
-																				<p>
-																					<strong>Tên sản phẩm</strong>
-																				</p>
-																				<input type="hidden" name="id" value="${p.id }"/>
-																				<input type="text" class="md-text form-control"
-																					name="name" value="${p.name }" placeholder="Nhập tên sản phẩm">
-																			</div>
-																			<div class="col-lg-4">
-																				<p>
-																					<strong>Số Lượng</strong>
-																				</p>
-																				<div class="md-form form">
-																					<input type="text" value="${p.inventory }" name="inventory" required=""
-																						class="md-text form-control"
-																						placeholder="Nhập số lượng sản phẩm">
-																				</div>
-																			</div>
-																			<div class="col-lg-4">
-																				<p>
-																					<strong>Giá</strong>
-																				</p>
-																					<input type="text" value="${p.price }" name="price" required=""
-																						class="md-text form-control"
-																						placeholder="Nhập giá sản phẩm">
-																			</div>
-																		</div>
-																		<div class="mt-3 ">
-																			<p>
-																				<strong>Mô tả sản phẩm</strong>
-																			</p>
+																		<div class="modal-body">
 																			<div class="md-form form">
-																				<textarea name="description"
-																					class="md-text form-control"
-																					placeholder="Nhập mô tả sản phẩm">${p.description }</textarea>
-																			</div>
-																		</div>
-																		<div class="row">
-																			<div class="mt-3 col-sm-6 col-lg-6 col-md-6">
-																				<p>
-																					<strong>Nhà cung cấp</strong>
-																				</p>
-																				<div class="md-form form">
-																					<select name="supplier"
-																						class="md-text form-control">
-																						<c:forEach var="supplier" items="${suppliers }">
-																							<option ${supplier.id == p.supplier.id ? 'selected' : '' } value="${supplier.id }">${supplier.name }</option>
+																				<div class="input-group mb-3">
+																					<div class="input-group-prepend">
+																						<label class="input-group-text"
+																							for="inputGroupSelect01">Chọn loại sản
+																							phẩm</label>
+																					</div>
+																					<select name="category" class="custom-select"
+																						id="inputGroupSelect01${p.id }">
+																						<c:forEach var="c" items="${categories }">
+																							<option value="${c.id }"
+																								${c.id == p.category.id ? 'selected' : '' }>${c.name}</option>
 																						</c:forEach>
 																					</select>
 																				</div>
 																			</div>
-																			<div class="mt-3 row col-sm-6 col-lg-6 col-md-6">
+																			<div class="row mt-3">
 																				<div class="col-lg-4">
 																					<p>
-																						<strong>Hình Ảnh</strong>
+																						<strong>Tên sản phẩm</strong>
+																					</p>
+																					<input type="hidden" name="id" value="${p.id }" />
+																					<input type="text" class="md-text form-control"
+																						name="name" value="${p.name }"
+																						placeholder="Nhập tên sản phẩm">
+																				</div>
+																				<div class="col-lg-4">
+																					<p>
+																						<strong>Số Lượng</strong>
 																					</p>
 																					<div class="md-form form">
-																						<input class="md-text form-control"
-																							id="fileUploader" type="file" name="fileUploader"
-																							accept="image/*" style="display: none;"><label
-																							class="form-control" for="fileUploader"
-																							style="margin-top: 21px;">Chọn</label>
+																						<input type="text" value="${p.inventory }"
+																							name="inventory" required=""
+																							class="md-text form-control"
+																							placeholder="Nhập số lượng sản phẩm">
 																					</div>
 																				</div>
-																				<div class="col-lg-6">
-																					<img src="${p.urlImage}" style="width: 200px; height: 200px;">
+																				<div class="col-lg-4">
+																					<p>
+																						<strong>Giá</strong>
+																					</p>
+																					<input type="text" value="${p.price }" name="price"
+																						required="" class="md-text form-control"
+																						placeholder="Nhập giá sản phẩm">
+																				</div>
+																			</div>
+																			<div class="mt-3 ">
+																				<p>
+																					<strong>Mô tả sản phẩm</strong>
+																				</p>
+																				<div class="md-form form">
+																					<textarea name="description"
+																						class="md-text form-control"
+																						placeholder="Nhập mô tả sản phẩm">${p.description }</textarea>
+																				</div>
+																			</div>
+																			<div class="row">
+																				<div class="mt-3 col-sm-6 col-lg-6 col-md-6">
+																					<p>
+																						<strong>Nhà cung cấp</strong>
+																					</p>
+																					<div class="md-form form">
+																						<select name="supplier"
+																							class="md-text form-control">
+																							<c:forEach var="supplier" items="${suppliers }">
+																								<option
+																									${supplier.id == p.supplier.id ? 'selected' : '' }
+																									value="${supplier.id }">${supplier.name }</option>
+																							</c:forEach>
+																						</select>
+																					</div>
+																				</div>
+																				<div class="mt-3 row col-sm-6 col-lg-6 col-md-6">
+																					<div class="col-lg-4">
+																						<p>
+																							<strong>Hình Ảnh</strong>
+																						</p>
+																						<div class="md-form form">
+																							<input class="md-text form-control"
+																								id="fileUploader" type="file"
+																								name="fileUploader" accept="image/*"
+																								style="display: none;"><label
+																								class="form-control" for="fileUploader"
+																								style="margin-top: 21px;">Chọn</label>
+																						</div>
+																					</div>
+																					<div class="col-lg-6">
+																						<img src="${p.urlImage}"
+																							style="width: 200px; height: 200px;">
+																					</div>
 																				</div>
 																			</div>
 																		</div>
-																	</div>
-																	<div class="modal-footer">
-																		<button type="button" class="btn btn-secondary"
-																			data-dismiss="modal">Đóng</button>
-																		<button type="submit" class="btn btn-primary">Cập nhật</button>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary"
+																				data-dismiss="modal">Đóng</button>
+																			<button type="submit" class="btn btn-primary">Cập
+																				nhật</button>
+																		</div>
 																	</div>
 																</div>
-															</div>
-														</form>
+															</form>
 															<form action="/admin/product/delete" method="get">
 																<input class="btn btn-danger" type="submit" value="Xoá" />
 																<input type="hidden" name="id" value="${p.id }">
@@ -770,9 +786,14 @@ form.navbar-form {
 																											+ '")');
 																				}
 																			});
-															$('.show').click(function () {
-																$('.modal-dialog').removeClass("d-none");
-															})
+															$('.show')
+																	.click(
+																			function() {
+																				$(
+																						'.modal-dialog')
+																						.removeClass(
+																								"d-none");
+																			})
 
 															$(
 																	'.switch-sidebar-image input')
