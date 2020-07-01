@@ -2,23 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Spring Boot Security</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-  <h2>Form Login1</h2>
-  <form name='login-form' action="/api/v1/loginAdmin" modelAttribute="account" method='POST'>
-    <table>
-      <tr>
-        <td>Username:</td>
-        <td><input type='text' name='username' value=''></td>
-      </tr>
-      <tr>
-        <td>Password:</td>
-        <td><input type='password' name='password' /></td>
-      </tr>
-      <tr>
-        <td><input name="submit" type="submit" value="submit" /></td>
-      </tr>
-    </table>
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-  </form>
+	<div class="container">
+		<div class="row d-flex justify-content-center">
+			<div class="col-md-6">
+				<h2>Admin</h2>
+				<form name='login-form' action="/api/v1/loginAdmin"
+					modelAttribute="account" method='POST'>
+					<div class="form-group">
+						<label for="username">Email address:</label> <input type="text"
+							class="form-control" placeholder="Nhập tên tài khoản"
+							name="username" id="username">
+					</div>
+					<div class="form-group">
+						<label for="pwd">Password:</label> <input type="password"
+							class="form-control" placeholder="Nhập password" ame='password'
+							id="pwd">
+					</div>
+					<button type="submit" class="btn btn-primary">Login</button>
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
+				</form>
+			</div>
+		</div>
+	</div>
 </body>

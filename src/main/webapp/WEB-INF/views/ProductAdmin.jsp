@@ -137,7 +137,7 @@ form.navbar-form {
 									</button>
 								</div>
 								<form class="modal fade bd-example-modal-lg" id="addModal"
-									action="/admin/product/add" method="post" tabindex="-1"
+									action="/admin/product/add" method="post" enctype="multipart/form-data" tabindex="-1"
 									role="dialog" aria-labelledby="exampleModalLabel"
 									aria-hidden="true" modelAttribute="product">
 									<div class="modal-dialog modal-lg" role="document">
@@ -171,7 +171,8 @@ form.navbar-form {
 															<strong>Tên sản phẩm</strong>
 														</p>
 														<input type="text" class="md-text form-control"
-															name="name" placeholder="Nhập tên sản phẩm">
+															name="name" required="required"
+															placeholder="Nhập tên sản phẩm">
 													</div>
 													<div class="col-lg-4">
 														<p>
@@ -222,15 +223,11 @@ form.navbar-form {
 																<strong>Hình Ảnh</strong>
 															</p>
 															<div class="md-form form">
-																<input class="md-text form-control" id="fileUploader"
-																	type="file" name="fileUploader" accept="image/*"
-																	style="display: none;"><label
-																	class="form-control" for="fileUploader"
-																	style="margin-top: 21px;">Chọn</label>
+																<input name="file" id="files" type="file">
 															</div>
 														</div>
 														<div class="col-lg-6">
-															<img style="width: 200px; height: 200px;">
+															<img id="image" src="" style="width: 200px; height: 200px;"/>
 														</div>
 													</div>
 												</div>
@@ -250,6 +247,7 @@ form.navbar-form {
 												<th>STT</th>
 												<th>Tên</th>
 												<th>Đơn giá</th>
+												<th>Hình ảnh</th>
 												<th>Chi tiết</th>
 												<th>Cập nhật</th>
 											</thead>
@@ -259,6 +257,7 @@ form.navbar-form {
 														<td>${loop.index }</td>
 														<td>${p.name }</td>
 														<td>${p.price }</td>
+														<td><img style="width: 80px; height: 80px" src="${p.urlImage }"/></td>
 														<td><a href="" data-toggle="modal"
 															data-target="#detailModal${p.id }">Xem chi tiết</a>
 															<form class="modal fade bd-example-modal-lg"
@@ -376,7 +375,7 @@ form.navbar-form {
 																id="updateModal${p.id }" action="/admin/product/update"
 																method="post" tabindex="-1" role="dialog"
 																aria-labelledby="exampleModalLabel" aria-hidden="true"
-																modelAttribute="product">
+																modelAttribute="product" enctype="multipart/form-data">
 																<div class=" modal-dialog modal-lg" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
@@ -466,16 +465,13 @@ form.navbar-form {
 																							<strong>Hình Ảnh</strong>
 																						</p>
 																						<div class="md-form form">
-																							<input class="md-text form-control"
-																								id="fileUploader" type="file"
-																								name="fileUploader" accept="image/*"
-																								style="display: none;"><label
-																								class="form-control" for="fileUploader"
-																								style="margin-top: 21px;">Chọn</label>
+																							<input
+																								id="files${loop.index }" class="fileUpload" name="file" type="file"
+																								>
 																						</div>
 																					</div>
 																					<div class="col-lg-6">
-																						<img src="${p.urlImage}"
+																						<img id="image${loop.index }" src="${p.urlImage }"
 																							style="width: 200px; height: 200px;">
 																					</div>
 																				</div>
@@ -502,11 +498,21 @@ form.navbar-form {
 										<div class="d-flex justify-content-center">
 											<nav aria-label="Page navigation example">
 												<ul class="pagination">
-													<li class="page-item ${currentPage <= 0 ? 'disabled' : '' }"><a class="page-link" href="/admin/product?index=${currentPage - 1 }">Trước</a></li>
-													<c:forEach begin="1" end="${totalPage }" step="1" varStatus="i">
-														<li class="page-item ${currentPage == i.index - 1 ? 'active' : '' }"><a class="page-link" href="/admin/product?index=${i.index - 1 }">${i.index - 1 }</a></li>
+													<li
+														class="page-item ${currentPage <= 0 ? 'disabled' : '' }"><a
+														class="page-link"
+														href="/admin/product?index=${currentPage - 1 }">Trước</a></li>
+													<c:forEach begin="1" end="${totalPage }" step="1"
+														varStatus="i">
+														<li
+															class="page-item ${currentPage == i.index - 1 ? 'active' : '' }"><a
+															class="page-link"
+															href="/admin/product?index=${i.index - 1 }">${i.index - 1 }</a></li>
 													</c:forEach>
-													<li class="page-item ${currentPage >= totalPage - 1 ? 'disabled' : '' }"><a class="page-link" href="/admin/product?index=${currentPage + 1 }">Sau</a></li>
+													<li
+														class="page-item ${currentPage >= totalPage - 1 ? 'disabled' : '' }"><a
+														class="page-link"
+														href="/admin/product?index=${currentPage + 1 }">Sau</a></li>
 												</ul>
 											</nav>
 										</div>
@@ -562,6 +568,7 @@ form.navbar-form {
 					type="text/javascript"></script>
 				<!-- Material Dashboard DEMO methods, don't include it in your project! -->
 				<script src="/assets/demo/demo.js"></script>
+				<script src="/assets/demo/upload.js"></script>
 				<script>
 					$(document)
 							.ready(
@@ -793,14 +800,6 @@ form.navbar-form {
 																											+ '")');
 																				}
 																			});
-															$('.show')
-																	.click(
-																			function() {
-																				$(
-																						'.modal-dialog')
-																						.removeClass(
-																								"d-none");
-																			})
 
 															$(
 																	'.switch-sidebar-image input')

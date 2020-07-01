@@ -1,8 +1,14 @@
 package com.nhom4.vanphongphamonline.controllers;
 
+import java.awt.image.RenderedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,14 +31,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.nhom4.vanphongphamonline.models.Category;
+import com.nhom4.vanphongphamonline.models.FileData;
 import com.nhom4.vanphongphamonline.models.Product;
 import com.nhom4.vanphongphamonline.models.Supplier;
 import com.nhom4.vanphongphamonline.repositories.CategoryRepository;
 import com.nhom4.vanphongphamonline.repositories.ProductRepository;
 import com.nhom4.vanphongphamonline.repositories.SupplierRepository;
+import com.nhom4.vanphongphamonline.services.FileStorageService;
 import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validators.ProductValidator;
 @RestController
@@ -46,12 +56,23 @@ public class ProductController {
 	@Autowired
 	private ProductValidator productValidator;
 	@Autowired
+	private FileStorageService fileStorageService;
+	@Autowired
 	public ProductController(ProductRepository productRepository) {
 		this.productRepository = productRepository;
 	}
+	public String uploadFileAdmin(MultipartFile file) throws IOException {
+		FileData fileData = fileStorageService.storeFile(file);
 
+		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/api/v1/file/")
+				.path(fileData.getId())
+				.toUriString();
+
+		return fileDownloadUri + ".png";
+	}
 	@PostMapping(value = "/admin/product/add")
-	public ModelAndView addProduct(@ModelAttribute("product") Product product, BindingResult bindingResult) {
+	public ModelAndView addProduct(@ModelAttribute("product") Product product, @RequestParam("file") MultipartFile file, BindingResult bindingResult, HttpServletRequest req) throws IOException, ServletException {
 		// check --------------------------------------
 		productValidator.productValidation(product, bindingResult);
 		String message = "Thêm thành công";
@@ -66,6 +87,7 @@ public class ProductController {
 			return new ModelAndView("redirect:/admin/product?index=0", "message", message);
 		}
 		//--------------------------------------------------------
+		product.setUrlImage(uploadFileAdmin(file));
 		productRepository.insert(product);
 		return new ModelAndView("redirect:/admin/product?index=0", "message", message);
 
@@ -113,7 +135,7 @@ public class ProductController {
 		return new ModelAndView("redirect:/admin/product?index=0");
 	}
 	@PostMapping(value = "/admin/product/update")
-	public ModelAndView updateProductById(@ModelAttribute("product") Product product, BindingResult bindingResult) {
+	public ModelAndView updateProductById(@ModelAttribute("product") Product product, @RequestParam("file") MultipartFile file, BindingResult bindingResult) throws IOException {
 		String message = "Thêm thành công";
 		if(productRepository.findById(product.getId()).isPresent()!=false) {
 			// check ---------------------------------
@@ -136,7 +158,9 @@ public class ProductController {
 			productUpdated.setDescription(product.getDescription());
 			productUpdated.setInventory(product.getInventory());
 			productUpdated.setSupplier(product.getSupplier());
-			productUpdated.setUrlImage(product.getUrlImage());
+			if(file.getSize() != 0) {
+				productUpdated.setUrlImage(uploadFileAdmin(file));
+			}
 			productUpdated.setCategory(product.getCategory());
 			productRepository.save(productUpdated);
 		} else {

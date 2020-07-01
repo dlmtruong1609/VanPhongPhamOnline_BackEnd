@@ -180,7 +180,7 @@ $('table .edit').on('click', function(){
 																				<div class="form-group">
 																					<label for="name"> Tên loại sản phẩm </label> <input
 																						type="text" class="form-control" id="name"
-																						name="name" aria-describedby="emailHelp"
+																						name="name" aria-describedby="emailHelp" required="required"
 																						 value="${c.name }"
 																						 />
 																				</div>
@@ -248,7 +248,7 @@ $('table .edit').on('click', function(){
 									<div class="form-group">
 										<label for="name"> Tên loại sản phẩm </label> <input
 											type="text" class="form-control" id="name" name="name"
-											aria-describedby="emailHelp" />
+											aria-describedby="emailHelp" required="required" />
 									</div>
 								</div>
 								<div class="modal-footer">

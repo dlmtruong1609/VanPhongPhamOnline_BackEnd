@@ -169,7 +169,7 @@ form.navbar-form {
 																			<div class="modal-body">
 																				<div class="form-group">
 																					<label for="name"> Tên nhà cung cấp </label> <input
-																						type="text" class="form-control" id="name"
+																						type="text" required="required" class="form-control" id="name"
 																						name="name" aria-describedby="name"
 																						value="${p.name}"
 																						 />
@@ -235,7 +235,7 @@ form.navbar-form {
 								<div class="modal-body">
 									<div class="form-group">
 										<label for="name"> Tên nhà cung cấp </label> <input
-											type="text" class="form-control" id="name" name="name"
+											type="text" required "form-control" id="name" name="name"
 											aria-describedby="name" />
 									</div>
 									<div class="form-group">
