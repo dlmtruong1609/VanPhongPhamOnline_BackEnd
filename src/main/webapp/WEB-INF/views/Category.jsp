@@ -71,10 +71,6 @@ $('table .edit').on('click', function(){
 			</div>
 			<div class="sidebar-wrapper">
 				<ul class="nav">
-					<li class="nav-item  "><a class="nav-link"
-						href="./dashboard.html"> <i class="material-icons">dashboard</i>
-							<p>Dashboard</p>
-					</a></li>
 					<li class="nav-item "><a class="nav-link"
 						href="/admin/product?index=0"> <i class="material-icons">content_paste</i>
 							<p>Quản lý sản phẩm</p>
@@ -84,7 +80,7 @@ $('table .edit').on('click', function(){
 							<p>Quản lý khách hàng</p>
 					</a></li>
 					<li class="nav-item "><a class="nav-link"
-						href="/admin/order?username="> <i class="material-icons">library_books</i>
+						href="/admin/order?index=0"> <i class="material-icons">library_books</i>
 							<p>Quản lý đơn hàng</p>
 					</a></li>
 					<li class="nav-item active"><a class="nav-link"
@@ -117,11 +113,11 @@ $('table .edit').on('click', function(){
 							class="navbar-toggler-icon icon-bar"></span>
 					</button>
 					<div class="collapse navbar-collapse justify-content-end">
-						<form class="navbar-form" action="/api/v1/admin/category/search"
+						<form class="navbar-form" action="/admin/category/search"
 							method="get">
 							<div class="input-group no-border">
 								<input type="text" name="keyword" value="" class="form-control"
-									placeholder="Search...">
+									placeholder="Tìm kiếm...">
 								<button type="submit"
 									class="btn btn-white btn-round btn-just-icon">
 									<i class="material-icons">search</i>
@@ -141,10 +137,10 @@ $('table .edit').on('click', function(){
 								<div class="card-header card-header-primary">
 									<h4 class="card-title ">Quản lý loại sản phẩm</h4>
 									<p class="card-category">Thêm, xoá, sửa, tìm kiếm tại đây</p>
-									<a class="btn-custom" style="top: 30px; cursor: pointer"
-										data-toggle="modal" data-target="#formAddNcc"> <span
-										class="h4 pr-2">+</span> Thêm loại sản phẩm
-									</a>
+									<button class="btn-custom btn btn-warning" style="top: 10px"
+										data-toggle="modal" data-target="#formAddNcc">
+										<span class="h4 pr-2">+</span> Thêm loại sản phẩm
+									</button>
 								</div>
 								<div class="card-body">
 									<div class="table-responsive">
@@ -157,20 +153,20 @@ $('table .edit').on('click', function(){
 												</tr>
 											</thead>
 											<tbody>
-												<c:forEach var="p" items="${listCategory}" varStatus="loop">
+												<c:forEach var="c" items="${listCategory}" varStatus="loop">
 													<tr>
 														<td>${loop.index +1}</td>
-														<td>${p.name }</td>
+														<td>${c.name }</td>
 														<td class="text-primary form-inline">
 															<button class="btn btn-primary" data-toggle="modal"
-																data-target="#formUpdateNcc${p.id}">Cập nhật</button>
-															<div class="modal fade" id="formUpdateNcc${p.id}"
+																data-target="#formUpdateNcc${c.id}">Cập nhật</button>
+															<div class="modal fade" id="formUpdateNcc${c.id}"
 																tabindex="-1" role="dialog"
 																aria-labelledby="formUpdateNcc" aria-hidden="true">
 																<div class="modal-dialog" role="document">
 																	<div class="modal-content">
 																		<form
-																			action="/api/v1/admin/category/update?id=${p.id}"
+																			action="/admin/category/update?id=${c.id}"
 																			method="post">
 																			<div class="modal-header">
 																				<h5 class="modal-title" id="formUpdateNcc">Update
@@ -185,21 +181,21 @@ $('table .edit').on('click', function(){
 																					<label for="name"> Tên loại sản phẩm </label> <input
 																						type="text" class="form-control" id="name"
 																						name="name" aria-describedby="emailHelp"
-																						 value="${p.name }"
+																						 value="${c.name }"
 																						 />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
 																				<button type="button" class="btn btn-secondary"
 																					data-dismiss="modal">Close</button>
-																				<button type="submit" class="btn btn-primary">+
-																					Update</button>
+																				<button type="submit" class="btn btn-primary">
+																					Cập nhật</button>
 																			</div>
 																		</form>
 																	</div>
 																</div>
 															</div>
-															<form action="/api/v1/admin/supplier/delete?id=${p.id }"
+															<form action="/admin/category/delete?id=${c.id }"
 																method="post">
 																<input class="btn btn-danger" type="submit" value="Xoá" />
 															</form>
@@ -208,6 +204,27 @@ $('table .edit').on('click', function(){
 												</c:forEach>
 											</tbody>
 										</table>
+										<div class="d-flex justify-content-center">
+											<nav aria-label="Page navigation example">
+												<ul class="pagination">
+													<li
+														class="page-item ${currentPage <= 0 ? 'disabled' : '' }"><a
+														class="page-link"
+														href="/admin/category?index=${currentPage - 1 }">Trước</a></li>
+													<c:forEach begin="1" end="${totalPage }" step="1"
+														varStatus="i">
+														<li
+															class="page-item ${currentPage == i.index - 1 ? 'active' : '' }"><a
+															class="page-link"
+															href="/admin/category?index=${i.index - 1 }">${i.index - 1 }</a></li>
+													</c:forEach>
+													<li
+														class="page-item ${currentPage >= totalPage - 1 ? 'disabled' : '' }"><a
+														class="page-link"
+														href="/admin/category?index=${currentPage + 1 }">Sau</a></li>
+												</ul>
+											</nav>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -237,7 +254,7 @@ $('table .edit').on('click', function(){
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary"
 										data-dismiss="modal">Close</button>
-									<button type="submit" class="btn btn-primary">+ Add</button>
+									<button type="submit" class="btn btn-primary">Thêm</button>
 								</div>
 							</form>
 						</div>

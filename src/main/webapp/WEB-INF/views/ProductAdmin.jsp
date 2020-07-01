@@ -59,10 +59,6 @@ form.navbar-form {
 			</div>
 			<div class="sidebar-wrapper">
 				<ul class="nav">
-					<li class="nav-item  "><a class="nav-link"
-						href="./dashboard.html"> <i class="material-icons">dashboard</i>
-							<p>Dashboard</p>
-					</a></li>
 					<li class="nav-item active "><a class="nav-link"
 						href="/admin/product?index=0"> <i class="material-icons">content_paste</i>
 							<p>Quản lý sản phẩm</p>
@@ -105,11 +101,11 @@ form.navbar-form {
 							class="navbar-toggler-icon icon-bar"></span>
 					</button>
 					<div class="collapse navbar-collapse justify-content-end">
-						<form class="navbar-form" action="/api/v1/admin/product/search"
+						<form class="navbar-form" action="/admin/product/search"
 							method="get">
 							<div class="input-group no-border">
 								<input type="text" name="keyword" value="" class="form-control"
-									placeholder="Search...">
+									placeholder="Tìm kiếm...">
 								<button type="submit"
 									class="btn btn-white btn-round btn-just-icon">
 									<i class="material-icons">search</i>
@@ -503,6 +499,17 @@ form.navbar-form {
 												</c:forEach>
 											</tbody>
 										</table>
+										<div class="d-flex justify-content-center">
+											<nav aria-label="Page navigation example">
+												<ul class="pagination">
+													<li class="page-item ${currentPage <= 0 ? 'disabled' : '' }"><a class="page-link" href="/admin/product?index=${currentPage - 1 }">Trước</a></li>
+													<c:forEach begin="1" end="${totalPage }" step="1" varStatus="i">
+														<li class="page-item ${currentPage == i.index - 1 ? 'active' : '' }"><a class="page-link" href="/admin/product?index=${i.index - 1 }">${i.index - 1 }</a></li>
+													</c:forEach>
+													<li class="page-item ${currentPage >= totalPage - 1 ? 'disabled' : '' }"><a class="page-link" href="/admin/product?index=${currentPage + 1 }">Sau</a></li>
+												</ul>
+											</nav>
+										</div>
 									</div>
 								</div>
 							</div>

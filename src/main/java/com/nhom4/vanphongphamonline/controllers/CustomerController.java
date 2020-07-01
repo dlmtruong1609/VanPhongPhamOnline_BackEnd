@@ -127,24 +127,26 @@ public class CustomerController {
 	}
 	
 	@PostMapping(value = "/api/v1/loginAdmin", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
-	public ModelAndView loginAdmin1(@RequestBody @ModelAttribute("account") Account account, BindingResult bindingResult, HttpServletRequest request) {
+	public ModelAndView loginAdmin(@RequestBody @ModelAttribute("account") Account account, BindingResult bindingResult, HttpServletRequest request) {
 		// check ----------------------------------------
 		HttpSession session = request.getSession();
 		session.setAttribute("username", account.getUsername());
 		return new ModelAndView("redirect:/admin/product?index=0");
 	}
 	@GetMapping(value = "/admin/customer")
-	public ModelAndView index(Model model, @RequestParam String index) {
+	public ModelAndView index(Model model, @RequestParam String index, HttpServletRequest req) {
 		Page<Customer> page = customerRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
 		model.addAttribute("listCustomer", page.getContent());
+		model.addAttribute("totalPage", page.getTotalPages());
+		model.addAttribute("currentPage", req.getParameter("index"));
 		return new ModelAndView("UserAdmin");
 	}
 	boolean hasRoleAdmin = false;
 	@GetMapping(value = "/login")
-	public ModelAndView loginAdmin(Model model, HttpServletRequest req) {
+	public ModelAndView goToPageLogin(Model model, HttpServletRequest req) {
 		return new ModelAndView("Login");
 	}
-	
+	// update profile
 	@PostMapping(value = "/api/v1/customer/update")
 	public ResponseEntity<CustomResponse> updateCustomerByUsername(@RequestBody Customer customer, @RequestParam String username, BindingResult bindingResult) {
 		// check ---------------------------
@@ -179,6 +181,15 @@ public class CustomerController {
 			return new ResponseEntity<CustomResponse>(new CustomResponse(2, "Lỗi truy cập", null), HttpStatus.OK);
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Cập nhật thông tin khách hàng thành công", null), HttpStatus.OK);
+	}
+	@GetMapping(value = "/admin/customer/search")
+	public ModelAndView adminSearch(@RequestParam String keyword, Model model) {
+		List<Customer> list = customerRepository.findByTextSearch(keyword);
+		
+		model.addAttribute("listCustomer", list);
+		model.addAttribute("totalPage", 0);
+		model.addAttribute("currentPage", 0);
+		return new ModelAndView("UserAdmin");
 	}
 	@GetMapping(value = "/api/v1/customer/detail")
 	public ResponseEntity<CustomResponse> getCustomerByUsername(@RequestParam String username) {

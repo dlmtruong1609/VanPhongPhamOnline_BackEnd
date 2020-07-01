@@ -2,6 +2,8 @@ package com.nhom4.vanphongphamonline.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,24 +39,28 @@ public class SupplierController {
 		this.supplierRepository = supplierRepository;
 		// TODO Auto-generated constructor stub
 	}
-	@PostMapping(value = "/api/v1/admin/supplier/add")
+	@PostMapping(value = "/admin/supplier/add")
 	public ModelAndView addSupplier( Supplier supplier) { // chưa bắt valid
 		supplierRepository.insert(supplier);
 		return new ModelAndView("redirect:/admin/supplier?index=0");
 	}
-	@GetMapping(value = "/api/v1/admin/supplier/search")
+	@GetMapping(value = "/admin/supplier/search")
 	public ModelAndView adminSearch( @RequestParam String keyword, Model model) {
 		List<Supplier> list = supplierRepository.findByText(keyword);
 		model.addAttribute("listSupplier",list);
+		model.addAttribute("totalPage", 0);
+		model.addAttribute("currentPage", 0);
 		return new ModelAndView("Supplier");
 	}
 	@GetMapping(value = "/admin/supplier")
-	public ModelAndView index(Model model, @RequestParam String index) {
+	public ModelAndView index(Model model, @RequestParam String index, HttpServletRequest req) {
 		Page<Supplier> page = supplierRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
 		model.addAttribute("listSupplier", page.getContent());
+		model.addAttribute("totalPage", page.getTotalPages());
+		model.addAttribute("currentPage", req.getParameter("index"));
 		return new ModelAndView("Supplier");
 	}
-	@PostMapping(value = "/api/v1/admin/supplier/delete")
+	@PostMapping(value = "/admin/supplier/delete")
 	public ModelAndView deleteSupplierById(@RequestParam String id) {
 		if(supplierRepository.findById(id).isPresent()!=false) {
 			supplierRepository.deleteById(id);
@@ -73,7 +79,7 @@ public class SupplierController {
 		return new ResponseEntity<CustomResponse>( new CustomResponse(0, "Danh sách nhà cung cấp", list), HttpStatus.OK);
 	}
 	
-	@PostMapping(value = "/api/v1/admin/supplier/update")
+	@PostMapping(value = "/admin/supplier/update")
 	public ModelAndView updateSupplierById(@RequestParam String id,  Supplier supplier) { // chưa kiểm tra valid
 		if(supplierRepository.findById(id).isPresent()!=false) {
 			Supplier supplierUpdated = supplierRepository.findById(id).get();

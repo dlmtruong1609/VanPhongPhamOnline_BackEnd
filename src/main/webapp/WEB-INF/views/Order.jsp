@@ -29,6 +29,7 @@ The above copyright notice and this permission notice shall be included in all c
 	href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
 <!-- CSS Files -->
 <link href="/assets/css/material-dashboard.css?v=2.1.2" rel="stylesheet" />
+
 <!-- CSS Just for demo purpose, don't include it in your project -->
 <link href="/assets/demo/demo.css" rel="stylesheet" />
 <style type="text/css">
@@ -71,10 +72,6 @@ $('table .edit').on('click', function(){
 			</div>
 			<div class="sidebar-wrapper">
 				<ul class="nav">
-					<li class="nav-item  "><a class="nav-link"
-						href="./dashboard.html"> <i class="material-icons">dashboard</i>
-							<p>Dashboard</p>
-					</a></li>
 					<li class="nav-item "><a class="nav-link"
 						href="/admin/product?index=0"> <i class="material-icons">content_paste</i>
 							<p>Quản lý sản phẩm</p>
@@ -83,11 +80,11 @@ $('table .edit').on('click', function(){
 						href="/admin/customer?index=0"> <i class="material-icons">person</i>
 							<p>Quản lý khách hàng</p>
 					</a></li>
-					<li class="nav-item "><a class="nav-link"
-						href="/admin/order?username="> <i class="material-icons">library_books</i>
+					<li class="nav-item  active"><a class="nav-link"
+						href="/admin/order?index=0"> <i class="material-icons">library_books</i>
 							<p>Quản lý đơn hàng</p>
 					</a></li>
-					<li class="nav-item active"><a class="nav-link"
+					<li class="nav-item"><a class="nav-link"
 						href="/admin/category?index=0"> <i class="fa fa-sort"
 							aria-hidden="true"></i>
 							<p>Quản lý loại sản phẩm</p>
@@ -117,11 +114,11 @@ $('table .edit').on('click', function(){
 							class="navbar-toggler-icon icon-bar"></span>
 					</button>
 					<div class="collapse navbar-collapse justify-content-end">
-						<form class="navbar-form" action="/api/v1/admin/product/search"
+						<form class="navbar-form" action="/admin/order/search"
 							method="get">
 							<div class="input-group no-border">
 								<input type="text" name="keyword" value="" class="form-control"
-									placeholder="Search...">
+									placeholder="Tìm kiếm">
 								<button type="submit"
 									class="btn btn-white btn-round btn-just-icon">
 									<i class="material-icons">search</i>
@@ -140,11 +137,8 @@ $('table .edit').on('click', function(){
 							<div class="card">
 								<div class="card-header card-header-primary">
 									<h4 class="card-title ">Quản lý loại sản phẩm</h4>
-									<p class="card-category">Thêm, xoá, sửa, tìm kiếm tại đây</p>
-									<a class="btn-custom" style="top: 30px; cursor: pointer"
-										data-toggle="modal" data-target="#formAddNcc"> <span
-										class="h4 pr-2">+</span> Thêm loại sản phẩm
-									</a>
+									<p class="card-category">Xem danh sách, tìm kiếm tại đây</p>
+									<a> </a>
 								</div>
 								<div class="card-body">
 									<div class="table-responsive">
@@ -152,46 +146,135 @@ $('table .edit').on('click', function(){
 											<thead class=" text-primary">
 												<tr>
 													<th>STT</th>
-													<th>Tên</th>
-													<th>Cập nhật</th>
+													<th>Tên khách hàng</th>
+													<th>Ngày mua</th>
+													<th>Ghi chú</th>
+													<th>Tổng tiền</th>
+													<th>Chi tiết</th>
 												</tr>
 											</thead>
 											<tbody>
-												
+												<c:forEach var="o" items="${listOrder }" varStatus="loop">
+													<tr>
+														<td>${loop.index }</td>
+														<td>${o.customer.name != null ? o.customer.name : o.customer.account.username }</td>
+														<td>${o.billDate }</td>
+														<td>${o.note }</td>
+														<td>${o.totalMoney }</td>
+														<td><a href="" data-toggle="modal"
+															data-target="#detailModal${o.id }">Xem chi tiết</a>
+															<div class="modal fade" id="detailModal${o.id}"
+																role="dialog" aria-hidden="true">
+																<div class="modal-dialog modal-lg" role="document">
+																	<form>
+																		<div class="modal-content">
+																			<div class="modal-header">
+																				<h5 class="modal-title" id="formUpdateNcc">Xem
+																					chi tiết hoá đơn</h5>
+																				<button type="button" class="close"
+																					data-dismiss="modal" aria-label="Close">
+																					<span aria-hidden="true">&times;</span>
+																				</button>
+																			</div>
+																			<div class="modal-body">
+																				<div class="row">
+																					<div class="col-md-12">
+																						<form>
+																							<div class="form-group ">
+																								<label for="username" class="col-form-label">
+																									Tên khách hàng : </label> <span id="username"
+																									class="form-control">
+																									${o.customer.account.username } </span>
+																							</div>
+																							<div class="row">
+																								<div class="form-group col-lg-6">
+																									<label for="phone" class="col-form-label">
+																										Số điện thoại : </label> <span id="phone"
+																										class="form-control">
+																										${o.customer.phone} </span>
+																								</div>
+																								<div class="form-group col-lg-6">
+																									<label for="email" class="col-form-label">
+																										Email : </label> <span id="email" class="form-control">
+																										${o.customer.account.email} </span>
+																								</div>
+																							</div>
+																							<div class="form-group">
+																								<label for="address" class="col-form-label">
+																									Địa chỉ giao hàng mặc định: </label> <span type="text"
+																									class="form-control" id="address">
+																									${o.customer.address.street},
+																									${o.customer.address.town},
+																									${o.customer.address.ward},
+																									${o.customer.address.district },
+																									${o.customer.address.city } </span>
+																							</div>
+																							<div class="form-group">
+																								<label for="address" class="col-form-label">
+																									Địa chỉ giao hàng </label> <span type="text"
+																									class="form-control" id="address">
+																									${o.address.street}, ${o.address.town},
+																									${o.address.ward}, ${o.address.district },
+																									${o.address.city }. </span>
+																							</div>
+																							<c:forEach var="od" items="${o.listOrderDetail }" varStatus="i">
+																								<div  id="orderdetail${i.index}" class="form-group mb-3">
+																									<div class="card mb-3">
+																										<div class="row">
+																											<div class="col-md-3">
+																											<img class="card-img-top" src="${od.product.urlImage }"
+																												alt="Card image cap">
+																											</div>
+																											<div class="card-body col-md-4">
+																												<p class="card-text">${od.product.name }</p>
+																											</div>
+																											<div class="card-body col-md-2">
+																												<p class="card-text">Số lượng: ${od.quantity }</p>
+																											</div>
+																											<div class="card-body col-md-3">
+																												<p class="card-text">Đơn giá: ${od.unitPrice }</p>
+																											</div>
+																										</div>
+																									</div>
+																								</div>
+																							</c:forEach>
+
+																						</form>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</form>
+																</div>
+															</div></td>
+													</tr>
+												</c:forEach>
 											</tbody>
 										</table>
+										<div class="d-flex justify-content-center">
+											<nav aria-label="Page navigation example">
+												<ul class="pagination">
+													<li
+														class="page-item ${currentPage <= 0 ? 'disabled' : '' }"><a
+														class="page-link"
+														href="/admin/order?index=${currentPage - 1 }">Trước</a></li>
+													<c:forEach begin="1" end="${totalPage }" step="1"
+														varStatus="i">
+														<li
+															class="page-item ${currentPage == i.index - 1 ? 'active' : '' }"><a
+															class="page-link"
+															href="/admin/order?index=${i.index - 1 }">${i.index - 1 }</a></li>
+													</c:forEach>
+													<li
+														class="page-item ${currentPage >= totalPage - 1 ? 'disabled' : '' }"><a
+														class="page-link"
+														href="/admin/order?index=${currentPage + 1 }">Sau</a></li>
+												</ul>
+											</nav>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal fade" id="formAddNcc" tabindex="-1" role="dialog"
-					aria-labelledby="formAddNcc" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<form action="/api/v1/admin/category/add" method="post">
-								<div class="modal-header">
-									<h5 class="modal-title" id="formAddNcc">Thêm loại sản phẩm
-									</h5>
-									<button type="button" class="close" data-dismiss="modal"
-										aria-label="Close">
-										<span aria-hidden="true">&times;</span>
-									</button>
-								</div>
-								<div class="modal-body">
-									<div class="form-group">
-										<label for="name"> Tên loại sản phẩm </label> <input
-											type="text" class="form-control" id="name" name="name"
-											aria-describedby="emailHelp" />
-									</div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary"
-										data-dismiss="modal">Close</button>
-									<button type="submit" class="btn btn-primary">+ Add</button>
-								</div>
-							</form>
 						</div>
 					</div>
 				</div>

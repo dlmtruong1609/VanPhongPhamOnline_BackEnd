@@ -59,10 +59,6 @@ form.navbar-form {
 			</div>
 			<div class="sidebar-wrapper">
 				<ul class="nav">
-					<li class="nav-item  "><a class="nav-link"
-						href="./dashboard.html"> <i class="material-icons">dashboard</i>
-							<p>Dashboard</p>
-					</a></li>
 					<li class="nav-item "><a class="nav-link"
 						href="/admin/product?index=0"> <i class="material-icons">content_paste</i>
 							<p>Quản lý sản phẩm</p>
@@ -106,10 +102,10 @@ form.navbar-form {
 							class="navbar-toggler-icon icon-bar"></span>
 					</button>
 					<div class="collapse navbar-collapse justify-content-end">
-						<form class="navbar-form">
+						<form class="navbar-form" action="/admin/customer/search" method="get">
 							<div class="input-group no-border">
-								<input type="text" value="" class="form-control"
-									placeholder="Search...">
+								<input type="text" name="keyword" value="" class="form-control"
+									placeholder="Tìm kiếm...">
 								<button type="submit"
 									class="btn btn-white btn-round btn-just-icon">
 									<i class="material-icons">search</i>
@@ -136,15 +132,16 @@ form.navbar-form {
 											<thead class=" text-primary">
 												<th>STT</th>
 												<th>Tên</th>
+												<th>Số điện thoại</th>
 												<th>Tài khoản</th>
 												<th>Chi tiết</th>
-												<th>Cập nhật</th>
 											</thead>
 											<tbody>
 												<c:forEach var="c" items="${listCustomer }" varStatus="loop">
 													<tr>
 														<td>${loop.index +1 }</td>
 														<td>${c.name }</td>
+														<td>${c.phone }</td>
 														<td>${c.account.username }</td>
 														<td><a href="" data-toggle="modal"
 															data-target="#customerprofile${c.id}">Xem chi tiết</a>
@@ -164,12 +161,6 @@ form.navbar-form {
 																			</div>
 																			<div class="modal-body">
 																				<div class="row">
-																					<div class="col-lg-3 col-sm-3 col-3">
-																						<i class="fa fa-user-circle"
-																							style="font-size: 150px; margin-top: 15px"
-																							aria-hidden="true"></i> <label
-																							class="form-control text-center">${c.name}</label>
-																					</div>
 																					<div class="col-lg-9 col-sm-9 col-9">
 																						<form>
 																							<div class="form-group ">
@@ -178,17 +169,23 @@ form.navbar-form {
 																									class="form-control">
 																									${c.account.username } </span>
 																							</div>
-																							<div class="form-group ">
-																								<label for="phone" class="col-form-label">
-																									Số điện thoại : </label> <span id="phone"
-																									class="form-control"> ${c.phone} </span>
+																							<div class="row">
+																								<div class="form-group col-lg-6">
+																									<label for="phone" class="col-form-label">
+																										Số điện thoại : </label> <span id="phone"
+																										class="form-control"> ${c.phone} </span>
+																								</div>
+																								<div class="form-group col-lg-6">
+																									<label for="email" class="col-form-label">
+																										Email : </label> <span id="email"
+																										class="form-control"> ${c.account.email} </span>
+																								</div>
 																							</div>
 																							<div class="row">
 																								<div class="form-group col-lg-6">
-																									<label for="birthday"
-																										class="col-form-label"> Ngày sinh : </label> <span
-																										id="birthday" class="form-control">
-																										${c.birthday} </span>
+																									<label for="birthday" class="col-form-label">
+																										Ngày sinh : </label> <span id="birthday"
+																										class="form-control"> ${c.birthday} </span>
 																								</div>
 																								<div class="form-group col-lg-6">
 																									<label for="identityCard"
@@ -214,69 +211,32 @@ form.navbar-form {
 																</div>
 															</div></td>
 														<td>
-															<button class="btn btn-primary" data-toggle="modal"
-																data-target="#customerupdate${c.id}">Cập nhật</button>
-															<div class="modal fade" id="customerupdate${c.id}"
-																role="dialog" aria-hidden="true">
-																<div class="modal-dialog modal-lg" role="document">
-																	<form>
-																		<div class="modal-content">
-																			<div class="modal-header">
-																				<h5 class="modal-title" id="formUpdateNcc">Update
-																					khách hàng</h5>
-																				<button type="button" class="close"
-																					data-dismiss="modal" aria-label="Close">
-																					<span aria-hidden="true">&times;</span>
-																				</button>
-																			</div>
-																			<div class="modal-body">
-																				<div class="row">
-																					<div class="col-lg-3 col-sm-3 col-3">
-																						<i class="fa fa-user-circle"
-																							style="font-size: 150px; margin-top: 15px"
-																							aria-hidden="true"></i> <input name="name"
-																							class="form-control" value="${c.name}" />
-																					</div>
-																					<div class="col-lg-9 col-sm-9 col-9">
-																						<form>
-																							<div class="form-group ">
-																								<label for="username" class="col-form-label">
-																									Tài khoản : </label> <span id="username"
-																									class="form-control">
-																									${c.account.username } </span>
-																							</div>
-																							<div class="form-group ">
-																								<label for="phone" class="col-form-label">
-																									Số điện thoại : </label> <input name="phone"
-																									class="form-control" value="${c.phone}" />
-																							</div>
-																							<div class="row">
-																								<div class="form-group col-lg-6">
-																									<label for="birthday"
-																										class="col-form-label"> Ngày sinh : </label> <input
-																										name="phone" class="form-control"
-																										value="${c.birthday}" />
-																								</div>
-																								<div class="form-group col-lg-6">
-																									<label for="identityCard"
-																										class="col-form-label"> Chứng minh thư
-																										: </label> <input name="phone" class="form-control"
-																										value="${c.identityCard}" />
-																								</div>
-																							</div>
-																						</form>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</form>
-																</div>
-															</div>
 														</td>
 													</tr>
 												</c:forEach>
 											</tbody>
 										</table>
+										<div class="d-flex justify-content-center">
+											<nav aria-label="Page navigation example">
+												<ul class="pagination">
+													<li
+														class="page-item ${currentPage <= 0 ? 'disabled' : '' }"><a
+														class="page-link"
+														href="/admin/customer?index=${currentPage - 1 }">Trước</a></li>
+													<c:forEach begin="1" end="${totalPage }" step="1"
+														varStatus="i">
+														<li
+															class="page-item ${currentPage == i.index - 1 ? 'active' : '' }"><a
+															class="page-link"
+															href="/admin/customer?index=${i.index - 1 }">${i.index - 1 }</a></li>
+													</c:forEach>
+													<li
+														class="page-item ${currentPage >= totalPage - 1 ? 'disabled' : '' }"><a
+														class="page-link"
+														href="/admin/customer?index=${currentPage + 1 }">Sau</a></li>
+												</ul>
+											</nav>
+										</div>
 									</div>
 								</div>
 							</div>

@@ -2,6 +2,8 @@ package com.nhom4.vanphongphamonline.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,12 +42,14 @@ public class CategoryController {
 		
 	}
 	@GetMapping(value = "/admin/category")
-	public ModelAndView index(Model model, @RequestParam String index) {
+	public ModelAndView index(Model model, @RequestParam String index, HttpServletRequest req) {
 		Page<Category> page = categoryRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
 		model.addAttribute("listCategory", page.getContent());
+		model.addAttribute("totalPage", page.getTotalPages());
+		model.addAttribute("currentPage", req.getParameter("index"));
 		return new ModelAndView("Category");
 	}
-	@PostMapping(value = "/api/v1/admin/category/delete")
+	@PostMapping(value = "/admin/category/delete")
 	public ModelAndView deleteCategoryById(@RequestParam String id) {
 		if(categoryRepository.findById(id).isPresent()!=false) {
 			categoryRepository.deleteById(id);
@@ -54,13 +58,15 @@ public class CategoryController {
 		}
 		return new ModelAndView("redirect:/admin/category?index=0");
 	}
-	@GetMapping(value = "/api/v1/admin/category/search")
+	@GetMapping(value = "/admin/category/search")
 	public ModelAndView adminSearch( @RequestParam String keyword, Model model) {
 		List<Category> list = categoryRepository.findByText(keyword);
-		model.addAttribute("listSupplier",list);
-		return new ModelAndView("Supplier");
+		model.addAttribute("listCategory", list);
+		model.addAttribute("totalPage", 0);
+		model.addAttribute("currentPage", 0);
+		return new ModelAndView("Category");
 	}
-	@PostMapping(value = "/api/v1/admin/category/update")
+	@PostMapping(value = "/admin/category/update")
 	public ModelAndView updateCategoryById(@RequestParam String id, Category category) { // chưa kiểm tra valid
 		if(categoryRepository.findById(id).isPresent()!=false) {
 			Category categoryUpdated = categoryRepository.findById(id).get();

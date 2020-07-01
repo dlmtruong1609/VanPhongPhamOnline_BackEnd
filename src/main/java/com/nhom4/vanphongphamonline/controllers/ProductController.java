@@ -2,6 +2,8 @@ package com.nhom4.vanphongphamonline.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -80,12 +82,14 @@ public class ProductController {
 	}
 	//Sring mvc 
 	@GetMapping(value = "/admin/product")
-	public ModelAndView index(Model model, @RequestParam String index) {
+	public ModelAndView index(Model model, @RequestParam String index, HttpServletRequest req) {
 		Page<Product> page = productRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
 		List<Category> categories = categoryRepository.findAll();
 		List<Supplier> suppliers = supplierRepository.findAll();
 	
 		model.addAttribute("listProduct", page.getContent());
+		model.addAttribute("totalPage", page.getTotalPages());
+		model.addAttribute("currentPage", req.getParameter("index"));
 		model.addAttribute("categories", categories);
 		model.addAttribute("suppliers", suppliers);
 		return new ModelAndView("ProductAdmin");
@@ -161,11 +165,14 @@ public class ProductController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Trang " + index, page), HttpStatus.OK);
 	}
-	@GetMapping(value = "/api/v1/admin/product/search")
+	// tìm phía admin
+	@GetMapping(value = "/admin/product/search")
 	public ModelAndView adminSearch(@RequestParam String keyword, Model model) {
 		List<Product> list = productRepository.findByTextSearch(keyword);
-		System.out.println(list);
+		
 		model.addAttribute("listProduct",list);
+		model.addAttribute("totalPage", 0);
+		model.addAttribute("currentPage", 0);
 		return new ModelAndView("ProductAdmin");
 	}
 	@GetMapping(value = "/api/v1/product/asc") // sắp xếp có phân trang tăng dần hoặc a - z

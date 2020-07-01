@@ -42,68 +42,68 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.nhom4.vanphongphamonline.jwt.JwtAuthenticationFilter;
 import com.nhom4.vanphongphamonline.services.AccountDetailsServiceImpl;
 
-//@Configuration
-//@EnableWebSecurity
-//@Order(2)
-//public class WebSecurityConfigAdmin extends WebSecurityConfigurerAdapter {
-//    @Autowired
-//    private UserDetailsService userDetailsService; // khởi tại userDetails
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        return super.userDetailsService();
-//    }
-//    @Bean
-//    public JwtAuthenticationFilter jwtAuthenticationFilter() { // Lọc token để đăng nhập và request với token khi truy cập server
-//        return new JwtAuthenticationFilter();
-//    }
-//    @Bean
-//    @Override
-//    public AuthenticationManager authenticationManagerBean() throws Exception {
-//        return super.authenticationManagerBean();
-//    }
-////  mã hoá password khi đăng nhập, đăng ký
-//    @Bean
-//    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-//	@Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-////		Kiểm tra password có đúng ko?
-//        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-//    }
-//    @Autowired
-//    private AccountDetailsServiceImpl taiKhoanDetailsServiceImpl;
-////	 danh sách các đường dẫn cho phép các loại role nào truy cập, nếu ko có mặc định là có token mới được truy cập
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//    	http.csrf().disable()
-//            .authorizeRequests()
-//                .antMatchers("/admin/*").hasRole("ADMIN")
-//                .and().formLogin().loginPage("/login")
-//                .permitAll().defaultSuccessUrl("/admin/product?index=0").and().addFilterBefore(new Filter() {
-//					
-//					@Override
-//					public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-//							throws IOException, ServletException {
-//						// TODO Auto-generated method stub
-//						HttpSession session = ((HttpServletRequest)request).getSession();
-//						System.out.println(session.getAttribute("username") + "user");
-//						if(session.getAttribute("username") != null) {
-//							UserDetails userDetails = taiKhoanDetailsServiceImpl.loadUserByUsername(session.getAttribute("username").toString());
-//			                if(userDetails != null) {
-//			                    // Nếu người dùng hợp lệ, set thông tin cho Seturity Context (biến chung của project)
-//			                    UsernamePasswordAuthenticationToken
-//			                            authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//			                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
-//
-//			                    SecurityContextHolder.getContext().setAuthentication(authentication);
-//			                }	
-//						}
-//					
-//		                chain.doFilter(request, response);
-//					}
-//				}, UsernamePasswordAuthenticationFilter.class);
-//       
-//    }
-//    }
+@Configuration
+@EnableWebSecurity
+@Order(2)
+public class WebSecurityConfigAdmin extends WebSecurityConfigurerAdapter {
+	@Autowired
+	private UserDetailsService userDetailsService; // khởi tại userDetails
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return super.userDetailsService();
+	}
+	@Bean
+	public JwtAuthenticationFilter jwtAuthenticationFilter() { // Lọc token để đăng nhập và request với token khi truy cập server
+		return new JwtAuthenticationFilter();
+	}
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+	//  mã hoá password khi đăng nhập, đăng ký
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		//		Kiểm tra password có đúng ko?
+		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+	}
+	@Autowired
+	private AccountDetailsServiceImpl taiKhoanDetailsServiceImpl;
+	//	 danh sách các đường dẫn cho phép các loại role nào truy cập, nếu ko có mặc định là có token mới được truy cập
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.csrf().disable()
+		.authorizeRequests()
+		.antMatchers("/admin/*").hasRole("ADMIN")
+		.and().formLogin().loginPage("/login")
+		.permitAll().defaultSuccessUrl("/admin/product?index=0").and().addFilterBefore(new Filter() {
+
+			@Override
+			public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+					throws IOException, ServletException {
+				// TODO Auto-generated method stub
+				HttpSession session = ((HttpServletRequest)request).getSession();
+				System.out.println(session.getAttribute("username") + "user");
+				if(session.getAttribute("username") != null) {
+					UserDetails userDetails = taiKhoanDetailsServiceImpl.loadUserByUsername(session.getAttribute("username").toString());
+					if(userDetails != null) {
+						// Nếu người dùng hợp lệ, set thông tin cho Seturity Context (biến chung của project)
+						UsernamePasswordAuthenticationToken
+						authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+						authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
+
+						SecurityContextHolder.getContext().setAuthentication(authentication);
+					}	
+				}
+
+				chain.doFilter(request, response);
+			}
+		}, UsernamePasswordAuthenticationFilter.class);
+
+	}
+}
 

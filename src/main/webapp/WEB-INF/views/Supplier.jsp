@@ -59,10 +59,6 @@ form.navbar-form {
 			</div>
 			<div class="sidebar-wrapper">
 				<ul class="nav">
-					<li class="nav-item  "><a class="nav-link"
-						href="./dashboard.html"> <i class="material-icons">dashboard</i>
-							<p>Dashboard</p>
-					</a></li>
 					<li class="nav-item "><a class="nav-link"
 						href="/admin/product?index=0"> <i class="material-icons">content_paste</i>
 							<p>Quản lý sản phẩm</p>
@@ -106,7 +102,7 @@ form.navbar-form {
 							class="navbar-toggler-icon icon-bar"></span>
 					</button>
 					<div class="collapse navbar-collapse justify-content-end">
-						<form class="navbar-form" action="/api/v1/admin/supplier/search"
+						<form class="navbar-form" action="/admin/supplier/search"
 							method="get">
 							<div class="input-group no-border">
 								<input type="text" name="keyword" value="" class="form-control"
@@ -130,10 +126,10 @@ form.navbar-form {
 								<div class="card-header card-header-primary">
 									<h4 class="card-title ">Quản lý nhà cung cấp</h4>
 									<p class="card-category">Thêm, xoá, sửa, tìm kiếm tại đây</p>
-									<a class="btn-custom" style="top: 30px; cursor: pointer"
-										data-toggle="modal" data-target="#formAddNcc"> <span
-										class="h4 pr-2">+</span> Thêm nhà cung cấp
-									</a>
+									<button class="btn-custom btn btn-warning" style="top: 10px"
+										data-toggle="modal" data-target="#formAddNcc">
+										<span class="h4 pr-2">+</span> Thêm nhà cung cấp
+									</button>
 								</div>
 								<div class="card-body">
 									<div class="table-responsive">
@@ -160,7 +156,7 @@ form.navbar-form {
 																aria-hidden="true">
 																<div class="modal-dialog" role="document">
 																	<div class="modal-content">
-																		<form action="/api/v1/admin/supplier/update?id=${p.id}"
+																		<form action="/admin/supplier/update?id=${p.id}"
 																			method="post">
 																			<div class="modal-header">
 																				<h5 class="modal-title" id="formUpdateNcc">Update
@@ -190,14 +186,14 @@ form.navbar-form {
 																			<div class="modal-footer">
 																				<button type="button" class="btn btn-secondary"
 																					data-dismiss="modal">Close</button>
-																				<button type="submit" class="btn btn-primary">+
-																					Update</button>
+																				<button type="submit" class="btn btn-primary">
+																					Cập nhật</button>
 																			</div>
 																		</form>
 																	</div>
 																</div>
 															</div>
-															<form action="/api/v1/admin/supplier/delete?id=${p.id }"
+															<form action="/admin/supplier/delete?id=${p.id }"
 																method="post">
 																<input class="btn btn-danger" type="submit" value="Xoá" />
 															</form>
@@ -206,6 +202,17 @@ form.navbar-form {
 												</c:forEach>
 											</tbody>
 										</table>
+										<div class="d-flex justify-content-center">
+											<nav aria-label="Page navigation example">
+												<ul class="pagination">
+													<li class="page-item ${currentPage <= 0 ? 'disabled' : '' }"><a class="page-link" href="/admin/supplier?index=${currentPage - 1 }">Trước</a></li>
+													<c:forEach begin="1" end="${totalPage }" step="1" varStatus="i">
+														<li class="page-item ${currentPage == i.index - 1 ? 'active' : '' }"><a class="page-link" href="/admin/supplier?index=${i.index - 1 }">${i.index - 1 }</a></li>
+													</c:forEach>
+													<li class="page-item ${currentPage >= totalPage - 1 ? 'disabled' : '' }"><a class="page-link" href="/admin/supplier?index=${currentPage + 1 }">Sau</a></li>
+												</ul>
+											</nav>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -216,7 +223,7 @@ form.navbar-form {
 					aria-labelledby="formAddNcc" aria-hidden="true">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
-							<form action="/api/v1/admin/supplier/add" method="post">
+							<form action="/admin/supplier/add" method="post">
 								<div class="modal-header">
 									<h5 class="modal-title" id="formAddNcc">Thêm nhà cung cấp
 									</h5>
@@ -240,7 +247,7 @@ form.navbar-form {
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary"
 										data-dismiss="modal">Close</button>
-									<button type="submit" class="btn btn-primary">+ Add</button>
+									<button type="submit" class="btn btn-primary">Thêm</button>
 								</div>
 							</form>
 						</div>
