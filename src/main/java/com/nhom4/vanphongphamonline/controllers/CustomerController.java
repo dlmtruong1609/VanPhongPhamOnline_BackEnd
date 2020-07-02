@@ -3,29 +3,41 @@ package com.nhom4.vanphongphamonline.controllers;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 //import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.nhom4.vanphongphamonline.jwt.JwtTokenProvider;
 import com.nhom4.vanphongphamonline.models.Account;
 import com.nhom4.vanphongphamonline.models.Customer;
+import com.nhom4.vanphongphamonline.models.EmailContent;
+import com.nhom4.vanphongphamonline.models.Product;
 import com.nhom4.vanphongphamonline.repositories.CustomerRepository;
 import com.nhom4.vanphongphamonline.repositories.RoleRepository;
 import com.nhom4.vanphongphamonline.services.CustomAccountDetails;
@@ -33,30 +45,31 @@ import com.nhom4.vanphongphamonline.services.CustomerService;
 import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validators.AccountValidator;
 import com.nhom4.vanphongphamonline.validators.CustomerValidator;
-@Controller
+@RestController
 public class CustomerController {
 	@Autowired
 	private CustomerRepository customerRepository;
 	@Autowired
+	private EmailController emailController;
+	@Autowired
 	private CustomerService customerService;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    private AccountValidator accountValidator;
-    @Autowired
-    private CustomerValidator customerValidator;
-    @Autowired
-    private JwtTokenProvider tokenProvider;
-    @Autowired
-    AuthenticationManager authenticationManager;
+	@Autowired
+	private RoleRepository roleRepository;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	private AccountValidator accountValidator;
+	@Autowired
+	private CustomerValidator customerValidator;
+	@Autowired
+	private JwtTokenProvider tokenProvider;
+	@Autowired
+	private AuthenticationManager authenticationManager;
 	@Autowired
 	public CustomerController(CustomerRepository customerRepository) {
 		this.customerRepository = customerRepository;
 		// TODO Auto-generated constructor stub
 	}
-	@ResponseBody
 	@PostMapping(value = "/api/v1/register", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
 	public ResponseEntity<CustomResponse> createUser(@RequestBody Account account, BindingResult bindingResult) {
 		// check -----------------------------
@@ -80,9 +93,10 @@ public class CustomerController {
 		Customer customer = new Customer();
 		customer.setAccount(account);
 		customerRepository.insert(customer);
+		emailController.sendEmail(new EmailContent(customer.getAccount().getEmail(), "ANANAS Đăng ký", "Chào mừng đến với kênh mua sắm trực tiếp của văn phòng phẩm ANANAS"));
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Đăng ký thành công", null), HttpStatus.OK);
 	}
-	@ResponseBody
+
 	@PostMapping(value = "/api/v1/login", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
 	public ResponseEntity<CustomResponse> login(@RequestBody Account account, BindingResult bindingResult) {
 		// check ----------------------------------------
@@ -111,8 +125,53 @@ public class CustomerController {
         
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Đăng nhập thành công", jwt), HttpStatus.OK);
 	}
-
-	@ResponseBody
+	
+	@PostMapping(value = "/api/v1/loginAdmin", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
+	public ModelAndView loginAdmin(@ModelAttribute("account") Account account, BindingResult bindingResult, HttpServletRequest request, Model model) {
+		// check ----------------------------------------
+		accountValidator.validateFormLogin(account, bindingResult);
+		String message = "";
+		if (bindingResult.hasErrors()) {
+			   FieldError fieldError = null;
+			   for (Object object : bindingResult.getAllErrors()) {
+				    if(object instanceof FieldError) {
+				        fieldError = (FieldError) object;
+				    }
+				}
+			   message = "Field: " + fieldError.getField() + " - Lỗi: " + fieldError.getCode();			
+			   model.addAttribute("message", message);
+			   return new ModelAndView("Login");
+        }
+		//----------------------------------------------------
+		// Xác nhận tài khoản mật khẩu
+	 	   Authentication authentication = authenticationManager.authenticate(
+	               new UsernamePasswordAuthenticationToken(
+	            		   account.getUsername(),
+	            		   account.getPassword()
+	               )
+	       );
+	 	 // tự động generate token
+        
+		HttpSession session = request.getSession();
+		session.setAttribute("username", account.getUsername());
+		return new ModelAndView("redirect:/admin/product?index=0");
+	}
+	@GetMapping(value = "/admin/customer")
+	public ModelAndView index(Model model, @RequestParam String index, HttpServletRequest req) {
+		Page<Customer> page = customerRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
+		model.addAttribute("listCustomer", page.getContent());
+		model.addAttribute("totalPage", page.getTotalPages());
+		model.addAttribute("currentPage", req.getParameter("index"));
+		return new ModelAndView("UserAdmin");
+	}
+	boolean hasRoleAdmin = false;
+	@GetMapping(value = "/login")
+	public ModelAndView goToPageLogin(Model model, HttpServletRequest req) {
+		HttpSession session = req.getSession();
+		session.removeAttribute("usernamex");
+		return new ModelAndView("Login");
+	}
+	// update profile
 	@PostMapping(value = "/api/v1/customer/update")
 	public ResponseEntity<CustomResponse> updateCustomerByUsername(@RequestBody Customer customer, @RequestParam String username, BindingResult bindingResult) {
 		// check ---------------------------
@@ -148,7 +207,15 @@ public class CustomerController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Cập nhật thông tin khách hàng thành công", null), HttpStatus.OK);
 	}
-	@ResponseBody
+	@GetMapping(value = "/admin/customer/search")
+	public ModelAndView adminSearch(@RequestParam String keyword, Model model) {
+		List<Customer> list = customerRepository.findByTextSearch(keyword);
+		
+		model.addAttribute("listCustomer", list);
+		model.addAttribute("totalPage", 0);
+		model.addAttribute("currentPage", 0);
+		return new ModelAndView("UserAdmin");
+	}
 	@GetMapping(value = "/api/v1/customer/detail")
 	public ResponseEntity<CustomResponse> getCustomerByUsername(@RequestParam String username) {
 		Customer customer = null;
@@ -160,7 +227,6 @@ public class CustomerController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thành công", customer), HttpStatus.OK);
 	}
-	@ResponseBody
 	@GetMapping(value = "/api/v1/admin/customer/list")
 	public ResponseEntity<CustomResponse> getAllCustomer() {
 		List<Customer> list = null;

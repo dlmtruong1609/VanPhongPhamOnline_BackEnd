@@ -22,5 +22,11 @@ public class EmailContent {
 	public void setContent(String content) {
 		this.content = content;
 	}
+	public EmailContent(String emailTo, String subject, String content) {
+		super();
+		this.emailTo = emailTo;
+		this.subject = subject;
+		this.content = content;
+	}
 	
 }

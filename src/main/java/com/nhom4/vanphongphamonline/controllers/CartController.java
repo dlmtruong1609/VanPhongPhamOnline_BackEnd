@@ -2,21 +2,14 @@ package com.nhom4.vanphongphamonline.controllers;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,27 +17,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.server.WebSession;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.nhom4.vanphongphamonline.models.Order;
 import com.nhom4.vanphongphamonline.models.OrderDetail;
-import com.nhom4.vanphongphamonline.models.Product;
 import com.nhom4.vanphongphamonline.repositories.CustomerRepository;
 import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validators.OrderValidator;
 
-@Controller
+@RestController
 public class CartController {
-//	Tự động tạo ID bắt dầu từ 0
-//	@Autowired
-//	private static AtomicInteger ID_GENERATOR = new AtomicInteger(0);
-	List<OrderDetail> list; //list để add chi tiet hoa đơn khi thêm
+	private List<OrderDetail> list; //list để add chi tiet hoa đơn khi thêm
 	@Autowired
-	OrderValidator orderValidator; // valid hoá đơn
+	private OrderValidator orderValidator; // valid hoá đơn
 	@Autowired
-	CustomerRepository customerRepository;
-	double total = 0; // tính tổng tiền của hoá đơn
-	@ResponseBody
+	private CustomerRepository customerRepository;
+	private double total = 0; // tính tổng tiền của hoá đơn
 	@PostMapping(value = "/api/v1/cart/add")
 	public ResponseEntity<CustomResponse> saveOrder(HttpServletRequest request, @RequestBody OrderDetail orderDetail, @RequestParam String username, BindingResult bindingResult) {
 		HttpSession session = request.getSession(); // lấy current session
@@ -100,7 +88,6 @@ public class CartController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thêm thành con vào giỏ hàng", null), HttpStatus.OK);
 	}
 
-	@ResponseBody
 	@PostMapping(value = "/api/v1/cart/update") // id cua sanpham, action la tang hoac giam
 	public ResponseEntity<CustomResponse> updateOrder(@RequestBody Order order, HttpServletRequest request, BindingResult bindingResult) {
 		HttpSession session = request.getSession();
@@ -128,7 +115,6 @@ public class CartController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Cập nhật thành công", session.getAttribute("order")), HttpStatus.OK);
 	}
 
-	@ResponseBody
 	@GetMapping(value = "/api/v1/cart/data")
 	public ResponseEntity<CustomResponse> getOrderInfo(HttpServletRequest request) {
 		HttpSession session = request.getSession();
@@ -137,7 +123,6 @@ public class CartController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thành công", session.getAttribute("order")), HttpStatus.OK);
 	}
-	@ResponseBody
 	@PostMapping(value = "/api/v1/cart/delete") // id la ma san pham
 	public ResponseEntity<CustomResponse> removeOrder(@RequestParam String id, HttpServletRequest request) {
 		HttpSession session = request.getSession();

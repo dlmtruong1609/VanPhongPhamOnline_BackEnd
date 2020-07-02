@@ -22,49 +22,48 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-@Controller
+@RestController
 public class FileController {
 	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+	@Autowired
+	private FileStorageService fileStorageService;
+	@PostMapping("/api/v1/file/uploadFile")
+	public ResponseEntity<CustomResponse> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+		FileData fileData = fileStorageService.storeFile(file);
 
-    @Autowired
-    private FileStorageService fileStorageService;
-  @PostMapping("/api/v1/file/uploadFile")
-  public ResponseEntity<CustomResponse> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-      FileData fileData = fileStorageService.storeFile(file);
+		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/api/v1/file/")
+				.path(fileData.getId())
+				.toUriString();
 
-      String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-              .path("/api/v1/file/")
-              .path(fileData.getId())
-              .toUriString();
-
-      return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Upload thành công", fileDownloadUri + ".png"), HttpStatus.OK);
-  }
+		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Upload thành công", fileDownloadUri + ".png"), HttpStatus.OK);
+	}
 
 
-    @GetMapping("/api/v1/file/{id}.png")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String id, HttpServletRequest request) {
-    	FileData fileData = fileStorageService.getFile(id);
-    	System.out.println(fileData);
-    	if(fileData == null) return null;
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(fileData.getType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileData.getName() + "\"")
-                .body(new ByteArrayResource(fileData.getFile().getData()));
-    }
-    
-    
-    
-    // lưu xuống local
-//  @PostMapping("/api/v1/file/uploadFile")
-//  public ResponseEntity<ServiceStatus> uploadFile(@RequestParam("file") MultipartFile file) {
-//      String fileName = fileStorageService.storeFile(file);
-//
-//      String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-//              .path("/api/v1/file/")
-//              .path(fileName)
-//              .toUriString();
-//
-//      return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Upload thành công", fileDownloadUri), HttpStatus.OK);
-//  }
+	@GetMapping("/api/v1/file/{id}.png")
+	public ResponseEntity<Resource> downloadFile(@PathVariable String id, HttpServletRequest request) {
+		FileData fileData = fileStorageService.getFile(id);
+		System.out.println(fileData);
+		if(fileData == null) return null;
+		return ResponseEntity.ok()
+				.contentType(MediaType.parseMediaType(fileData.getType()))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileData.getName() + "\"")
+				.body(new ByteArrayResource(fileData.getFile().getData()));
+	}
+
+
+
+	// lưu xuống local
+	//  @PostMapping("/api/v1/file/uploadFile")
+	//  public ResponseEntity<ServiceStatus> uploadFile(@RequestParam("file") MultipartFile file) {
+	//      String fileName = fileStorageService.storeFile(file);
+	//
+	//      String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+	//              .path("/api/v1/file/")
+	//              .path(fileName)
+	//              .toUriString();
+	//
+	//      return new ResponseEntity<ServiceStatus>(new ServiceStatus(0, "Upload thành công", fileDownloadUri), HttpStatus.OK);
+	//  }
 
 }

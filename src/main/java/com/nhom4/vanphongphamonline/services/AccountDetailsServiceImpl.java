@@ -22,9 +22,7 @@ public class AccountDetailsServiceImpl implements UserDetailsService {
 	@Override // load user khi truy cập link website
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 	    Customer customer = customerRepository.findByAccount_Username(username);
-        if (customer.getAccount() == null) throw new UsernameNotFoundException(username);
-
-
+        if (customer == null || customer.getAccount() == null) return null;
         return new CustomAccountDetails(customer);
 	}
 	

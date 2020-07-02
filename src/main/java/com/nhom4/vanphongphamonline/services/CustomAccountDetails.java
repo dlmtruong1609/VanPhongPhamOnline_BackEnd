@@ -20,6 +20,7 @@ public class CustomAccountDetails implements UserDetails {
 		// TODO Auto-generated method stub
 		// kiểm tra role để truy cập đến các đường link cho phép
         for (Role role : customer.getAccount().getRoles()){
+        	System.out.println(role.getName() + "role");
         	return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.getName()));
         }
 		return null;

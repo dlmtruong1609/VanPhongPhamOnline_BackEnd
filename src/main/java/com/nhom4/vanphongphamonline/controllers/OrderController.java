@@ -12,10 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +26,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.nhom4.vanphongphamonline.models.Category;
 import com.nhom4.vanphongphamonline.models.Customer;
 import com.nhom4.vanphongphamonline.models.Order;
 import com.nhom4.vanphongphamonline.models.Product;
 import com.nhom4.vanphongphamonline.models.Role;
+import com.nhom4.vanphongphamonline.models.Supplier;
 import com.nhom4.vanphongphamonline.repositories.CustomerRepository;
 import com.nhom4.vanphongphamonline.repositories.OrderDetailRepository;
 import com.nhom4.vanphongphamonline.repositories.OrderRepository;
@@ -36,7 +43,7 @@ import com.nhom4.vanphongphamonline.services.CustomerService;
 import com.nhom4.vanphongphamonline.utils.CustomResponse;
 import com.nhom4.vanphongphamonline.validators.OrderValidator;
 
-@Controller
+@RestController
 public class OrderController {
 	@Autowired
 	private OrderRepository orderRepository;
@@ -48,9 +55,27 @@ public class OrderController {
 	public OrderController(OrderRepository orderRepository) {
 		this.orderRepository = orderRepository;
 	}
-	@Autowired
+
 	private CustomerService customerService;
-	@ResponseBody
+	
+	@GetMapping(value = "/admin/order")
+	public ModelAndView index(Model model, @RequestParam String index, HttpServletRequest req) {
+		Page<Order> page = orderRepository.findAll(PageRequest.of(Integer.parseInt(index), 12));
+	
+		model.addAttribute("listOrder", page.getContent());
+		model.addAttribute("totalPage", page.getTotalPages());
+		model.addAttribute("currentPage", req.getParameter("index"));
+		return new ModelAndView("Order");
+	}
+	@GetMapping(value = "/admin/order/search")
+	public ModelAndView adminSearch(@RequestParam String keyword, Model model) {
+		List<Order> list = orderRepository.findByTextSearch(keyword);
+		System.out.println(list);
+		model.addAttribute("listOrder", list);
+		model.addAttribute("totalPage", 0);
+		model.addAttribute("currentPage", 0);
+		return new ModelAndView("Order");
+	}
 	@PostMapping(value = "/api/v1/order/pay") // sử dụng khi thanh toán ko dùng để add vào giỏ hàng
 	public ResponseEntity<CustomResponse> createOrder(@RequestBody Order order, BindingResult bindingResult, HttpServletRequest request) throws ParseException {
 		// check ---------------------------------------
@@ -88,7 +113,6 @@ public class OrderController {
 		session.invalidate();
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thanh toán thành công", null), HttpStatus.OK);
 	}
-	@ResponseBody
 	@GetMapping(value = "/api/v1/order/detail")
 	public ResponseEntity<CustomResponse> getOrderById(@RequestParam String id, @RequestParam String username) {
 		Optional<Order> order = null;
@@ -97,7 +121,6 @@ public class OrderController {
 		}
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Chi tiết hoá đơn", order), HttpStatus.OK);
 	}
-	@ResponseBody
 	@GetMapping(value = "/api/v1/order/list")
 	public ResponseEntity<CustomResponse> getAllOrder(@RequestParam String username) {
 		List<Order> list = null;

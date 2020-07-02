@@ -25,6 +25,7 @@ import com.nhom4.vanphongphamonline.jwt.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@Order(1)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService; // khởi tại userDetails
@@ -61,23 +62,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //	 danh sách các đường dẫn cho phép các loại role nào truy cập, nếu ko có mặc định là có token mới được truy cập
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    	http.csrf().disable().addFilterBefore(corsFilter(), SessionManagementFilter.class)
+    	http.csrf().disable().addFilterBefore(corsFilter(), SessionManagementFilter.class).antMatcher("/api/v1/*")
             .authorizeRequests()
                 .antMatchers("/api/v1/register").permitAll()
                 .antMatchers("/api/v1/login").permitAll()
+                .antMatchers("/api/v1/loginAdmin").permitAll()
                 .antMatchers("/api/v1/sendEmail").permitAll()
-                .antMatchers("/api/v1/admin/*").hasRole("ADMIN")
-                .antMatchers("/api/v1/admin/product/*").hasRole("ADMIN")
-                .antMatchers("/api/v1/admin/category/*").hasRole("ADMIN")
-                .antMatchers("/api/v1/admin/supplier/*").hasRole("ADMIN")
+                .antMatchers("/api/v1/admin/*").permitAll()
+                .antMatchers("/admin/product/*").permitAll()
+                .antMatchers("/admin/customer/*").permitAll()
+                .antMatchers("/assets/js/plugins/*").permitAll()
+                .antMatchers("/assets/js/core/*").permitAll()
+                .antMatchers("/assets/js/*").permitAll()
+                .antMatchers("/assets/css/*").permitAll()
+                .antMatchers("/assets/demo/*").permitAll()
+                .antMatchers("/assets/img/*").permitAll()
+                .antMatchers("/assets/img/faces/*").permitAll()
+                .antMatchers("/api/v1/admin/category/*").permitAll()
+                .antMatchers("/api/v1/admin/supplier/*").permitAll()
+                .antMatchers("/api/v1/admin/product/*").permitAll()
                 .antMatchers("/api/v1/supplier/*").permitAll()
                 .antMatchers("/api/v1/product/*").permitAll()
                 .antMatchers("/api/v1/category/*").permitAll()
                 .antMatchers("/api/v1/file/{id}.png").permitAll()
-                .antMatchers("/api/v1/file/uploadFile").hasRole("ADMIN")
+                .antMatchers("/api/v1/file/uploadFile").permitAll()
                 .antMatchers("/api/v1/email/*").permitAll()
-                .antMatchers("/api/v1/order/*").hasAnyRole("MEMBER", "ADMIN")
-                .antMatchers("/api/v1/customer/*").hasAnyRole("MEMBER", "ADMIN")
+                .antMatchers("/api/v1/order/*").permitAll()
+                .antMatchers("/api/v1/customer/*").permitAll()
                 .antMatchers("/api/v1/cart/*").permitAll()
                 .anyRequest().authenticated()
                 .and()

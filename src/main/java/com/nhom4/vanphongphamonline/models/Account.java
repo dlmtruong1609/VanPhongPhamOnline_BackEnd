@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.GeneratedValue;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -14,7 +15,6 @@ public class Account {
 	@GeneratedValue
 	@Id
 	private String id;
-	
 	private String username;
 
 	private String password;
