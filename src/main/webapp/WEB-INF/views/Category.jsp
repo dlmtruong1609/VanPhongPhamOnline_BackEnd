@@ -132,6 +132,12 @@ $('table .edit').on('click', function(){
 			<div class="content">
 				<div class="container-fluid">
 					<div class="row">
+						<div class="text-center">
+							<div class="alert alert-success"
+								<c:if test="${param.message == null}">hidden</c:if> role="alert">
+								<%=request.getParameter("message")%>
+							</div>
+						</div>
 						<div class="col-md-12">
 							<div class="card">
 								<div class="card-header card-header-primary">
@@ -165,8 +171,7 @@ $('table .edit').on('click', function(){
 																aria-labelledby="formUpdateNcc" aria-hidden="true">
 																<div class="modal-dialog" role="document">
 																	<div class="modal-content">
-																		<form
-																			action="/admin/category/update?id=${c.id}"
+																		<form action="/admin/category/update?id=${c.id}"
 																			method="post">
 																			<div class="modal-header">
 																				<h5 class="modal-title" id="formUpdateNcc">Update
@@ -180,9 +185,8 @@ $('table .edit').on('click', function(){
 																				<div class="form-group">
 																					<label for="name"> Tên loại sản phẩm </label> <input
 																						type="text" class="form-control" id="name"
-																						name="name" aria-describedby="emailHelp" required="required"
-																						 value="${c.name }"
-																						 />
+																						name="name" aria-describedby="emailHelp"
+																						required="required" value="${c.name }" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
@@ -195,10 +199,34 @@ $('table .edit').on('click', function(){
 																	</div>
 																</div>
 															</div>
-															<form action="/admin/category/delete?id=${c.id }"
-																method="post">
-																<input class="btn btn-danger" type="submit" value="Xoá" />
-															</form>
+															<button type="button" class="btn btn-danger"
+																data-toggle="modal" data-target="#deleteModal">
+																Xoá</button>
+															<div class="modal fade" id="deleteModal" tabindex="-1"
+																role="dialog" aria-labelledby="exampleModalLabel"
+																aria-hidden="true">
+																<div class="modal-dialog" role="document">
+																	<div class="modal-content">
+																		<div class="modal-header">
+																			<h5 class="modal-title" id="exampleModalLabel">Bạn
+																				có chắc muốn xoá sản phẩm này?</h5>
+																			<button type="button" class="close"
+																				data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																			</button>
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary"
+																				data-dismiss="modal">Huỷ</button>
+																			<form action="/admin/category/delete?id=${c.id }"
+																				method="post">
+																				<input class="btn btn-danger" type="submit"
+																					value="Xoá" />
+																			</form>
+																		</div>
+																	</div>
+																</div>
+															</div>
 														</td>
 													</tr>
 												</c:forEach>

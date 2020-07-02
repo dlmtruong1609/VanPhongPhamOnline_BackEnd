@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -15,17 +16,22 @@
 	<div class="container">
 		<div class="row d-flex justify-content-center">
 			<div class="col-md-6">
-				<h2>Admin</h2>
+				<h2 class="mb-4">Admin</h2>
+				<div class="text-center">
+					<div class="alert alert-warning" ${message != null ? '' : 'hidden' }>
+						${message }
+					</div>
+				</div>
 				<form name='login-form' action="/api/v1/loginAdmin"
 					modelAttribute="account" method='POST'>
 					<div class="form-group">
-						<label for="username">Email address:</label> <input type="text"
+						<label for="username">Email address:</label> <input required="required" type="text"
 							class="form-control" placeholder="Nhập tên tài khoản"
 							name="username" id="username">
 					</div>
 					<div class="form-group">
-						<label for="pwd">Password:</label> <input type="password"
-							class="form-control" placeholder="Nhập password" ame='password'
+						<label for="pwd">Password:</label> <input required="required" type="password"
+							class="form-control" placeholder="Nhập password" name='password'
 							id="pwd">
 					</div>
 					<button type="submit" class="btn btn-primary">Login</button>

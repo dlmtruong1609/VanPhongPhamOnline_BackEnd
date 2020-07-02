@@ -127,8 +127,31 @@ public class CustomerController {
 	}
 	
 	@PostMapping(value = "/api/v1/loginAdmin", produces = MediaType.APPLICATION_JSON_VALUE) // application/json
-	public ModelAndView loginAdmin(@RequestBody @ModelAttribute("account") Account account, BindingResult bindingResult, HttpServletRequest request) {
+	public ModelAndView loginAdmin(@ModelAttribute("account") Account account, BindingResult bindingResult, HttpServletRequest request, Model model) {
 		// check ----------------------------------------
+		accountValidator.validateFormLogin(account, bindingResult);
+		String message = "";
+		if (bindingResult.hasErrors()) {
+			   FieldError fieldError = null;
+			   for (Object object : bindingResult.getAllErrors()) {
+				    if(object instanceof FieldError) {
+				        fieldError = (FieldError) object;
+				    }
+				}
+			   message = "Field: " + fieldError.getField() + " - Lỗi: " + fieldError.getCode();			
+			   model.addAttribute("message", message);
+			   return new ModelAndView("Login");
+        }
+		//----------------------------------------------------
+		// Xác nhận tài khoản mật khẩu
+	 	   Authentication authentication = authenticationManager.authenticate(
+	               new UsernamePasswordAuthenticationToken(
+	            		   account.getUsername(),
+	            		   account.getPassword()
+	               )
+	       );
+	 	 // tự động generate token
+        
 		HttpSession session = request.getSession();
 		session.setAttribute("username", account.getUsername());
 		return new ModelAndView("redirect:/admin/product?index=0");
@@ -144,6 +167,8 @@ public class CustomerController {
 	boolean hasRoleAdmin = false;
 	@GetMapping(value = "/login")
 	public ModelAndView goToPageLogin(Model model, HttpServletRequest req) {
+		HttpSession session = req.getSession();
+		session.removeAttribute("usernamex");
 		return new ModelAndView("Login");
 	}
 	// update profile

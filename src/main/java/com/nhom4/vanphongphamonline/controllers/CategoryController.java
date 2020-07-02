@@ -37,8 +37,9 @@ public class CategoryController {
 	}
 	@PostMapping(value = "/api/v1/admin/category/add")
 	public ModelAndView addCategory(Category category) { // chưa bắt valid
+		String message = "Thêm thành công";
 		categoryRepository.insert(category);
-		return new ModelAndView("redirect:/admin/category?index=0");
+		return new ModelAndView("redirect:/admin/category?index=0", "message", message);
 		
 	}
 	@GetMapping(value = "/admin/category")
@@ -51,12 +52,11 @@ public class CategoryController {
 	}
 	@PostMapping(value = "/admin/category/delete")
 	public ModelAndView deleteCategoryById(@RequestParam String id) {
+		String message = "Xoá thành công";
 		if(categoryRepository.findById(id).isPresent()!=false) {
 			categoryRepository.deleteById(id);
-		} else {
-			return new ModelAndView("redirect:/admin/category?index=0");
-		}
-		return new ModelAndView("redirect:/admin/category?index=0");
+		} 
+		return new ModelAndView("redirect:/admin/category?index=0", "message", message);
 	}
 	@GetMapping(value = "/admin/category/search")
 	public ModelAndView adminSearch( @RequestParam String keyword, Model model) {
@@ -67,15 +67,14 @@ public class CategoryController {
 		return new ModelAndView("Category");
 	}
 	@PostMapping(value = "/admin/category/update")
-	public ModelAndView updateCategoryById(@RequestParam String id, Category category) { // chưa kiểm tra valid
+	public ModelAndView updateCategoryById(@RequestParam String id, Category category) { 
+		String message = "Cập nhật thành công";
 		if(categoryRepository.findById(id).isPresent()!=false) {
 			Category categoryUpdated = categoryRepository.findById(id).get();
 			categoryUpdated.setName(category.getName());
 			categoryRepository.save(categoryUpdated);
-		} else {
-			return new ModelAndView("redirect:/admin/category?index=0");
 		}
-		return new ModelAndView("redirect:/admin/category?index=0");
+		return new ModelAndView("redirect:/admin/category?index=0", "message", message);
 	}
 	
 	@GetMapping(value = "/api/v1/category/page") // phân trang

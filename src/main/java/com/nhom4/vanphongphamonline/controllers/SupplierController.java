@@ -42,7 +42,7 @@ public class SupplierController {
 	@PostMapping(value = "/admin/supplier/add")
 	public ModelAndView addSupplier( Supplier supplier) { // chưa bắt valid
 		supplierRepository.insert(supplier);
-		return new ModelAndView("redirect:/admin/supplier?index=0");
+		return new ModelAndView("redirect:/admin/supplier?index=0", "message", "Thêm thành công");
 	}
 	@GetMapping(value = "/admin/supplier/search")
 	public ModelAndView adminSearch( @RequestParam String keyword, Model model) {
@@ -64,10 +64,8 @@ public class SupplierController {
 	public ModelAndView deleteSupplierById(@RequestParam String id) {
 		if(supplierRepository.findById(id).isPresent()!=false) {
 			supplierRepository.deleteById(id);
-		} else {
-		return new ModelAndView("redirect:/admin/supplier?index=0");
 		}
-		return new ModelAndView("redirect:/admin/supplier?index=0");
+		return new ModelAndView("redirect:/admin/supplier?index=0", "message", "Xoá thành công");
 	}
 	@GetMapping(value = "/api/v1/supplier/list")
 	public ResponseEntity<CustomResponse> getAllSupplier() {
@@ -90,7 +88,7 @@ public class SupplierController {
 		} else {
 			return new ModelAndView("redirect:/admin/supplier?index=0", "message", " không tồn tại");
 		}
-		return new ModelAndView("redirect:/admin/supplier?index=0");
+		return new ModelAndView("redirect:/admin/supplier?index=0", "message", "Cập nhật thành công");
 	}
 
 	@GetMapping(value = "/api/v1/supplier/detail")

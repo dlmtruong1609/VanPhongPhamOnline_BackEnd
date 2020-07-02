@@ -137,9 +137,10 @@ form.navbar-form {
 									</button>
 								</div>
 								<form class="modal fade bd-example-modal-lg" id="addModal"
-									action="/admin/product/add" method="post" enctype="multipart/form-data" tabindex="-1"
-									role="dialog" aria-labelledby="exampleModalLabel"
-									aria-hidden="true" modelAttribute="product">
+									action="/admin/product/add" method="post"
+									enctype="multipart/form-data" tabindex="-1" role="dialog"
+									aria-labelledby="exampleModalLabel" aria-hidden="true"
+									modelAttribute="product">
 									<div class="modal-dialog modal-lg" role="document">
 										<div class="modal-content">
 											<div class="modal-header">
@@ -179,7 +180,7 @@ form.navbar-form {
 															<strong>Số Lượng</strong>
 														</p>
 														<div class="md-form form">
-															<input type="text" name="inventory" required=""
+															<input type="number" name="inventory" required=""
 																class="md-text form-control"
 																placeholder="Nhập số lượng sản phẩm">
 														</div>
@@ -189,8 +190,8 @@ form.navbar-form {
 															<strong>Giá</strong>
 														</p>
 														<div class="md-form form">
-															<input ype="text" name="price" required=""
-																class="md-text form-control"
+															<input type="number" step="0.01" name="price" required=""
+																class="md-text  form-control"
 																placeholder="Nhập giá sản phẩm">
 														</div>
 													</div>
@@ -227,7 +228,8 @@ form.navbar-form {
 															</div>
 														</div>
 														<div class="col-lg-6">
-															<img id="image" src="" style="width: 200px; height: 200px;"/>
+															<img id="image" src=""
+																style="width: 200px; height: 200px;" />
 														</div>
 													</div>
 												</div>
@@ -257,7 +259,8 @@ form.navbar-form {
 														<td>${loop.index }</td>
 														<td>${p.name }</td>
 														<td>${p.price }</td>
-														<td><img style="width: 80px; height: 80px" src="${p.urlImage }"/></td>
+														<td><img style="width: 80px; height: 80px"
+															src="${p.urlImage }" /></td>
 														<td><a href="" data-toggle="modal"
 															data-target="#detailModal${p.id }">Xem chi tiết</a>
 															<form class="modal fade bd-example-modal-lg"
@@ -418,7 +421,7 @@ form.navbar-form {
 																						<strong>Số Lượng</strong>
 																					</p>
 																					<div class="md-form form">
-																						<input type="text" value="${p.inventory }"
+																						<input type="number" value="${p.inventory }"
 																							name="inventory" required=""
 																							class="md-text form-control"
 																							placeholder="Nhập số lượng sản phẩm">
@@ -428,8 +431,9 @@ form.navbar-form {
 																					<p>
 																						<strong>Giá</strong>
 																					</p>
-																					<input type="text" value="${p.price }" name="price"
-																						required="" class="md-text form-control"
+																					<input type="number" step="0.01"
+																						value="${p.price }" name="price" required=""
+																						class="md-text form-control"
 																						placeholder="Nhập giá sản phẩm">
 																				</div>
 																			</div>
@@ -465,9 +469,8 @@ form.navbar-form {
 																							<strong>Hình Ảnh</strong>
 																						</p>
 																						<div class="md-form form">
-																							<input
-																								id="files${loop.index }" class="fileUpload" name="file" type="file"
-																								>
+																							<input id="files${loop.index }"
+																								class="fileUpload" name="file" type="file">
 																						</div>
 																					</div>
 																					<div class="col-lg-6">
@@ -486,10 +489,33 @@ form.navbar-form {
 																	</div>
 																</div>
 															</form>
-															<form action="/admin/product/delete" method="get">
-																<input class="btn btn-danger" type="submit" value="Xoá" />
-																<input type="hidden" name="id" value="${p.id }">
-															</form>
+															<button type="button" class="btn btn-danger"
+																data-toggle="modal" data-target="#deleteModal">
+																Xoá</button>
+															<div class="modal fade" id="deleteModal" tabindex="-1"
+																role="dialog" aria-labelledby="exampleModalLabel"
+																aria-hidden="true">
+																<div class="modal-dialog" role="document">
+																	<div class="modal-content">
+																		<div class="modal-header">
+																			<h5 class="modal-title" id="exampleModalLabel">Bạn có chắc muốn xoá sản phẩm này?</h5>
+																			<button type="button" class="close"
+																				data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																			</button>
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary"
+																				data-dismiss="modal">Huỷ</button>
+																			<form action="/admin/product/delete" method="get">
+																				<input class="btn btn-danger" type="submit"
+																					value="Xác nhận" /> <input type="hidden" name="id"
+																					value="${p.id }">
+																			</form>
+																		</div>
+																	</div>
+																</div>
+															</div>
 														</td>
 													</tr>
 												</c:forEach>

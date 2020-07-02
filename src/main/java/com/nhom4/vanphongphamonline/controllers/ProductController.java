@@ -127,16 +127,17 @@ public class ProductController {
 
 	@GetMapping(value = "/admin/product/delete")
 	public ModelAndView deleteProductById(@RequestParam String id, Model model) {
+		String message = "Xoá thành công";
 		if(productRepository.findById(id).isPresent()!=false) {
 			productRepository.deleteById(id);
 		}
 		Page<Product> page = productRepository.findAll(PageRequest.of(0, 12));
 		model.addAttribute("listProduct", page.getContent());
-		return new ModelAndView("redirect:/admin/product?index=0");
+		return new ModelAndView("redirect:/admin/product?index=0", "message", message);
 	}
 	@PostMapping(value = "/admin/product/update")
 	public ModelAndView updateProductById(@ModelAttribute("product") Product product, @RequestParam("file") MultipartFile file, BindingResult bindingResult) throws IOException {
-		String message = "Thêm thành công";
+		String message = "Cập nhật thành công";
 		if(productRepository.findById(product.getId()).isPresent()!=false) {
 			// check ---------------------------------
 			productValidator.productValidation(product, bindingResult);

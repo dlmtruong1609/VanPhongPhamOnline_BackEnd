@@ -121,6 +121,12 @@ form.navbar-form {
 			<div class="content">
 				<div class="container-fluid">
 					<div class="row">
+						<div class="text-center">
+							<div class="alert alert-success"
+								<c:if test="${param.message == null}">hidden</c:if> role="alert">
+								<%=request.getParameter("message")%>
+							</div>
+						</div>
 						<div class="col-md-12">
 							<div class="card">
 								<div class="card-header card-header-primary">
@@ -147,12 +153,10 @@ form.navbar-form {
 														<td>${p.name }</td>
 														<td>${p.description }</td>
 														<td class="text-primary form-inline">
-															<button class="btn btn-primary"
-															data-toggle="modal"
-																data-target="#formUpdateNcc${p.id}"
-															>Cập nhật</button>
-															<div class="modal fade" id="formUpdateNcc${p.id}" tabindex="-1"
-																role="dialog" aria-labelledby="formAddNcc"
+															<button class="btn btn-primary" data-toggle="modal"
+																data-target="#formUpdateNcc${p.id}">Cập nhật</button>
+															<div class="modal fade" id="formUpdateNcc${p.id}"
+																tabindex="-1" role="dialog" aria-labelledby="formAddNcc"
 																aria-hidden="true">
 																<div class="modal-dialog" role="document">
 																	<div class="modal-content">
@@ -169,18 +173,16 @@ form.navbar-form {
 																			<div class="modal-body">
 																				<div class="form-group">
 																					<label for="name"> Tên nhà cung cấp </label> <input
-																						type="text" required="required" class="form-control" id="name"
-																						name="name" aria-describedby="name"
-																						value="${p.name}"
-																						 />
+																						type="text" required="required"
+																						class="form-control" id="name" name="name"
+																						aria-describedby="name" value="${p.name}" />
 																				</div>
 																				<div class="form-group">
 																					<label for="description"> Mô tả nhà cung
 																						cấp </label> <input type="text" class="form-control"
 																						id="description" name="description"
 																						aria-describedby="description"
-																						value="${p.description}"
-																						 />
+																						value="${p.description}" />
 																				</div>
 																			</div>
 																			<div class="modal-footer">
@@ -193,10 +195,34 @@ form.navbar-form {
 																	</div>
 																</div>
 															</div>
-															<form action="/admin/supplier/delete?id=${p.id }"
-																method="post">
-																<input class="btn btn-danger" type="submit" value="Xoá" />
-															</form>
+															<button type="button" class="btn btn-danger"
+																data-toggle="modal" data-target="#deleteModal">
+																Xoá</button>
+															<div class="modal fade" id="deleteModal" tabindex="-1"
+																role="dialog" aria-labelledby="exampleModalLabel"
+																aria-hidden="true">
+																<div class="modal-dialog" role="document">
+																	<div class="modal-content">
+																		<div class="modal-header">
+																			<h5 class="modal-title" id="exampleModalLabel">Bạn
+																				có chắc muốn xoá sản phẩm này?</h5>
+																			<button type="button" class="close"
+																				data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																			</button>
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary"
+																				data-dismiss="modal">Huỷ</button>
+																			<form action="/admin/supplier/delete?id=${p.id }"
+																				method="post">
+																				<input class="btn btn-danger" type="submit"
+																					value="Xoá" />
+																			</form>
+																		</div>
+																	</div>
+																</div>
+															</div>
 														</td>
 													</tr>
 												</c:forEach>
@@ -205,11 +231,21 @@ form.navbar-form {
 										<div class="d-flex justify-content-center">
 											<nav aria-label="Page navigation example">
 												<ul class="pagination">
-													<li class="page-item ${currentPage <= 0 ? 'disabled' : '' }"><a class="page-link" href="/admin/supplier?index=${currentPage - 1 }">Trước</a></li>
-													<c:forEach begin="1" end="${totalPage }" step="1" varStatus="i">
-														<li class="page-item ${currentPage == i.index - 1 ? 'active' : '' }"><a class="page-link" href="/admin/supplier?index=${i.index - 1 }">${i.index - 1 }</a></li>
+													<li
+														class="page-item ${currentPage <= 0 ? 'disabled' : '' }"><a
+														class="page-link"
+														href="/admin/supplier?index=${currentPage - 1 }">Trước</a></li>
+													<c:forEach begin="1" end="${totalPage }" step="1"
+														varStatus="i">
+														<li
+															class="page-item ${currentPage == i.index - 1 ? 'active' : '' }"><a
+															class="page-link"
+															href="/admin/supplier?index=${i.index - 1 }">${i.index - 1 }</a></li>
 													</c:forEach>
-													<li class="page-item ${currentPage >= totalPage - 1 ? 'disabled' : '' }"><a class="page-link" href="/admin/supplier?index=${currentPage + 1 }">Sau</a></li>
+													<li
+														class="page-item ${currentPage >= totalPage - 1 ? 'disabled' : '' }"><a
+														class="page-link"
+														href="/admin/supplier?index=${currentPage + 1 }">Sau</a></li>
 												</ul>
 											</nav>
 										</div>
