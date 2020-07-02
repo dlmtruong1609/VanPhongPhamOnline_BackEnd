@@ -196,9 +196,9 @@ form.navbar-form {
 																</div>
 															</div>
 															<button type="button" class="btn btn-danger"
-																data-toggle="modal" data-target="#deleteModal">
+																data-toggle="modal" data-target="#deleteModal${p.id }">
 																Xoá</button>
-															<div class="modal fade" id="deleteModal" tabindex="-1"
+															<div class="modal fade" id="deleteModal${p.id }" tabindex="-1"
 																role="dialog" aria-labelledby="exampleModalLabel"
 																aria-hidden="true">
 																<div class="modal-dialog" role="document">

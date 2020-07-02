@@ -131,8 +131,7 @@ public class ProductController {
 		if(productRepository.findById(id).isPresent()!=false) {
 			productRepository.deleteById(id);
 		}
-		Page<Product> page = productRepository.findAll(PageRequest.of(0, 12));
-		model.addAttribute("listProduct", page.getContent());
+
 		return new ModelAndView("redirect:/admin/product?index=0", "message", message);
 	}
 	@PostMapping(value = "/admin/product/update")
