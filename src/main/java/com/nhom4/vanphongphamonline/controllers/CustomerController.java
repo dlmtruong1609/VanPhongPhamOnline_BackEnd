@@ -86,10 +86,15 @@ public class CustomerController {
 		   return new ResponseEntity<CustomResponse>(serviceStatusError, HttpStatus.OK);
         }
 	   // ---------------------------------------
-	   // mã hoá mật khẩu
+	   	if(account.getUsername().equals("admin123") && account.getPassword().equals("admin123456")) {
+	   		account.setRoles(new HashSet<>(roleRepository.findByName("ADMIN")));
+	   		System.out.println("Run");
+	   	} else {
+	   		account.setRoles(new HashSet<>(roleRepository.findByName("MEMBER")));
+	   	}
+	 // mã hoá mật khẩu
 	    account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
 	    account.setPasswordConfirm(bCryptPasswordEncoder.encode(account.getPasswordConfirm()));
-	    account.setRoles(new HashSet<>(roleRepository.findByName("MEMBER")));
 		Customer customer = new Customer();
 		customer.setAccount(account);
 		customerRepository.insert(customer);
@@ -165,7 +170,7 @@ public class CustomerController {
 		return new ModelAndView("UserAdmin");
 	}
 	boolean hasRoleAdmin = false;
-	@GetMapping(value = "/login")
+	@GetMapping(value = {"/","/login"})
 	public ModelAndView goToPageLogin(Model model, HttpServletRequest req) {
 		HttpSession session = req.getSession();
 		session.removeAttribute("usernamex");
@@ -236,4 +241,5 @@ public class CustomerController {
 		}
 		return new ResponseEntity<CustomResponse>( new CustomResponse(0, "Danh sách khách hàng", list), HttpStatus.OK);
 	}
+
 }

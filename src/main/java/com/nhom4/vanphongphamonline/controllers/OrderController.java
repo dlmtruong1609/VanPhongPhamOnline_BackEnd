@@ -31,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nhom4.vanphongphamonline.models.Category;
 import com.nhom4.vanphongphamonline.models.Customer;
+import com.nhom4.vanphongphamonline.models.EmailContent;
 import com.nhom4.vanphongphamonline.models.Order;
 import com.nhom4.vanphongphamonline.models.Product;
 import com.nhom4.vanphongphamonline.models.Role;
@@ -51,6 +52,8 @@ public class OrderController {
 	private OrderValidator orderValidator;
 	@Autowired
 	private ProductRepository productRepository;
+	@Autowired
+	private EmailController emailController;
 	@Autowired
 	public OrderController(OrderRepository orderRepository) {
 		this.orderRepository = orderRepository;
@@ -109,6 +112,8 @@ public class OrderController {
 		} // ------------------------------
 		order.setBillDate(new Date());
 		orderRepository.insert(order);
+		System.out.println(order.getCustomer().getAccount().getEmail());
+		emailController.sendEmail(new EmailContent(order.getCustomer().getAccount().getEmail(), "ANANAS Đơn đặt mua thành công", "Chúc mừng quý khách đã đặt hàng thành công sản phẩm của chúng tôi, kính chúc quý khách một ngày tốt lành"));
 		HttpSession session = request.getSession();
 		session.invalidate();
 		return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Thanh toán thành công", null), HttpStatus.OK);

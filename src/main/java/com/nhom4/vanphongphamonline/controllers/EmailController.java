@@ -22,10 +22,22 @@ import com.nhom4.vanphongphamonline.utils.CustomResponse;
 public class EmailController {
 	@Autowired
     public JavaMailSender emailSender;
-    
-    @Async
-    @PostMapping(value = "/api/v1/email/send")
+	@Async
     public ResponseEntity<CustomResponse> sendEmail(@RequestBody EmailContent emailContent) {
+    	 
+        SimpleMailMessage message = new SimpleMailMessage();
+         
+        message.setTo(emailContent.getEmailTo());
+        message.setSubject(emailContent.getSubject());
+        message.setText(emailContent.getContent());
+ 
+        // Gửi thông tin!
+        this.emailSender.send(message);
+        return new ResponseEntity<CustomResponse>(new CustomResponse(0, "Gửi thành công", null), HttpStatus.OK);
+    }
+    
+    @PostMapping(value = "/api/v1/email/send")
+    public ResponseEntity<CustomResponse> sendContactEmail(@RequestBody EmailContent emailContent) {
  
         SimpleMailMessage message = new SimpleMailMessage();
          

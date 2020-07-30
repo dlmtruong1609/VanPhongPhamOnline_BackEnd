@@ -136,7 +136,7 @@ $('table .edit').on('click', function(){
 						<div class="col-md-12">
 							<div class="card">
 								<div class="card-header card-header-primary">
-									<h4 class="card-title ">Quản lý loại sản phẩm</h4>
+									<h4 class="card-title ">Quản lý đơn hàng</h4>
 									<p class="card-category">Xem danh sách, tìm kiếm tại đây</p>
 									<a> </a>
 								</div>
@@ -184,7 +184,7 @@ $('table .edit').on('click', function(){
 																								<label for="username" class="col-form-label">
 																									Tên khách hàng : </label> <span id="username"
 																									class="form-control">
-																									${o.customer.account.username } </span>
+																									${o.customer.name ? o.customer.name : o.customer.account.username } </span>
 																							</div>
 																							<div class="row">
 																								<div class="form-group col-lg-6">

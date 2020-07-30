@@ -12,7 +12,7 @@ import com.nhom4.vanphongphamonline.models.Supplier;
 
 @Repository
 public interface SupplierRepository extends MongoRepository<Supplier, String> {
-	// db.supplier.ensureIndex({ name: "text", description: "text"});
+	// db.suppliers.ensureIndex({ name: "text", description: "text"});
 	@Query("{'$text': {'$search':?0}}") // cần create index trước 
 	public Page<Supplier> findByTextSearch(String keyword, Pageable pageable);
 	@Query("{'$text': {'$search':?0}}") 
